@@ -121,6 +121,7 @@ export function exportFilename(
   filtered: boolean,
   _format: ExportFormat
 ): string {
+  void _format; // Reserved for future use (e.g. extension in filename)
   const date = new Date().toISOString().slice(0, 10);
   const suffix = filtered ? "-filtered" : "";
   return `${section}${suffix}-${date}`;

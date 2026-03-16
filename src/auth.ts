@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
     jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.email = user.email;
+        token.email = user.email ?? undefined;
         token.role = (user as { role?: string }).role ?? "viewer";
       }
       return token;

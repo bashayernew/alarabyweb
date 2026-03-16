@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Pencil, UserX, UserCheck, Trash2, Shield, Edit3, Eye } from "lucide-react";
 import { AdminPageWrapper } from "@/components/admin/AdminPageWrapper";
@@ -31,7 +31,7 @@ export default function AdminUsersPage() {
     role: "editor" as "super_admin" | "editor" | "viewer",
   });
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const res = await fetch("/api/admin/users");
       if (res.status === 403) {
@@ -46,11 +46,11 @@ export default function AdminUsersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t, router]);
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();

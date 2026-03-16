@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ScrollText, Search, Filter, Download } from "lucide-react";
+import { Filter, Download } from "lucide-react";
 import { AdminPageWrapper } from "@/components/admin/AdminPageWrapper";
 import { useAdminLanguage } from "@/hooks/useAdminLanguage";
 
@@ -21,7 +21,7 @@ type LogItem = {
 
 export default function AdminActivityLogsPage() {
   const router = useRouter();
-  const { t, lang, isRTL, formatDate } = useAdminLanguage();
+  const { t, isRTL, formatDate } = useAdminLanguage();
   const [logs, setLogs] = useState<LogItem[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -35,7 +35,7 @@ export default function AdminActivityLogsPage() {
     search: "",
   });
 
-  const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -57,16 +57,16 @@ export default function AdminActivityLogsPage() {
       const data = await res.json();
       setLogs(data.logs);
       setTotal(data.total);
-    } catch (e) {
+    } catch {
       setLogs([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters.userId, filters.role, filters.action, filters.module, filters.from, filters.to, filters.search, router]);
 
   useEffect(() => {
     fetchLogs();
-  }, [filters.userId, filters.role, filters.action, filters.module, filters.from, filters.to, filters.search]);
+  }, [fetchLogs]);
 
   const handleExport = async () => {
     try {
@@ -113,7 +113,7 @@ export default function AdminActivityLogsPage() {
       a.download = `activity-logs-${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
-    } catch (e) {
+    } catch {
       alert(t("activityLogs.exportFailed"));
     }
   };

@@ -1,7 +1,6 @@
 "use client";
 
 import { useAdminLanguage } from "@/hooks/useAdminLanguage";
-import type { AdminLang } from "@/lib/admin-i18n";
 
 export function AdminLanguageSwitcher() {
   const { lang, setLang } = useAdminLanguage();

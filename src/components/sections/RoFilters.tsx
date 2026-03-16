@@ -3,11 +3,9 @@
 import Image from "next/image";
 import { Filter } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
-import { translations } from "@/content/translations";
 
 export default function RoFilters() {
   const { language, isRTL } = useLanguage();
-  const t = translations[language];
 
   const ro = {
     title: language === "ar" ? "شمعات RO" : "RO Filters",

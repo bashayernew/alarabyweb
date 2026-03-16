@@ -122,19 +122,6 @@ export function ProductsManager() {
     }
   }
 
-  function parseJsonArray(val: string): string[] {
-    try {
-      const arr = JSON.parse(val || "[]");
-      return Array.isArray(arr) ? arr : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function stringifyArray(arr: string[]): string {
-    return JSON.stringify(arr);
-  }
-
   async function handleSave() {
     if (!form.slug.trim() || !form.image || !form.titleEn.trim() || !form.titleAr.trim()) {
       alert("الرجاء إدخال الرابط والصور والعنوان");

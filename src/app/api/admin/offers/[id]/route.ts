@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAuth, requireWrite } from "@/lib/auth-helpers";
-import { createActivityLog, buildChangeDetails, getRequestMeta } from "@/lib/activity-log";
+import { createActivityLog, getRequestMeta } from "@/lib/activity-log";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 

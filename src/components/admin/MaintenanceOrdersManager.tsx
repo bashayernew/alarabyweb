@@ -214,10 +214,10 @@ export function MaintenanceOrdersManager() {
                   <React.Fragment key={o.id}>
                     <tr className="border-b border-slate-100">
                       <td className="px-4 py-3 text-slate-600">
-                        {new Date(o.createdAt).toLocaleString("ar-KW")}
+                        {formatDate(o.createdAt)}
                       </td>
                       <td className="px-4 py-3 font-medium text-slate-800">
-                        {o.serviceTitleAr}
+                        {lang === "ar" ? (o.serviceTitleAr || o.serviceTitleEn) : (o.serviceTitleEn || o.serviceTitleAr)}
                       </td>
                       <td className="px-4 py-3">{o.customerName}</td>
                       <td className="px-4 py-3">

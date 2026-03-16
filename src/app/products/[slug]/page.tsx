@@ -23,14 +23,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+function getBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_BASE_URL) return process.env.NEXT_PUBLIC_BASE_URL;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "http://localhost:3000";
+}
+
 async function getProduct(slug: string) {
   const fromCatalog = catalogProducts.find((p) => p.id === slug);
   if (fromCatalog) return fromCatalog;
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/products/${slug}`,
-      { cache: "no-store" }
-    );
+    const baseUrl = getBaseUrl();
+    const res = await fetch(`${baseUrl}/api/products/${slug}`, {
+      cache: "no-store",
+    });
     if (res.ok) return res.json();
   } catch {
     /* ignore */

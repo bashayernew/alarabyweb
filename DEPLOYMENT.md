@@ -39,12 +39,23 @@ You must use a **hosted database** before deploying:
 
 Add these in **Vercel → Project → Settings → Environment Variables**:
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `DATABASE_URL` | Yes | Connection string from Neon/Vercel Postgres |
-| `NEXTAUTH_URL` | Yes | Your production URL, e.g. `https://your-app.vercel.app` |
-| `NEXTAUTH_SECRET` | Yes | Random string (32+ chars). Generate: `openssl rand -base64 32` |
-| `NEXT_PUBLIC_BASE_URL` | No | Same as `NEXTAUTH_URL` for production |
+| Variable | Required | Used By | Description |
+|----------|----------|---------|-------------|
+| `DATABASE_URL` | Yes | Prisma, all API routes | Neon/Vercel Postgres connection string |
+| `NEXTAUTH_URL` | Yes | NextAuth | Production URL, e.g. `https://your-app.vercel.app` |
+| `NEXTAUTH_SECRET` | Yes | NextAuth | Random 32+ char string. Run: `openssl rand -base64 32` |
+| `NEXT_PUBLIC_BASE_URL` | No | products/[slug] server fetch | Falls back to `VERCEL_URL` if unset |
+
+---
+
+## File Uploads on Vercel
+
+The admin dashboard upload routes (`/api/admin/upload`, `/api/admin/offers/upload`) write to the filesystem. **On Vercel, the filesystem is read-only**, so uploads will return 503 in production. To enable uploads:
+
+1. Add [Vercel Blob Storage](https://vercel.com/docs/storage/vercel-blob)
+2. Update the upload routes to use `@vercel/blob` instead of `writeFile`
+
+Until then, use pre-committed images in `public/uploads/` (already in the repo).
 
 ---
 

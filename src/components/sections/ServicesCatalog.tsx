@@ -4,11 +4,10 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Droplet, Wrench, Layers } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
-import { translations } from "@/content/translations";
 import { servicesCatalog, type Service } from "@/content/services";
 import { OrderRequestModal } from "@/components/OrderRequestModal";
 
-const categoryIcon: Record<string, any> = {
+const categoryIcon: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
   installation: Layers,
   repair: Wrench,
   maintenance: Wrench,
@@ -19,7 +18,6 @@ const categoryIcon: Record<string, any> = {
 
 export default function ServicesCatalog() {
   const { language, isRTL } = useLanguage();
-  const t = translations[language];
   const [services, setServices] = useState<Service[]>(servicesCatalog);
   const [requestService, setRequestService] = useState<Service | null>(null);
 

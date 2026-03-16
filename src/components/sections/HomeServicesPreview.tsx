@@ -6,7 +6,7 @@ import { Droplet, Wrench, Layers } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { servicesCatalog } from "@/content/services";
 
-const iconByCategory: Record<string, any> = {
+const iconByCategory: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
   installation: Layers,
   repair: Wrench,
   maintenance: Wrench,

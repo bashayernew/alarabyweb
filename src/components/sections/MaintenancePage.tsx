@@ -82,7 +82,7 @@ export default function MaintenancePage() {
         );
       })
       .finally(() => setLoading(false));
-  }, [language]);
+  }, [language, mp.services]);
 
   const requestLabel = language === "ar" ? "اطلب الخدمة" : "Request Service";
 

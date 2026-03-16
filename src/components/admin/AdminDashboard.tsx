@@ -15,7 +15,7 @@ const STATUS_OPTIONS = [
   { value: "", key: "statusOptions.all" },
   { value: "new", key: "statusOptions.new" },
   { value: "contacted", key: "statusOptions.contacted" },
-  { value: "in progress", key: "statusOptions.inProgress" },
+  { value: "in_progress", key: "statusOptions.inProgress" },
   { value: "completed", key: "statusOptions.completed" },
   { value: "cancelled", key: "statusOptions.cancelled" },
 ] as const;
@@ -69,6 +69,8 @@ type MaintenanceOrder = {
   customerEmail: string | null;
   address: string | null;
   area: string | null;
+  preferredDate: string | null;
+  preferredTime: string | null;
   notes: string | null;
   status: string;
   createdAt: string;
@@ -354,7 +356,7 @@ export function AdminDashboard() {
           >
             {STATUS_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
-                {opt.label}
+                {t(opt.key)}
               </option>
             ))}
           </select>
@@ -399,7 +401,7 @@ export function AdminDashboard() {
                         >
                           {STATUS_OPTIONS.filter((x) => x.value).map((opt) => (
                             <option key={opt.value} value={opt.value}>
-                              {opt.label}
+                              {t(opt.key)}
                             </option>
                           ))}
                         </select>

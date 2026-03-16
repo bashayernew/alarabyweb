@@ -11,6 +11,15 @@ export async function POST(req: NextRequest) {
   if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  if (process.env.VERCEL) {
+    return NextResponse.json(
+      {
+        error:
+          "File uploads are not available in production. Configure Vercel Blob Storage or use an external storage provider.",
+      },
+      { status: 503 }
+    );
+  }
   try {
     const formData = await req.formData();
     const file = formData.get("file");

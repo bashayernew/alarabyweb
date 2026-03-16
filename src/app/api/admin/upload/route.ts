@@ -10,6 +10,18 @@ const ALLOWED_FOLDERS = ["products", "services", "maintenance"] as const;
 export async function POST(req: NextRequest) {
   const auth = await requireWrite();
   if (auth.res) return auth.res;
+
+  // On Vercel, filesystem is read-only. Uploads need Vercel Blob or similar.
+  if (process.env.VERCEL) {
+    return NextResponse.json(
+      {
+        error:
+          "File uploads are not available in production. Configure Vercel Blob Storage or use an external storage provider.",
+      },
+      { status: 503 }
+    );
+  }
+
   try {
     const formData = await req.formData();
     const file = formData.get("file");

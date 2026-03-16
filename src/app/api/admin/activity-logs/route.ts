@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   const userId = searchParams.get("userId");
   const role = searchParams.get("role");
   const action = searchParams.get("action");
-  const module = searchParams.get("module");
+  const moduleFilter = searchParams.get("module");
   const from = searchParams.get("from");
   const to = searchParams.get("to");
   const search = searchParams.get("search");
@@ -34,9 +34,9 @@ export async function GET(req: NextRequest) {
       conditions.push(`action = ?`);
       params.push(action);
     }
-    if (module) {
+    if (moduleFilter) {
       conditions.push(`module = ?`);
-      params.push(module);
+      params.push(moduleFilter);
     }
     if (from) {
       conditions.push(`"createdAt" >= ?`);

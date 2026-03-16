@@ -65,7 +65,7 @@ export default function Services() {
                   {service.description}
                 </p>
 
-                {service.options && Array.isArray(service.options) && (
+                {"options" in service && service.options && Array.isArray(service.options) && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {service.options.map((opt: string) => (
                       <button
