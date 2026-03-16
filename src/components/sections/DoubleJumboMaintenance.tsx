@@ -9,17 +9,17 @@ export default function DoubleJumboMaintenance() {
 
   const titlePrimary =
     language === "ar"
-      ? "عقد صيانة فلتر دبل جمبو (6 مرات)"
+      ? "عقد صيانة فلتر دبل جامبو (6 مرات)"
       : "Double Jumbo Filter Maintenance Contract (6 Visits)";
 
   const titleSecondary =
     language === "ar"
       ? "Double Jumbo Filter Maintenance Contract (6 Visits)"
-      : "عقد صيانة فلتر دبل جمبو (6 مرات)";
+      : "عقد صيانة فلتر دبل جامبو (6 مرات)";
 
   const descriptionPrimary =
     language === "ar"
-      ? "خدمة صيانة دورية لفلاتر الدبل جمبو تشمل الفحص والتنظيف واستبدال الشمعات لضمان أفضل أداء وجودة للمياه."
+      ? "خدمة صيانة دورية لفلاتر الدبل جامبو تشمل الفحص والتنظيف واستبدال الشمعات لضمان أفضل أداء وجودة للمياه."
       : "A scheduled maintenance service for double jumbo water filtration systems including inspection, cleaning, and replacement of filter cartridges to ensure optimal water quality.";
 
   const descriptionSecondary =
@@ -88,7 +88,7 @@ export default function DoubleJumboMaintenance() {
             className="text-2xl font-extrabold tracking-tight text-[#12304A] sm:text-3xl lg:text-4xl"
           >
             {language === "ar"
-              ? "عقود صيانة فلتر دبل جمبو"
+              ? "عقود صيانة فلتر دبل جامبو"
               : "Double Jumbo Filter Maintenance"}
           </h2>
         </div>
@@ -113,7 +113,7 @@ export default function DoubleJumboMaintenance() {
                   <Filter size={14} />
                   <span>
                     {language === "ar"
-                      ? "خدمة صيانة فلتر دبل جمبو"
+                      ? "خدمة صيانة فلتر دبل جامبو"
                       : "Double jumbo filter service"}
                   </span>
                 </span>

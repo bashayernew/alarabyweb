@@ -1,10 +1,13 @@
-import { getSession } from "@/auth";
+import { AdminLanguageProvider } from "@/hooks/useAdminLanguage";
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await getSession();
-  return <>{children}</>;
+  return (
+    <AdminLanguageProvider>
+      {children}
+    </AdminLanguageProvider>
+  );
 }

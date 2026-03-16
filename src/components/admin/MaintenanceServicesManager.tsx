@@ -1,0 +1,497 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Loader2,
+  Upload,
+  Save,
+  X,
+  Wrench,
+} from "lucide-react";
+import { AdminPageWrapper } from "./AdminPageWrapper";
+import { useAdminUser } from "./AdminUserContext";
+import { useAdminLanguage } from "@/hooks/useAdminLanguage";
+
+type MaintenanceService = {
+  id: string;
+  titleEn: string;
+  titleAr: string;
+  descriptionEn: string;
+  descriptionAr: string;
+  icon: string | null;
+  image: string | null;
+  category: string | null;
+  isActive: boolean;
+  displayOrder: number;
+};
+
+const ICON_OPTIONS = [
+  "Flame",
+  "Filter",
+  "Gauge",
+  "Droplets",
+  "Wrench",
+  "Zap",
+  "Settings",
+  "Tool",
+];
+
+const defaultForm = () => ({
+  titleEn: "",
+  titleAr: "",
+  descriptionEn: "",
+  descriptionAr: "",
+  icon: "Wrench",
+  image: "",
+  category: "",
+  isActive: true,
+  displayOrder: 0,
+});
+
+export function MaintenanceServicesManager() {
+  const { canWrite } = useAdminUser();
+  const { t, lang, isRTL } = useAdminLanguage();
+  const [services, setServices] = useState<MaintenanceService[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<MaintenanceService | null>(null);
+  const [creating, setCreating] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [form, setForm] = useState(defaultForm());
+
+  function resetForm() {
+    setForm(defaultForm());
+    setEditing(null);
+    setCreating(false);
+  }
+
+  async function fetchServices() {
+    try {
+      const res = await fetch("/api/admin/maintenance-services");
+      if (res.ok) setServices(await res.json());
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("folder", "maintenance");
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: fd,
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Upload failed");
+      }
+      const { url } = await res.json();
+      setForm((f) => ({ ...f, image: url }));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  async function handleSave() {
+    if (!form.titleEn.trim() || !form.titleAr.trim()) {
+      alert(t("errors.enterTitleBoth"));
+      return;
+    }
+    setSaving(true);
+    try {
+      const payload = {
+        titleEn: form.titleEn.trim(),
+        titleAr: form.titleAr.trim(),
+        descriptionEn: form.descriptionEn.trim() || form.titleEn,
+        descriptionAr: form.descriptionAr.trim() || form.titleAr,
+        icon: form.icon || null,
+        image: form.image || null,
+        category: form.category.trim() || null,
+        isActive: form.isActive,
+        displayOrder: form.displayOrder,
+      };
+      if (editing) {
+        const res = await fetch(
+          `/api/admin/maintenance-services/${editing.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          }
+        );
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "Failed to update");
+        }
+      } else {
+        const res = await fetch("/api/admin/maintenance-services", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "Failed to create");
+        }
+      }
+      await fetchServices();
+      resetForm();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to save");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm(t("maintenance.confirmDeleteService")))
+      return;
+    setDeleting(id);
+    try {
+      const res = await fetch(`/api/admin/maintenance-services/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete");
+      await fetchServices();
+      if (editing?.id === id) resetForm();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete");
+    } finally {
+      setDeleting(null);
+    }
+  }
+
+  function startEdit(s: MaintenanceService) {
+    setEditing(s);
+    setForm({
+      titleEn: s.titleEn,
+      titleAr: s.titleAr,
+      descriptionEn: s.descriptionEn,
+      descriptionAr: s.descriptionAr,
+      icon: s.icon ?? "Wrench",
+      image: s.image ?? "",
+      category: s.category ?? "",
+      isActive: s.isActive,
+      displayOrder: s.displayOrder,
+    });
+    setCreating(false);
+  }
+
+  function startCreate() {
+    resetForm();
+    setCreating(true);
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-16">
+        <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
+      </div>
+    );
+  }
+
+  return (
+    <AdminPageWrapper
+      title={t("maintenance.servicesTitle")}
+      subtitle={t("maintenance.servicesSubtitle")}
+      actions={canWrite ? (
+        <button
+          onClick={startCreate}
+          className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors hover:bg-primary-700 hover:shadow-lg"
+        >
+          <Plus className="h-4 w-4" />
+          {t("maintenance.addService")}
+        </button>
+      ) : undefined}
+    >
+    <div className="space-y-6" dir={isRTL ? "rtl" : "ltr"}>
+
+      {canWrite && (creating || editing) && (
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-slate-800">
+            {editing ? t("maintenance.editService") : t("maintenance.newService")}
+          </h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                {t("maintenance.titleAr")} *
+              </label>
+              <input
+                type="text"
+                value={form.titleAr}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, titleAr: e.target.value }))
+                }
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                {t("maintenance.titleEn")} *
+              </label>
+              <input
+                type="text"
+                value={form.titleEn}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, titleEn: e.target.value }))
+                }
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                {t("maintenance.descriptionAr")}
+              </label>
+              <textarea
+                value={form.descriptionAr}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, descriptionAr: e.target.value }))
+                }
+                rows={3}
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                {t("maintenance.descriptionEn")}
+              </label>
+              <textarea
+                value={form.descriptionEn}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, descriptionEn: e.target.value }))
+                }
+                rows={3}
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                {t("maintenance.icon")}
+              </label>
+              <select
+                value={form.icon}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, icon: e.target.value }))
+                }
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
+              >
+                {ICON_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                {t("common.image")}
+              </label>
+              <div className="flex items-center gap-2">
+                {form.image ? (
+                  <div className="relative h-16 w-16 overflow-hidden rounded-lg border">
+                    <img
+                      src={form.image}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f, image: "" }))}
+                      className="absolute top-0.5 right-0.5 rounded-full bg-red-500 p-1 text-white"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ) : null}
+                <label className="flex h-16 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 text-slate-500 hover:border-primary-400">
+                  {uploading ? (
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  ) : (
+                    <Upload className="h-6 w-6" />
+                  )}
+                  <span className="text-xs">{t("common.upload")}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleUpload}
+                    className="hidden"
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                {t("common.category")}
+              </label>
+              <input
+                type="text"
+                value={form.category}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, category: e.target.value }))
+                }
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
+                placeholder="maintenance"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                {t("maintenance.sortOrder")}
+              </label>
+              <input
+                type="number"
+                value={form.displayOrder}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    displayOrder: parseInt(e.target.value) || 0,
+                  }))
+                }
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
+              />
+            </div>
+            <div className="flex items-center gap-2 sm:col-span-2">
+              <input
+                type="checkbox"
+                id="isActive"
+                checked={form.isActive}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, isActive: e.target.checked }))
+                }
+                className="rounded border-slate-300"
+              />
+              <label htmlFor="isActive" className="text-sm text-slate-700">
+                {t("maintenance.serviceActive")}
+              </label>
+            </div>
+          </div>
+          <div className="mt-6 flex gap-3">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-50"
+            >
+              {saving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="h-4 w-4" />
+              )}
+              {t("common.save")}
+            </button>
+            <button
+              onClick={resetForm}
+              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              {t("common.cancel")}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <div className="border-b border-slate-200 bg-slate-50 px-4 py-3">
+          <h2 className="font-semibold text-slate-800">
+            {t("maintenance.serviceList")}
+          </h2>
+        </div>
+        {services.length === 0 ? (
+          <p className="p-6 text-slate-500">
+            {t("maintenance.noServices")}
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="border-b border-slate-200 bg-slate-50">
+                <tr>
+                  <th className="px-4 py-3 text-right font-medium text-slate-700">
+                    {t("maintenance.icon")}
+                  </th>
+                  <th className="px-4 py-3 text-right font-medium text-slate-700">
+                    {t("common.title")}
+                  </th>
+                  <th className="px-4 py-3 text-right font-medium text-slate-700">
+                    {t("maintenance.sortOrder")}
+                  </th>
+                  <th className="px-4 py-3 text-right font-medium text-slate-700">
+                    {t("common.active")}
+                  </th>
+                  <th className="px-4 py-3 text-right font-medium text-slate-700">
+                    {t("common.actions")}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {services.map((s) => (
+                  <tr key={s.id} className="border-b border-slate-100">
+                    <td className="px-4 py-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100">
+                        <Wrench className="h-5 w-5 text-primary-600" />
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 font-medium text-slate-800">
+                      {lang === "ar" ? (s.titleAr || s.titleEn) : (s.titleEn || s.titleAr)}
+                    </td>
+                    <td className="px-4 py-3 text-slate-600">{s.displayOrder}</td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-xs ${
+                          s.isActive ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
+                        {s.isActive ? t("common.active") : t("common.inactive")}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      {canWrite && (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => startEdit(s)}
+                            className="rounded-lg border border-slate-300 p-2 text-slate-600 hover:bg-slate-50 hover:text-primary-600"
+                            title={t("common.edit")}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(s.id)}
+                            disabled={deleting === s.id}
+                            className="rounded-lg border border-red-200 p-2 text-red-600 hover:bg-red-50 disabled:opacity-50"
+                            title={t("common.delete")}
+                          >
+                            {deleting === s.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+    </AdminPageWrapper>
+  );
+}

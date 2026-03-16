@@ -6,8 +6,9 @@ const orderSchema = z.object({
   productId: z.string().min(1, "Product is required"),
   productSlug: z.string().optional(),
   customerName: z.string().min(1, "Name is required").max(200),
-  email: z.string().email("Invalid email"),
+  email: z.union([z.string().email("Invalid email"), z.literal("")]).optional(),
   phone: z.string().min(1, "Phone is required").max(50),
+  area: z.string().max(200).optional(),
   message: z.string().max(2000).optional(),
   language: z.enum(["en", "ar"]).optional().default("en"),
 });
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const { productId, productSlug, customerName, email, phone, message, language } =
+    const { productId, productSlug, customerName, email, phone, area, message, language } =
       parsed.data;
 
     const product = await prisma.product.findFirst({
@@ -41,8 +42,9 @@ export async function POST(req: Request) {
       data: {
         productId: product.id,
         customerName,
-        email,
+        email: email && email.trim() ? email.trim() : null,
         phone,
+        area: area && area.trim() ? area.trim() : null,
         message: message ?? null,
         language,
       },

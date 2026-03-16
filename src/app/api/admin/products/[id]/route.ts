@@ -1,0 +1,167 @@
+import { NextRequest, NextResponse } from "next/server";
+import { requireAuth, requireWrite } from "@/lib/auth-helpers";
+import { createActivityLog, buildChangeDetails, getRequestMeta } from "@/lib/activity-log";
+import { prisma } from "@/lib/db";
+import { z } from "zod";
+
+const updateProductSchema = z.object({
+  slug: z.string().min(1).regex(/^[a-z0-9-]+$/).optional(),
+  image: z.string().min(1).optional(),
+  price: z.number().optional().nullable(),
+  titleEn: z.string().min(1).optional(),
+  titleAr: z.string().min(1).optional(),
+  subtitleEn: z.string().min(1).optional(),
+  subtitleAr: z.string().min(1).optional(),
+  shortDescriptionEn: z.string().min(1).optional(),
+  shortDescriptionAr: z.string().min(1).optional(),
+  fullDescriptionEn: z.string().min(1).optional(),
+  fullDescriptionAr: z.string().min(1).optional(),
+  warrantyEn: z.string().min(1).optional(),
+  warrantyAr: z.string().min(1).optional(),
+  featuresEn: z.string().optional(),
+  featuresAr: z.string().optional(),
+  specsEn: z.string().optional().nullable(),
+  specsAr: z.string().optional().nullable(),
+  category: z.string().min(1).optional(),
+  badgeEn: z.string().optional().nullable(),
+  badgeAr: z.string().optional().nullable(),
+  isActive: z.boolean().optional(),
+  sortOrder: z.number().optional(),
+});
+
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const auth = await requireAuth();
+  if (auth.res) return auth.res;
+  try {
+    const { id } = await params;
+    const product = await prisma.product.findUnique({ where: { id } });
+    if (!product) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+    return NextResponse.json(product);
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json(
+      { error: "Failed to fetch product" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const auth = await requireWrite();
+  if (auth.res) return auth.res;
+  const meta = getRequestMeta(req);
+  try {
+    const { id } = await params;
+    const body = await req.json();
+    const data = updateProductSchema.parse(body);
+    const existing = await prisma.product.findUnique({ where: { id } });
+    if (!existing) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+    if (data.slug && data.slug !== existing.slug) {
+      const slugExists = await prisma.product.findUnique({ where: { slug: data.slug } });
+      if (slugExists) {
+        return NextResponse.json(
+          { error: "Product with this slug already exists" },
+          { status: 400 }
+        );
+      }
+    }
+    const changes: Array<{ field: string; oldValue: unknown; newValue: unknown }> = [];
+    if (data.titleEn !== undefined && data.titleEn !== existing.titleEn)
+      changes.push({ field: "titleEn", oldValue: existing.titleEn, newValue: data.titleEn });
+    if (data.titleAr !== undefined && data.titleAr !== existing.titleAr)
+      changes.push({ field: "titleAr", oldValue: existing.titleAr, newValue: data.titleAr });
+    if (data.slug !== undefined && data.slug !== existing.slug)
+      changes.push({ field: "slug", oldValue: existing.slug, newValue: data.slug });
+    const product = await prisma.product.update({
+      where: { id },
+      data: {
+        ...(data.slug !== undefined && { slug: data.slug }),
+        ...(data.image !== undefined && { image: data.image }),
+        ...(data.price !== undefined && { price: data.price }),
+        ...(data.titleEn !== undefined && { titleEn: data.titleEn }),
+        ...(data.titleAr !== undefined && { titleAr: data.titleAr }),
+        ...(data.subtitleEn !== undefined && { subtitleEn: data.subtitleEn }),
+        ...(data.subtitleAr !== undefined && { subtitleAr: data.subtitleAr }),
+        ...(data.shortDescriptionEn !== undefined && { shortDescriptionEn: data.shortDescriptionEn }),
+        ...(data.shortDescriptionAr !== undefined && { shortDescriptionAr: data.shortDescriptionAr }),
+        ...(data.fullDescriptionEn !== undefined && { fullDescriptionEn: data.fullDescriptionEn }),
+        ...(data.fullDescriptionAr !== undefined && { fullDescriptionAr: data.fullDescriptionAr }),
+        ...(data.warrantyEn !== undefined && { warrantyEn: data.warrantyEn }),
+        ...(data.warrantyAr !== undefined && { warrantyAr: data.warrantyAr }),
+        ...(data.featuresEn !== undefined && { featuresEn: data.featuresEn }),
+        ...(data.featuresAr !== undefined && { featuresAr: data.featuresAr }),
+        ...(data.specsEn !== undefined && { specsEn: data.specsEn }),
+        ...(data.specsAr !== undefined && { specsAr: data.specsAr }),
+        ...(data.category !== undefined && { category: data.category }),
+        ...(data.badgeEn !== undefined && { badgeEn: data.badgeEn }),
+        ...(data.badgeAr !== undefined && { badgeAr: data.badgeAr }),
+        ...(data.isActive !== undefined && { isActive: data.isActive }),
+        ...(data.sortOrder !== undefined && { sortOrder: data.sortOrder }),
+      },
+    });
+    await createActivityLog({
+      user: auth.user,
+      action: "update",
+      module: "products",
+      itemId: product.id,
+      itemLabel: product.titleEn || product.titleAr,
+      details: changes.length > 0 ? buildChangeDetails(changes) : undefined,
+      ...meta,
+    });
+    return NextResponse.json(product);
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: e.errors.map((x) => x.message).join(", ") },
+        { status: 400 }
+      );
+    }
+    console.error(e);
+    return NextResponse.json(
+      { error: "Failed to update product" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const auth = await requireWrite();
+  if (auth.res) return auth.res;
+  const meta = getRequestMeta(req);
+  try {
+    const { id } = await params;
+    const existing = await prisma.product.findUnique({ where: { id } });
+    if (!existing) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    }
+    await prisma.product.delete({ where: { id } });
+    await createActivityLog({
+      user: auth.user,
+      action: "delete",
+      module: "products",
+      itemId: id,
+      itemLabel: existing.titleEn || existing.titleAr,
+      ...meta,
+    });
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json(
+      { error: "Failed to delete product" },
+      { status: 500 }
+    );
+  }
+}

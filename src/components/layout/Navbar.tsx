@@ -14,18 +14,17 @@ export default function Navbar() {
 
   const navItems = [
     { label: t.nav.home, href: "/" },
-    { label: t.nav.about, href: "#about" },
-    { label: t.nav.services, href: "/services" },
+    { label: t.nav.aboutAndServices, href: "/services" },
     { label: t.nav.products, href: "/products" },
-    { label: t.nav.projects, href: "#projects" },
-    { label: t.nav.maintenance, href: "#maintenance" },
+    { label: t.nav.offers, href: "/offers" },
+    { label: t.nav.maintenance, href: "/maintenance" },
     { label: t.nav.contact, href: "#contact" },
   ];
 
   return (
     <nav className="sticky top-0 z-40 border-b border-primary-100/60 bg-white/92 shadow-soft backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center gap-6">
+        <div className="flex h-20 min-h-[72px] items-center gap-6">
           {/* Logo block */}
           <div
             className={`flex flex-1 items-center ${
@@ -36,21 +35,17 @@ export default function Navbar() {
               href="/"
               className={
                 isRTL
-                  ? "flex flex-row-reverse items-center gap-2 sm:gap-3"
-                  : "flex items-center gap-2 sm:gap-3"
+                  ? "flex flex-row-reverse items-center gap-3 sm:gap-4"
+                  : "flex items-center gap-3 sm:gap-4"
               }
+              aria-label={t.brand.name}
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-400 text-white shadow-soft sm:h-10 sm:w-10">
-                <span className="h-4 w-4 rounded-full border border-white/60 bg-white/10" />
-              </span>
               <span className="flex flex-col leading-tight">
                 <span className="text-sm font-extrabold tracking-tight text-primary-800 sm:text-base">
-                  {language === "ar" ? "أكوا سيستمز" : "Aqua Systems"}
+                  {t.brand.name}
                 </span>
                 <span className="hidden text-[11px] font-medium tracking-wide text-primary-500/80 sm:block">
-                  {language === "ar"
-                    ? "حلول أنظمة المياه والتسخين المركزي"
-                    : "Water & central heating systems"}
+                  {t.brand.tagline}
                 </span>
               </span>
             </Link>
@@ -96,7 +91,7 @@ export default function Navbar() {
               <LanguageSwitcher />
             </div>
             <a
-              href="https://wa.me/96599346138"
+              href={`https://wa.me/965${t.contact.mainPhone}`}
               className="hidden items-center justify-center rounded-full bg-primary-600 px-4 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-primary-700 sm:inline-flex md:text-sm"
             >
               {language === "ar" ? "واتساب" : "WhatsApp"}
@@ -133,7 +128,7 @@ export default function Navbar() {
             <div className={`mt-3 flex w-full items-center justify-between gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
               <LanguageSwitcher />
               <a
-                href="https://wa.me/96599346138"
+                href={`https://wa.me/965${t.contact.mainPhone}`}
                 className="flex-1 rounded-full bg-primary-600 px-3 py-2 text-center text-xs font-semibold text-white transition hover:bg-primary-700"
                 onClick={() => setOpen(false)}
               >

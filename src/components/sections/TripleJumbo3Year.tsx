@@ -12,17 +12,17 @@ export default function TripleJumbo3Year() {
 
   const titlePrimary =
     language === "ar"
-      ? "فلتر تريبل جاليو – 3 سنوات"
+      ? "فلتر تريبل جامبو – 3 سنوات"
       : "Triple Jumbo Water Filter – 3 Year Package";
 
   const titleSecondary =
     language === "ar"
       ? "Triple Jumbo Water Filter – 3 Year Package"
-      : "فلتر تريبل جاليو – 3 سنوات";
+      : "فلتر تريبل جامبو – 3 سنوات";
 
   const descriptionPrimary =
     language === "ar"
-      ? "نظام فلترة مياه ثلاثي الجاليو عالي السعة مصمم لتنقية مياه المنازل ويشمل باقة خدمة لمدة 3 سنوات مع تبديل الشمعات كل 6 أشهر."
+      ? "نظام فلترة مياه ثلاثي الجامبو عالي السعة مصمم لتنقية مياه المنازل ويشمل باقة خدمة لمدة 3 سنوات مع تبديل الشمعات كل 6 أشهر."
       : "A high-capacity triple jumbo water filtration system designed for household water purification. Includes a 3-year service package with filter cartridge replacement every 6 months.";
 
   const descriptionSecondary =
@@ -33,7 +33,7 @@ export default function TripleJumbo3Year() {
   const features =
     language === "ar"
       ? [
-          "نظام فلترة ثلاثي الجاليو",
+          "نظام فلترة ثلاثي الجامبو",
           "تدفق مياه عالي",
           "إزالة الرواسب والكلور",
           "مقياس ضغط لمراقبة الأداء",

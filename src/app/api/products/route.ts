@@ -1,18 +1,17 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import { productToJson } from "@/lib/api-helpers";
+import { catalogProducts } from "@/content/products";
 
 export async function GET() {
   try {
+    const { prisma } = await import("@/lib/db");
     const products = await prisma.product.findMany({
-      orderBy: { category: "asc" },
+      where: { isActive: true },
+      orderBy: [{ sortOrder: "asc" }, { category: "asc" }],
     });
     return NextResponse.json(products.map(productToJson));
   } catch (e) {
-    console.error(e);
-    return NextResponse.json(
-      { error: "Failed to fetch products" },
-      { status: 500 }
-    );
+    console.error("[api/products] Database unavailable, falling back to static catalog:", e);
+    return NextResponse.json(catalogProducts);
   }
 }

@@ -10,13 +10,19 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: adminEmail },
-    update: {},
+    update: { role: "super_admin", isActive: true },
     create: {
       email: adminEmail,
       passwordHash: hash,
       name: "Admin",
-      role: "admin",
+      role: "super_admin",
+      isActive: true,
     },
+  });
+  // Migrate legacy "admin" role to "super_admin"
+  await prisma.user.updateMany({
+    where: { role: "admin" },
+    data: { role: "super_admin" },
   });
   console.log("Admin user upserted:", adminEmail);
 
@@ -135,6 +141,134 @@ async function main() {
     });
   }
   console.log("Services seeded:", services.length);
+
+  // Offers (seed data - new schema)
+  const offerData = [
+    {
+      titleAr: "نظام التدفئة المركزية",
+      titleEn: "Central Heating System",
+      shortDescriptionAr:
+        "عرض خاص على السخانات المركزية مع توفير الطاقة. تركيب شامل وصيانة دورية.",
+      shortDescriptionEn:
+        "Special offer on central heaters with energy savings. Full installation and periodic maintenance.",
+      fullDescriptionAr:
+        "عرض خاص على السخانات المركزية مع توفير الطاقة. تركيب شامل وصيانة دورية لضمان استمرارية الأداء.",
+      fullDescriptionEn:
+        "Special offer on central heating systems with energy savings. Full installation and periodic maintenance for reliable performance.",
+      image: "",
+      badgeAr: "عرض خاص",
+      badgeEn: "Special Offer",
+      startDate: new Date(),
+      displayOrder: 0,
+    },
+    {
+      titleAr: "فلترة المياه المركزية",
+      titleEn: "Central Water Filtration",
+      shortDescriptionAr:
+        "عرض خاص على أنظمة فلترة المياه المركزية. مياه أنقى للشرب والاستخدام المنزلي.",
+      shortDescriptionEn:
+        "Special offer on central water filtration systems. Cleaner water for drinking and home use.",
+      fullDescriptionAr:
+        "عرض خاص على أنظمة فلترة المياه المركزية. مياه أنقى للشرب والاستخدام المنزلي مع ضمان جودة عالية.",
+      fullDescriptionEn:
+        "Special offer on central water filtration systems. Cleaner water for drinking and home use with high quality guarantee.",
+      image: "",
+      badgeAr: "عرض محدود",
+      badgeEn: "Limited Offer",
+      startDate: new Date(),
+      displayOrder: 1,
+    },
+  ];
+  const existingOffers = await prisma.offer.count();
+  if (existingOffers === 0) {
+    await prisma.offer.createMany({
+      data: offerData.map((o) => ({
+        titleAr: o.titleAr,
+        titleEn: o.titleEn,
+        shortDescriptionAr: o.shortDescriptionAr,
+        shortDescriptionEn: o.shortDescriptionEn,
+        fullDescriptionAr: o.fullDescriptionAr,
+        fullDescriptionEn: o.fullDescriptionEn,
+        image: o.image,
+        badgeAr: o.badgeAr,
+        badgeEn: o.badgeEn,
+        startDate: o.startDate,
+        displayOrder: o.displayOrder,
+      })),
+    });
+    console.log("Offers seeded:", offerData.length);
+  }
+
+  // Maintenance services (from translations content)
+  const maintenanceServices = [
+    {
+      titleEn: "Central Heating System Maintenance",
+      titleAr: "صيانة السستم المركزي",
+      descriptionEn:
+        "Inspection and maintenance of central heating systems to ensure high efficiency and continuous hot water supply.",
+      descriptionAr:
+        "فحص وصيانة أنظمة السستم المركزي لضمان عملها بكفاءة عالية وتوفير المياه الساخنة بشكل مستمر.",
+      icon: "Flame",
+      displayOrder: 0,
+    },
+    {
+      titleEn: "Home & Central Filter Maintenance",
+      titleAr: "صيانة الفلاتر المنزلية والمركزية",
+      descriptionEn:
+        "Cleaning and maintenance of all filter types with cartridge replacement for water purity and quality.",
+      descriptionAr:
+        "تنظيف وصيانة جميع أنواع الفلاتر مع تبديل الشمعات لضمان نقاء المياه وجودتها.",
+      icon: "Filter",
+      displayOrder: 1,
+    },
+    {
+      titleEn: "Pump Maintenance",
+      titleAr: "صيانة المضخات",
+      descriptionEn:
+        "Inspection and maintenance of Italian and Spanish water pumps and pressure issue resolution.",
+      descriptionAr:
+        "فحص وصيانة مضخات المياه الإيطالية والإسبانية ومعالجة مشاكل ضغط المياه.",
+      icon: "Gauge",
+      displayOrder: 2,
+    },
+    {
+      titleEn: "Tank Cleaning",
+      titleAr: "غسيل وتنظيف التانكي",
+      descriptionEn:
+        "Cleaning and sanitizing of water tanks for clean and healthy water for use.",
+      descriptionAr:
+        "تنظيف وتعقيم خزانات المياه لضمان مياه نظيفة وصحية للاستخدام.",
+      icon: "Droplets",
+      displayOrder: 3,
+    },
+    {
+      titleEn: "Sewage Unclogging",
+      titleAr: "تسليك الصرف الصحي",
+      descriptionEn:
+        "Resolving blockages in drains and sewage using advanced equipment.",
+      descriptionAr:
+        "حل مشاكل الانسداد في المجاري والصرف الصحي باستخدام معدات متطورة.",
+      icon: "Wrench",
+      displayOrder: 4,
+    },
+    {
+      titleEn: "Water Pressure Check",
+      titleAr: "فحص ضغط المياه",
+      descriptionEn:
+        "Checking water pressure in the home and adjusting pumps for optimal water flow.",
+      descriptionAr:
+        "فحص ضغط المياه في المنزل وضبط المضخات لضمان تدفق المياه بشكل مثالي.",
+      icon: "Zap",
+      displayOrder: 5,
+    },
+  ];
+  const existingMaintenance = await prisma.maintenanceService.count();
+  if (existingMaintenance === 0) {
+    await prisma.maintenanceService.createMany({
+      data: maintenanceServices,
+    });
+    console.log("Maintenance services seeded:", maintenanceServices.length);
+  }
 }
 
 main()

@@ -8,11 +8,11 @@ const services = [
     key: "double-jumbo",
     icon: Filter,
     titleEn: "Double Jumbo Filter Maintenance Contract",
-    titleAr: "عقد صيانة فلتر دبل جمبو (6 مرات)",
+    titleAr: "عقد صيانة فلتر دبل جامبو (6 مرات)",
     descriptionEn:
       "Periodic maintenance contract for double jumbo filtration systems including cleaning, filter inspection, and performance checks with six service visits.",
     descriptionAr:
-      "عقد صيانة دوري لفلاتر الدبل جمبو يشمل الفحص والتنظيف والتأكد من كفاءة عمل النظام مع 6 زيارات صيانة.",
+      "عقد صيانة دوري لفلاتر الدبل جامبو يشمل الفحص والتنظيف والتأكد من كفاءة عمل النظام مع 6 زيارات صيانة.",
   },
   {
     key: "tank-cleaning",

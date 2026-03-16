@@ -7,6 +7,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/content/translations";
 import { catalogProducts, type CatalogProduct } from "@/content/products";
 import { useEffect, useState } from "react";
+import { OrderRequestModal } from "@/components/OrderRequestModal";
 
 export default function Products() {
   const { language, isRTL } = useLanguage();
@@ -15,12 +16,18 @@ export default function Products() {
   const [activeProduct, setActiveProduct] = useState<CatalogProduct | null>(
     null,
   );
+  const [orderProduct, setOrderProduct] = useState<CatalogProduct | null>(null);
 
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.ok ? res.json() : null)
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setProducts(data);
+        if (!Array.isArray(data)) return;
+        // Merge API products with catalog: API overrides by id, then add any catalog items not in API
+        const byId = new Map<string, CatalogProduct>();
+        catalogProducts.forEach((p) => byId.set(p.id, p));
+        data.forEach((p: CatalogProduct) => byId.set(p.id, p));
+        setProducts(Array.from(byId.values()));
       })
       .catch(() => {});
   }, []);
@@ -125,9 +132,23 @@ export default function Products() {
                     <span className="text-[11px] font-medium text-[#6B7280]">
                       {warrantyLabel}
                     </span>
-                    <span className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-3 py-1.5 text-[11px] font-semibold text-white shadow-md transition group-hover:bg-primary-700">
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOrderProduct(product);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setOrderProduct(product);
+                        }
+                      }}
+                      className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-primary-600 px-3 py-1.5 text-[11px] font-semibold text-white shadow-md transition group-hover:bg-primary-700"
+                    >
                       <ShoppingCart size={14} />
-                      {language === "ar" ? "استفسر الآن" : "Inquire Now"}
+                      {language === "ar" ? "اطلب الآن" : "Order Now"}
                     </span>
                   </div>
                 </div>
@@ -143,6 +164,20 @@ export default function Products() {
           language={language}
           isRTL={isRTL}
           onClose={() => setActiveProduct(null)}
+          onOrderClick={() => {
+            setOrderProduct(activeProduct);
+            setActiveProduct(null);
+          }}
+        />
+      )}
+
+      {orderProduct && (
+        <OrderRequestModal
+          type="product"
+          itemId={orderProduct.id}
+          itemName={language === "ar" ? orderProduct.title_ar : orderProduct.title_en}
+          onClose={() => setOrderProduct(null)}
+          language={language}
         />
       )}
     </section>
@@ -154,6 +189,7 @@ type ProductDetailsModalProps = {
   language: "ar" | "en";
   isRTL: boolean;
   onClose: () => void;
+  onOrderClick?: () => void;
 };
 
 function ProductDetailsModal({
@@ -161,6 +197,7 @@ function ProductDetailsModal({
   language,
   isRTL,
   onClose,
+  onOrderClick,
 }: ProductDetailsModalProps) {
   const title = language === "ar" ? product.title_ar : product.title_en;
   const subtitle =
@@ -270,13 +307,14 @@ function ProductDetailsModal({
               <span className="text-[11px] font-semibold text-[#111827] sm:text-sm">
                 {warranty}
               </span>
-              <a
-                href="https://wa.me/96599346138"
+              <button
+                type="button"
+                onClick={onOrderClick}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-4 py-2 text-xs font-semibold text-white shadow-md transition hover:bg-primary-700"
               >
                 <ShoppingCart size={14} />
-                {language === "ar" ? "استفسر الآن" : "Inquire Now"}
-              </a>
+                {language === "ar" ? "اطلب الآن" : "Order Now"}
+              </button>
             </div>
           </div>
         </div>

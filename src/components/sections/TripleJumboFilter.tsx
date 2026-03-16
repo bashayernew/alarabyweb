@@ -12,17 +12,17 @@ export default function TripleJumboFilter() {
 
   const titlePrimary =
     language === "ar"
-      ? "فلتر تريبل جاليو"
+      ? "فلتر تريبل جامبو"
       : "Triple Jumbo Water Filter System";
 
   const titleSecondary =
     language === "ar"
       ? "Triple Jumbo Water Filter System"
-      : "فلتر تريبل جاليو";
+      : "فلتر تريبل جامبو";
 
   const descriptionPrimary =
     language === "ar"
-      ? "نظام فلترة مياه ثلاثي الجاليو مصمم لتنقية المياه من الرواسب والكلور والشوائب مع الحفاظ على تدفق مياه قوي للمنازل."
+      ? "نظام فلترة مياه ثلاثي الجامبو مصمم لتنقية المياه من الرواسب والكلور والشوائب مع الحفاظ على تدفق مياه قوي للمنازل."
       : "A heavy-duty triple jumbo water filtration system designed to remove sediments, chlorine, and impurities from household water supplies while maintaining strong water flow.";
 
   const descriptionSecondary =
@@ -33,7 +33,7 @@ export default function TripleJumboFilter() {
   const features =
     language === "ar"
       ? [
-          "نظام فلترة ثلاثي الجاليو",
+          "نظام فلترة ثلاثي الجامبو",
           "قدرة عالية لتنقية المياه",
           "إزالة الرواسب والكلور",
           "مقياس ضغط لمراقبة الأداء",
@@ -93,7 +93,7 @@ export default function TripleJumboFilter() {
                   </span>
                 </span>
                 <span className="rounded-full bg-primary-600 px-3 py-1 text-[10px] font-semibold shadow-sm">
-                  {language === "ar" ? "فلترة ثلاثية الجاليو" : "Triple jumbo"}
+                  {language === "ar" ? "فلترة ثلاثية الجامبو" : "Triple jumbo"}
                 </span>
               </div>
             </div>

@@ -1,4 +1,4 @@
-// Aqua Systems – dynamic data schema
+// شركة الرائد العربي – dynamic data schema
 // Run: npx prisma generate && npx prisma db push (or migrate dev)
 
 generator client {
@@ -11,19 +11,42 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   passwordHash String
   name         String?
-  role         String   @default("admin")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  role         String    @default("super_admin") // super_admin | editor | viewer
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  activityLogs ActivityLog[]
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userEmail   String   // snapshot for display when user deleted
+  userName    String?
+  userRole    String   // snapshot
+  action      String   // create | update | delete | export | sign_in | sign_out
+  module      String   // products | services | offers | maintenance | users | export | auth
+  itemId      String?  // id of affected record
+  itemLabel   String?  // human-readable label (e.g. product title)
+  details     String?  // JSON: { field: { old, new } } or extra info
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
 }
 
 model Product {
   id                  String   @id @default(cuid())
   slug                String   @unique
   image               String
+  price               Float?
+  isActive            Boolean  @default(true)
+  sortOrder           Int      @default(0)
   titleEn             String
   titleAr             String
   subtitleEn          String
@@ -49,6 +72,9 @@ model Product {
 model Service {
   id             String   @id @default(cuid())
   slug           String   @unique
+  image          String?
+  isActive       Boolean  @default(true)
+  sortOrder      Int      @default(0)
   category       String
   titleEn        String
   titleAr        String
@@ -68,9 +94,11 @@ model ProductOrder {
   productId   String
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   customerName String
-  email       String
+  email       String?
   phone       String
+  area        String?
   message     String?
+  status      String   @default("new")
   language    String   @default("en")
   createdAt   DateTime @default(now())
 }
@@ -80,9 +108,90 @@ model ServiceRequest {
   serviceId    String
   service      Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   customerName String
-  email        String
+  email        String?
   phone        String
+  area         String?
   message      String?
+  status       String   @default("new")
   language     String   @default("en")
   createdAt    DateTime @default(now())
+}
+
+model Offer {
+  id                   String   @id @default(cuid())
+  slug                 String?  @unique
+  titleAr              String
+  titleEn              String   @default("")
+  shortDescriptionAr   String  @default("")
+  shortDescriptionEn   String  @default("")
+  fullDescriptionAr    String  @default("")
+  fullDescriptionEn    String  @default("")
+  image                String   @default("")
+  badgeAr              String?
+  badgeEn              String?
+  startDate            DateTime @default(now())
+  endDate              DateTime?
+  isActive             Boolean  @default(true)
+  displayOrder         Int      @default(0)
+  linkedProductId      String?
+  linkedServiceId      String?
+  ctaTextAr            String?
+  ctaTextEn            String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  requests             OfferRequest[]
+}
+
+model OfferRequest {
+  id           String   @id @default(cuid())
+  offerId      String?
+  offer        Offer?   @relation(fields: [offerId], references: [id], onDelete: SetNull)
+  offerTitleAr String
+  offerTitleEn String
+  customerName String
+  customerPhone String
+  customerEmail String?
+  address      String?
+  area         String?
+  notes        String?
+  language     String   @default("en")
+  status       String   @default("new") // new, contacted, in_progress, completed, cancelled
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model MaintenanceService {
+  id             String   @id @default(cuid())
+  titleEn        String
+  titleAr        String
+  descriptionEn  String
+  descriptionAr  String
+  icon           String?  // lucide icon name or image URL
+  image          String?
+  category       String?
+  isActive       Boolean  @default(true)
+  displayOrder   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  orders         MaintenanceOrder[]
+}
+
+model MaintenanceOrder {
+  id              String   @id @default(cuid())
+  serviceId       String?
+  service         MaintenanceService? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  serviceTitleAr  String   // snapshot for display when service deleted
+  serviceTitleEn  String
+  customerName    String
+  customerPhone   String
+  customerEmail   String?
+  address         String?
+  area            String?
+  preferredDate   String?
+  preferredTime   String?
+  notes           String?
+  language        String   @default("en")
+  status          String   @default("new") // new, in_progress, completed, cancelled
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

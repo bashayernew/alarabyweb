@@ -17,7 +17,7 @@ import WaterHeaterSystems from "@/components/sections/WaterHeaterSystems";
 import WaterHeaterParts from "@/components/sections/WaterHeaterParts";
 import LimescaleFilter from "@/components/sections/LimescaleFilter";
 import Process from "@/components/sections/Process";
-import Projects from "@/components/sections/Projects";
+import Offers from "@/components/sections/Offers";
 import Testimonials from "@/components/sections/Testimonials";
 import FAQ from "@/components/sections/FAQ";
 import ContactSection from "@/components/sections/ContactSection";
@@ -32,8 +32,10 @@ export default function Home() {
         <HomeServicesPreview />
         <WhyChooseUs />
         <HomeProductsPreview />
+        <WaterTanks />
+        <WaterHeaterSystems />
         <Process />
-        <Projects />
+        <Offers />
         <Testimonials />
         <FAQ />
         <ContactSection />

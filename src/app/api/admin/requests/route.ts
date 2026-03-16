@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/auth";
+import { requireAuth } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/db";
 
 export async function GET() {
-  const session = await getSession();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireAuth();
+  if (auth.res) return auth.res;
   try {
     const requests = await prisma.serviceRequest.findMany({
       orderBy: { createdAt: "desc" },

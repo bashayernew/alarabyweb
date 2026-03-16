@@ -5,6 +5,7 @@ export function productToJson(p: Product) {
     id: p.slug,
     dbId: p.id,
     image: p.image,
+    price: p.price ?? undefined,
     title_en: p.titleEn,
     title_ar: p.titleAr,
     subtitle_en: p.subtitleEn,
@@ -29,6 +30,7 @@ export function serviceToJson(s: Service) {
   return {
     id: s.slug,
     dbId: s.id,
+    image: s.image ?? undefined,
     category: s.category,
     title_en: s.titleEn,
     title_ar: s.titleAr,

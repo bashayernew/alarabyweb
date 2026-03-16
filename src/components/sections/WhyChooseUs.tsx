@@ -28,7 +28,7 @@ export default function WhyChooseUs() {
   const t = translations[language];
 
   return (
-    <section className="bg-gradient-to-b from-[#EAF4FF] to-white py-16 sm:py-20 lg:py-24">
+    <section id="about" className="bg-gradient-to-b from-[#EAF4FF] to-white py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-2xl font-extrabold tracking-tight text-[#12304A] sm:text-3xl lg:text-4xl">
@@ -36,8 +36,8 @@ export default function WhyChooseUs() {
           </h2>
           <p className="mt-3 text-sm text-[#6B7A8C] sm:text-base">
             {language === "ar"
-              ? "نركز على الجودة والموثوقية في كل مشروع من مشاريع أنظمة المياه."
-              : "We focus on quality and reliability in every water system project we deliver."}
+              ? "شركة الرائد العربي تركز على الجودة والموثوقية في كل مشروع من مشاريع أنظمة المياه."
+              : "Al Raed Al Araby focuses on quality and reliability in every water system project we deliver."}
           </p>
         </div>
 

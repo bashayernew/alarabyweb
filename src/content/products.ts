@@ -307,7 +307,7 @@ export const catalogProducts: CatalogProduct[] = [
       "الاستخدام: أنظمة التكييف وخطوط مياه الشرب",
       "المقاسات: متوفر بعدة مقاسات",
     ],
-    category: "check-valve",
+    category: "accessory",
     badge_en: "Brass construction",
     badge_ar: "جسم نحاسي",
   },
@@ -352,7 +352,7 @@ export const catalogProducts: CatalogProduct[] = [
       "الاستخدام: أنظمة التكييف، السخانات، وخطوط الأنابيب",
       "المقاسات: متوفر بعدة مقاسات",
     ],
-    category: "valve",
+    category: "accessory",
     badge_en: "Pressure safety",
     badge_ar: "صمام أمان",
   },
@@ -397,9 +397,814 @@ export const catalogProducts: CatalogProduct[] = [
       "الاستخدام: سخانات المياه / أنظمة التكييف",
       "المادة: مكونات كهربائية مقاومة للحرارة",
     ],
-    category: "thermostat",
+    category: "accessory",
     badge_en: "Temperature control",
     badge_ar: "تحكم بالحرارة",
+  },
+  // Water tanks
+  {
+    id: "tank-1000",
+    image: "/watergallonsmall.webp",
+    title_en: "1000 Gallon Water Tank",
+    title_ar: "تانكي مياه 1000 جالون",
+    subtitle_en: "Central Storage Tank",
+    subtitle_ar: "خزان تخزين مركزي",
+    short_description_en:
+      "Heavy-duty 1000 gallon polyethylene water tank designed for residential and commercial water storage systems.",
+    short_description_ar:
+      "تانكي مياه بسعة 1000 جالون مصنوع من البولي إيثيلين عالي الجودة، مصمم لتخزين المياه في المنازل والمباني التجارية.",
+    full_description_en:
+      "Heavy-duty 1000 gallon polyethylene water tank designed for residential and commercial water storage systems. Built to withstand extreme heat conditions common in Kuwait and the Gulf region.",
+    full_description_ar:
+      "تانكي مياه بسعة 1000 جالون مصنوع من البولي إيثيلين عالي الجودة، مصمم لتخزين المياه في المنازل والمباني التجارية، ومناسب لدرجات الحرارة العالية في الكويت ودول الخليج.",
+    warranty_en: "10 Year Warranty",
+    warranty_ar: "كفالة 10 سنوات",
+    features_en: ["1000 Gallon Capacity", "Durable Polyethylene", "UV Resistant", "Rooftop Installation", "10 Year Warranty"],
+    features_ar: ["سعة 1000 جالون", "مصنوع من بولي إيثيلين عالي الجودة", "مقاوم لأشعة الشمس", "مناسب للتركيب على الأسطح", "كفالة 10 سنوات"],
+    specs_en: [],
+    specs_ar: [],
+    category: "tank",
+    badge_en: "10 Year Warranty",
+    badge_ar: "كفالة 10 سنوات",
+  },
+  {
+    id: "tank-1200",
+    image: "/watergallonsmall.webp",
+    title_en: "1200 Gallon Water Tank",
+    title_ar: "تانكي مياه 1200 جالون",
+    subtitle_en: "Central Storage Tank",
+    subtitle_ar: "خزان تخزين مركزي",
+    short_description_en:
+      "Large-capacity 1200 gallon water tank ideal for villas, residential buildings, and commercial water storage.",
+    short_description_ar:
+      "خزان مياه بسعة 1200 جالون مناسب للفلل والمباني السكنية والتجارية.",
+    full_description_en:
+      "Large-capacity 1200 gallon water tank ideal for villas, residential buildings, and commercial water storage. Engineered for durability and long-term performance in hot climates.",
+    full_description_ar:
+      "خزان مياه بسعة 1200 جالون مناسب للفلل والمباني السكنية والتجارية، مصمم لتحمل درجات الحرارة العالية ويضمن أداء طويل الأمد.",
+    warranty_en: "10 Year Warranty",
+    warranty_ar: "كفالة 10 سنوات",
+    features_en: ["1200 Gallon Capacity", "Industrial Grade Polyethylene", "Heat Resistant", "Large Homes & Buildings", "10 Year Warranty"],
+    features_ar: ["سعة 1200 جالون", "بولي إيثيلين صناعي عالي الجودة", "مقاوم للحرارة", "مناسب للمنازل الكبيرة والمباني", "كفالة 10 سنوات"],
+    specs_en: [],
+    specs_ar: [],
+    category: "tank",
+    badge_en: "10 Year Warranty",
+    badge_ar: "كفالة 10 سنوات",
+  },
+  // Water heater systems
+  {
+    id: "american-80-mexico",
+    image: "/waterheater.webp",
+    title_en: "American 80 Gallon Water Heater (Mexican Assembly)",
+    title_ar: "سخان 80 جالون أمريكي تجميع مكسيكي",
+    subtitle_en: "Central Heater System",
+    subtitle_ar: "نظام سخانات مركزية",
+    short_description_en:
+      "Complete 80 gallon water heating system with filtration and pump for reliable hot water supply.",
+    short_description_ar:
+      "نظام سخان مياه بسعة 80 جالون مناسب للمنازل والمباني التجارية ويشمل نظام فلترة ومضخة.",
+    full_description_en:
+      "Complete 80 gallon water heating system designed for residential and commercial applications. Includes filtration and pump components for reliable hot water supply.",
+    full_description_ar:
+      "نظام سخان مياه بسعة 80 جالون مناسب للمنازل والمباني التجارية ويشمل نظام فلترة ومضخة لضمان توفير مياه ساخنة بشكل مستمر.",
+    warranty_en: "6 Years Full Warranty",
+    warranty_ar: "كفالة 6 سنوات شامل",
+    features_en: ["80 Gallon Capacity", "High efficiency heating", "Durable metal tank", "Integrated filtration", "Pump support", "6 Year Warranty"],
+    features_ar: ["سعة 80 جالون", "نظام تسخين عالي الكفاءة", "خزان معدني متين", "نظام فلترة مدمج", "نظام مضخة متكامل", "كفالة 6 سنوات"],
+    specs_en: [],
+    specs_ar: [],
+    category: "heater",
+    badge_en: "6 Years Full Warranty",
+    badge_ar: "كفالة 6 سنوات شامل",
+  },
+  {
+    id: "american-80",
+    image: "/waterheater.webp",
+    title_en: "American 80 Gallon Water Heater",
+    title_ar: "سخان 80 جالون أمريكي",
+    subtitle_en: "Central Heater System",
+    subtitle_ar: "نظام سخانات مركزية",
+    short_description_en:
+      "80 gallon water heater suitable for villas and buildings, integrates with filtration and pump systems.",
+    short_description_ar:
+      "نظام سخان مياه بسعة 80 جالون للمنازل والفلل مع إمكانية ربطه بأنظمة الترشيح والمضخات المركزية.",
+    full_description_en:
+      "80 gallon water heater suitable for villas and buildings, designed to integrate with central filtration and pump systems.",
+    full_description_ar:
+      "نظام سخان مياه بسعة 80 جالون للمنازل والفلل مع إمكانية ربطه بأنظمة الترشيح والمضخات المركزية.",
+    warranty_en: "6 Years Full Warranty",
+    warranty_ar: "كفالة 6 سنوات شامل",
+    features_en: ["80 Gallon Capacity", "High efficiency heating", "Durable metal tank", "Filtration compatible", "Residential & commercial", "6 Year Warranty"],
+    features_ar: ["سعة 80 جالون", "نظام تسخين عالي الكفاءة", "خزان معدني متين", "متوافق مع أنظمة الفلترة والمضخات", "مناسب للاستخدام السكني والتجاري", "كفالة 6 سنوات"],
+    specs_en: [],
+    specs_ar: [],
+    category: "heater",
+    badge_en: "6 Years Full Warranty",
+    badge_ar: "كفالة 6 سنوات شامل",
+  },
+  {
+    id: "italian-80",
+    image: "/waterheater.webp",
+    title_en: "Italian 80 Gallon Water Heater",
+    title_ar: "سخان 80 جالون إيطالي",
+    subtitle_en: "Central Heater System",
+    subtitle_ar: "نظام سخانات مركزية",
+    short_description_en:
+      "80 gallon Italian-designed water heater for reliable, continuous hot water in central systems.",
+    short_description_ar:
+      "سخان مياه 80 جالون بتصميم إيطالي يوفر أداء موثوقاً للمباني التي تحتاج إلى مياه ساخنة بشكل متواصل.",
+    full_description_en:
+      "80 gallon Italian-designed water heater engineered for reliable, continuous hot water in central systems.",
+    full_description_ar:
+      "سخان مياه 80 جالون بتصميم إيطالي يوفر أداء موثوقاً للمباني التي تحتاج إلى مياه ساخنة بشكل متواصل.",
+    warranty_en: "6 Years Full Warranty",
+    warranty_ar: "كفالة 6 سنوات شامل",
+    features_en: ["80 Gallon Capacity", "Italian quality design", "Insulated metal tank", "Central systems", "Stable performance", "6 Year Warranty"],
+    features_ar: ["سعة 80 جالون", "تصميم إيطالي عالي الجودة", "خزان معدني معزول", "مناسب للأنظمة المركزية", "أداء ثابت في مختلف الظروف", "كفالة 6 سنوات"],
+    specs_en: [],
+    specs_ar: [],
+    category: "heater",
+    badge_en: "6 Years Full Warranty",
+    badge_ar: "كفالة 6 سنوات شامل",
+  },
+  // Standalone water cooling units (individual units, not full systems)
+  {
+    id: "water-cooling-device",
+    image: "/watertankcooler.webp",
+    title_en: "Water Cooling Unit",
+    title_ar: "جهاز تبريد المائي",
+    subtitle_en: "Standalone Cooling Unit",
+    subtitle_ar: "وحدة تبريد مائية",
+    short_description_en:
+      "High-efficiency water cooling unit designed to cool water effectively for residential and commercial applications.",
+    short_description_ar:
+      "جهاز تبريد مائي عالي الكفاءة يستخدم لتبريد المياه بكفاءة عالية، مناسب للاستخدام المنزلي والتجاري.",
+    full_description_en:
+      "High-efficiency water cooling unit designed to cool water effectively for residential and commercial applications.",
+    full_description_ar:
+      "جهاز تبريد مائي عالي الكفاءة يستخدم لتبريد المياه بكفاءة عالية، مناسب للاستخدام المنزلي والتجاري.",
+    warranty_en: "2-year cooling warranty",
+    warranty_ar: "كفالة سنتين شرط التبريد",
+    features_en: [
+      "Efficient water cooling system",
+      "Suitable for residential and commercial use",
+      "Reliable and stable performance",
+      "Durable construction",
+      "2-year cooling warranty",
+    ],
+    features_ar: [
+      "نظام تبريد مائي فعال",
+      "مناسب للاستخدام المنزلي والتجاري",
+      "أداء ثابت وموثوق",
+      "تصميم متين",
+      "كفالة سنتين شرط التبريد",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "cooling",
+    badge_en: "2 Year Cooling Warranty",
+    badge_ar: "كفالة سنتين شرط التبريد",
+  },
+  {
+    id: "dynamo-cooling-system",
+    image: "/watertankcooler.webp",
+    title_en: "Water Cooling System with Dynamo",
+    title_ar: "جهاز تبريد نظام دينمو المائي",
+    subtitle_en: "Dynamo-Powered Cooling",
+    subtitle_ar: "تبريد بنظام الدينمو",
+    short_description_en:
+      "Water cooling unit powered by a dynamo system providing stable performance and efficient cooling.",
+    short_description_ar:
+      "جهاز تبريد يعمل بنظام الدينمو المائي لتوفير أداء تبريد مستقر وكفاءة تشغيل عالية.",
+    full_description_en:
+      "Water cooling unit powered by a dynamo system providing stable performance and efficient cooling.",
+    full_description_ar:
+      "جهاز تبريد يعمل بنظام الدينمو المائي لتوفير أداء تبريد مستقر وكفاءة تشغيل عالية.",
+    warranty_en: "1-year cooling warranty",
+    warranty_ar: "كفالة سنة شرط التبريد",
+    features_en: [
+      "Dynamo powered water cooling system",
+      "High operational efficiency",
+      "Strong build for continuous use",
+      "Suitable for homes and buildings",
+      "1-year cooling warranty",
+    ],
+    features_ar: [
+      "نظام دينمو مائي",
+      "كفاءة تشغيل عالية",
+      "تصميم قوي للاستخدام المستمر",
+      "مناسب للمنازل والمباني",
+      "كفالة سنة شرط التبريد",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "cooling",
+    badge_en: "1 Year Cooling Warranty",
+    badge_ar: "كفالة سنة شرط التبريد",
+  },
+  {
+    id: "saudi-dynamo-cooling-system",
+    image: "/watertankcooler.webp",
+    title_en: "Saudi Dynamo Water Cooling Unit",
+    title_ar: "جهاز تبريد نظام دينمو سعودي",
+    subtitle_en: "Saudi Dynamo Cooling",
+    subtitle_ar: "تبريد دينمو سعودي",
+    short_description_en:
+      "Water cooling unit using a Saudi dynamo system delivering powerful cooling with efficient energy usage.",
+    short_description_ar:
+      "جهاز تبريد يعمل بنظام الدينمو السعودي يوفر أداء تبريد قوي مع استهلاك طاقة فعال.",
+    full_description_en:
+      "Water cooling unit using a Saudi dynamo system delivering powerful cooling with efficient energy usage.",
+    full_description_ar:
+      "جهاز تبريد يعمل بنظام الدينمو السعودي يوفر أداء تبريد قوي مع استهلاك طاقة فعال.",
+    warranty_en: "1-year cooling warranty",
+    warranty_ar: "كفالة سنة شرط التبريد",
+    features_en: [
+      "Saudi dynamo cooling system",
+      "Strong and efficient cooling",
+      "Suitable for residential and commercial use",
+      "Durable design",
+      "1-year cooling warranty",
+    ],
+    features_ar: [
+      "نظام دينمو سعودي",
+      "تبريد قوي وفعال",
+      "مناسب للاستخدام السكني والتجاري",
+      "تصميم متين",
+      "كفالة سنة شرط التبريد",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "cooling",
+    badge_en: "1 Year Cooling Warranty",
+    badge_ar: "كفالة سنة شرط التبريد",
+  },
+  // Tank accessories
+  {
+    id: "float-switch",
+    image: "/floatswitch.webp",
+    title_en: "Electrical Float Switch",
+    title_ar: "عوامة كهربائية للتحكم بمستوى المياه",
+    subtitle_en: "Water Level Control",
+    subtitle_ar: "تحكم بمستوى المياه",
+    short_description_en:
+      "Electrical float switch for automatic water level control in tanks, preventing overflow and protecting pumps.",
+    short_description_ar:
+      "عوامة كهربائية تستخدم للتحكم التلقائي في مستوى المياه داخل الخزانات.",
+    full_description_en:
+      "Electrical float switch designed to automatically control water levels inside tanks. It activates or stops pumps based on the water level, preventing overflow and protecting pumps from running dry.",
+    full_description_ar:
+      "عوامة كهربائية تستخدم للتحكم التلقائي في مستوى المياه داخل الخزانات. تقوم بتشغيل أو إيقاف المضخة حسب مستوى الماء لمنع فيضان الخزان وحماية المضخة من العمل بدون ماء.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: ["Automatic water level control", "Waterproof design", "Suitable for water tanks", "Long cable for installation"],
+    features_ar: ["تحكم تلقائي في مستوى المياه", "تصميم مقاوم للماء", "مناسب لخزانات المياه", "كابل كهربائي طويل لسهولة التركيب"],
+    specs_en: [],
+    specs_ar: [],
+    category: "accessory",
+    badge_en: "Level control",
+    badge_ar: "تحكم بالمستوى",
+  },
+  // Heater parts
+  {
+    id: "heater-element",
+    image: "/heatercandle.webp",
+    title_en: "Water Heater Heating Element",
+    title_ar: "شمعة سخان",
+    subtitle_en: "Electric Heating Element",
+    subtitle_ar: "عنصر تسخين كهربائي",
+    short_description_en:
+      "Electric heating element used inside water heaters to heat water efficiently with durability and reliable performance.",
+    short_description_ar:
+      "شمعة سخان كهربائي تستخدم داخل السخانات لتسخين المياه بكفاءة عالية وتتميز بالمتانة والأداء الموثوق.",
+    full_description_en:
+      "Electric heating element used inside water heaters to heat water efficiently. Designed for durability and reliable heating performance.",
+    full_description_ar:
+      "شمعة سخان كهربائي تستخدم داخل السخانات لتسخين المياه بكفاءة عالية وتتميز بالمتانة والأداء الموثوق.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: ["High efficiency heating", "Corrosion resistant", "Compatible with most electric heaters", "Durable design", "Easy installation"],
+    features_ar: ["عنصر تسخين عالي الكفاءة", "مقاوم للتآكل", "متوافق مع معظم السخانات الكهربائية", "تصميم متين", "سهل التركيب"],
+    specs_en: [],
+    specs_ar: [],
+    category: "accessory",
+    badge_en: "Electric element",
+    badge_ar: "عنصر تسخين كهربائي",
+  },
+  // Filters (from section components + audit missing items)
+  {
+    id: "filter-7-stage",
+    image: "/aquajet.webp",
+    title_en: "7-Stage RO Water Filter",
+    title_ar: "فلتر مياه 7 مراحل",
+    subtitle_en: "Multi-Stage Reverse Osmosis System",
+    subtitle_ar: "نظام تنقية مياه بتقنية التناضح العكسي",
+    short_description_en:
+      "Multi-stage reverse osmosis filtration system designed to remove impurities, sediments, chlorine, and harmful contaminants from water.",
+    short_description_ar:
+      "نظام تنقية مياه بتقنية التناضح العكسي يتكون من 7 مراحل لتنقية المياه من الشوائب والرواسب والكلور والمواد الضارة.",
+    full_description_en:
+      "A multi-stage reverse osmosis filtration system designed to remove impurities, sediments, chlorine, and harmful contaminants from water while improving taste and quality. Suitable for household drinking water purification.",
+    full_description_ar:
+      "نظام تنقية مياه بتقنية التناضح العكسي يتكون من 7 مراحل لتنقية المياه من الشوائب والرواسب والكلور والمواد الضارة وتحسين جودة وطعم المياه. مناسب للاستخدام المنزلي.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: [
+      "7 stage filtration process",
+      "Reverse osmosis membrane",
+      "Sediment and carbon filtration",
+      "Alkaline water enhancement",
+      "Pressure gauge monitoring",
+      "Durable filtration housings",
+    ],
+    features_ar: [
+      "نظام تنقية من 7 مراحل",
+      "غشاء تناضح عكسي RO",
+      "فلاتر كربونية وإزالة الرواسب",
+      "تحسين قلوية المياه",
+      "مقياس ضغط للمراقبة",
+      "هياكل فلتر متينة",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "filter",
+    badge_en: "7-stage RO",
+    badge_ar: "7 مراحل تنقية",
+  },
+  {
+    id: "filter-ro-2yr",
+    image: "/rofilter.webp",
+    title_en: "RO Filter 2-Year Package",
+    title_ar: "فلتر RO كفالة سنتين",
+    subtitle_en: "Free Cartridge Replacement Every 3 Months",
+    subtitle_ar: "تبديل الشمعات مجاناً كل 3 شهور",
+    short_description_en:
+      "RO water filter system with 2-year warranty and free cartridge replacement every 3 months.",
+    short_description_ar:
+      "فلتر RO مع كفالة سنتين وتبديل الشمعات مجاناً كل 3 شهور للحفاظ على أفضل أداء.",
+    full_description_en:
+      "High-efficiency reverse osmosis water filter with 2-year warranty. Includes free cartridge replacement every 3 months to maintain optimal water purification performance.",
+    full_description_ar:
+      "فلتر RO عالي الكفاءة مع كفالة سنتين. يشمل تبديل الشمعات مجاناً كل 3 شهور للحفاظ على أفضل أداء لتنقية المياه.",
+    warranty_en: "2 Year Warranty – Free Cartridges Every 3 Months",
+    warranty_ar: "كفالة سنتين – تبديل الشمعات مجاناً كل 3 شهور",
+    features_en: [
+      "2 year service coverage",
+      "Free cartridge replacement every 3 months",
+      "High filtration efficiency",
+      "Removes dissolved salts and impurities",
+      "Compatible with most RO systems",
+    ],
+    features_ar: [
+      "خدمة لمدة سنتين",
+      "تبديل الشمعات مجاناً كل 3 شهور",
+      "كفاءة ترشيح عالية",
+      "إزالة الأملاح الذائبة والشوائب",
+      "متوافق مع معظم أنظمة RO",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "filter",
+    badge_en: "2 Year Package",
+    badge_ar: "باقة سنتين",
+  },
+  {
+    id: "filter-limescale",
+    image: "/calsi.webp",
+    title_en: "Limescale Filter",
+    title_ar: "فلتر الكلس",
+    subtitle_en: "Anti-Scale Protection",
+    subtitle_ar: "حماية من الكلس",
+    short_description_en:
+      "Compact anti-scale filter designed to prevent limescale buildup in water heaters, pipes, and household water systems.",
+    short_description_ar:
+      "فلتر مضاد للكلس مصمم لمنع تراكم الترسبات الكلسية في السخانات والأنابيب وأنظمة المياه المنزلية.",
+    full_description_en:
+      "A compact anti-scale filter designed to prevent limescale buildup in water heaters, pipes, and household water systems. Helps extend the life of plumbing equipment and improves system efficiency.",
+    full_description_ar:
+      "فلتر مضاد للكلس مصمم لمنع تراكم الترسبات الكلسية في السخانات والأنابيب وأنظمة المياه المنزلية مما يساعد على إطالة عمر المعدات وتحسين كفاءة النظام.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: [
+      "Prevents limescale buildup",
+      "Protects water heaters and pipes",
+      "Improves water system efficiency",
+      "Durable housing",
+      "Easy inline installation",
+    ],
+    features_ar: [
+      "يمنع تراكم الكلس",
+      "يحمي السخانات والأنابيب",
+      "يحسن كفاءة نظام المياه",
+      "هيكل معدني متين",
+      "سهل التركيب على خط المياه",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "filter",
+    badge_en: "Anti-scale",
+    badge_ar: "حماية من الكلس",
+  },
+  {
+    id: "filter-triple-jumbo",
+    image: "/triplejumbog.webp",
+    title_en: "Triple Jumbo Filter",
+    title_ar: "فلتر تريبل جامبو",
+    subtitle_en: "Heavy-Duty Triple Filtration",
+    subtitle_ar: "نظام فلترة ثلاثي الجامبو",
+    short_description_en:
+      "Heavy-duty triple jumbo water filtration system designed to remove sediments, chlorine, and impurities from household water supplies.",
+    short_description_ar:
+      "نظام فلترة مياه ثلاثي الجامبو مصمم لتنقية المياه من الرواسب والكلور والشوائب مع الحفاظ على تدفق مياه قوي.",
+    full_description_en:
+      "A heavy-duty triple jumbo water filtration system designed to remove sediments, chlorine, and impurities from household water supplies while maintaining strong water flow. Suitable for homes and commercial use.",
+    full_description_ar:
+      "نظام فلترة مياه ثلاثي الجامبو مصمم لتنقية المياه من الرواسب والكلور والشوائب مع الحفاظ على تدفق مياه قوي للمنازل. مناسب للمنازل والاستخدام التجاري.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: [
+      "Triple jumbo filtration system",
+      "High capacity water filtration",
+      "Sediment and carbon filtration",
+      "Pressure gauge monitoring",
+      "Durable industrial filter housings",
+      "Suitable for household and commercial use",
+    ],
+    features_ar: [
+      "نظام فلترة ثلاثي الجامبو",
+      "قدرة عالية لتنقية المياه",
+      "إزالة الرواسب والكلور",
+      "مقياس ضغط لمراقبة الأداء",
+      "هياكل فلاتر قوية ومتينة",
+      "مناسب للمنازل والاستخدام التجاري",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "filter",
+    badge_en: "Triple jumbo",
+    badge_ar: "فلترة ثلاثية الجامبو",
+  },
+  {
+    id: "filter-triple-jumbo-3yr",
+    image: "/triplejumboo.webp",
+    title_en: "Triple Jumbo Filter – 3 Year Package",
+    title_ar: "فلتر تريبل جامبو كفالة 3 سنوات",
+    subtitle_en: "Free Cartridge Replacement Every 6 Months",
+    subtitle_ar: "تبديل الشمعات كل 6 شهور مجاناً",
+    short_description_en:
+      "High-capacity triple jumbo water filter with 3-year service package and cartridge replacement every 6 months.",
+    short_description_ar:
+      "نظام فلترة مياه ثلاثي الجامبو عالي السعة مع باقة خدمة 3 سنوات وتبديل الشمعات كل 6 أشهر.",
+    full_description_en:
+      "A high-capacity triple jumbo water filtration system designed for household water purification. Includes a 3-year service package with filter cartridge replacement every 6 months.",
+    full_description_ar:
+      "نظام فلترة مياه ثلاثي الجامبو عالي السعة مصمم لتنقية مياه المنازل ويشمل باقة خدمة لمدة 3 سنوات مع تبديل الشمعات كل 6 أشهر.",
+    warranty_en: "3 Year Warranty – Free Cartridges Every 6 Months",
+    warranty_ar: "كفالة 3 سنوات – تبديل الشمعات كل 6 شهور مجاناً",
+    features_en: [
+      "Triple jumbo filtration system",
+      "High water flow capacity",
+      "Sediment and carbon filtration",
+      "Pressure gauge monitoring",
+      "Durable industrial filter housings",
+      "Includes cartridge replacement every 6 months",
+    ],
+    features_ar: [
+      "نظام فلترة ثلاثي الجامبو",
+      "تدفق مياه عالي",
+      "إزالة الرواسب والكلور",
+      "مقياس ضغط لمراقبة الأداء",
+      "هياكل فلاتر متينة",
+      "تبديل الشمعات كل 6 أشهر",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "filter",
+    badge_en: "3 Year Package",
+    badge_ar: "باقة 3 سنوات",
+  },
+  {
+    id: "filter-double-jumbo",
+    image: "/doublejombo.webp",
+    title_en: "Double Jumbo Filter – 3 Year Package",
+    title_ar: "فلتر دبل جامبو كفالة 3 سنوات",
+    subtitle_en: "Free Cartridge Replacement Every 7 Months",
+    subtitle_ar: "تبديل الشمعات كل 7 شهور مجاناً",
+    short_description_en:
+      "Double jumbo water filter with 3-year warranty and free cartridge replacement every 7 months.",
+    short_description_ar:
+      "فلتر دبل جامبو مع كفالة 3 سنوات وتبديل الشمعات مجاناً كل 7 شهور.",
+    full_description_en:
+      "Double jumbo water filtration system with 3-year warranty. Includes free cartridge replacement every 7 months to maintain optimal filtration performance.",
+    full_description_ar:
+      "نظام فلترة دبل جامبو مع كفالة 3 سنوات. يشمل تبديل الشمعات مجاناً كل 7 شهور للحفاظ على أفضل أداء الفلترة.",
+    warranty_en: "3 Year Warranty – Free Cartridges Every 7 Months",
+    warranty_ar: "كفالة 3 سنوات – تبديل الشمعات كل 7 شهور مجاناً",
+    features_en: [
+      "Double jumbo filtration",
+      "3 year service coverage",
+      "Free cartridge replacement every 7 months",
+      "High capacity filtration",
+      "Suitable for household use",
+    ],
+    features_ar: [
+      "فلترة دبل جامبو",
+      "خدمة لمدة 3 سنوات",
+      "تبديل الشمعات مجاناً كل 7 شهور",
+      "قدرة فلترة عالية",
+      "مناسب للاستخدام المنزلي",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "filter",
+    badge_en: "3 Year Package",
+    badge_ar: "باقة 3 سنوات",
+  },
+  {
+    id: "filter-copper",
+    image: "/rofilter.webp",
+    title_en: "Copper Filter – 2 Year Warranty",
+    title_ar: "فلتر نحاسي كفالة سنتين",
+    subtitle_en: "Copper Housing Water Filter",
+    subtitle_ar: "فلتر مياه بهيكل نحاسي",
+    short_description_en:
+      "High-quality copper water filter with 2-year warranty for durable and reliable filtration.",
+    short_description_ar:
+      "فلتر مياه نحاسي عالي الجودة مع كفالة سنتين لفلترة متينة وموثوقة.",
+    full_description_en:
+      "Copper water filter with 2-year warranty. The copper housing offers durability and corrosion resistance for reliable long-term water filtration performance.",
+    full_description_ar:
+      "فلتر مياه نحاسي مع كفالة سنتين. الهيكل النحاسي يوفر المتانة ومقاومة التآكل لأداء فلترة موثوق على المدى الطويل.",
+    warranty_en: "2 Year Warranty",
+    warranty_ar: "كفالة سنتين",
+    features_en: [
+      "Copper housing construction",
+      "2 year warranty",
+      "Corrosion resistant",
+      "Durable design",
+      "Suitable for household water systems",
+    ],
+    features_ar: [
+      "هيكل نحاسي",
+      "كفالة سنتين",
+      "مقاوم للتآكل",
+      "تصميم متين",
+      "مناسب لأنظمة المياه المنزلية",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "filter",
+    badge_en: "2 Year Warranty",
+    badge_ar: "كفالة سنتين",
+  },
+  // Pressure reducer & Spanish pump (audit missing items)
+  {
+    id: "pressure-reducer",
+    image: "/radadat.webp",
+    title_en: "Pressure Reducer",
+    title_ar: "مخفض ضغط",
+    subtitle_en: "Water Pressure Regulator",
+    subtitle_ar: "منظم ضغط المياه",
+    short_description_en:
+      "Pressure reducer valve designed to regulate and stabilize water pressure in plumbing systems.",
+    short_description_ar:
+      "مخفض ضغط مصمم لتنظيم واستقرار ضغط المياه في أنظمة السباكة.",
+    full_description_en:
+      "Pressure reducer valve designed to regulate and stabilize water pressure in plumbing and water supply systems. Helps protect pipes and fixtures from excessive pressure.",
+    full_description_ar:
+      "مخفض ضغط مصمم لتنظيم واستقرار ضغط المياه في أنظمة السباكة وإمدادات المياه. يساعد على حماية الأنابيب والتجهيزات من الضغط الزائد.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: [
+      "Regulates water pressure",
+      "Protects pipes and fixtures",
+      "Durable construction",
+      "Suitable for residential and commercial use",
+    ],
+    features_ar: [
+      "تنظيم ضغط المياه",
+      "حماية الأنابيب والتجهيزات",
+      "تصميم متين",
+      "مناسب للاستخدام السكني والتجاري",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "pump",
+    badge_en: "Pressure control",
+    badge_ar: "تحكم بالضغط",
+  },
+  {
+    id: "spanish-booster-pump",
+    image: "/pump1.webp",
+    title_en: "Spanish Booster Pump",
+    title_ar: "مضخة دفع إسباني",
+    subtitle_en: "Spanish-Made Booster Pump",
+    subtitle_ar: "مضخة دفع إسبانية",
+    short_description_en:
+      "High-quality Spanish-made booster pump designed to improve water pressure in residential and commercial applications.",
+    short_description_ar:
+      "مضخة دفع إسبانية عالية الجودة مصممة لتحسين ضغط المياه في التطبيقات السكنية والتجارية.",
+    full_description_en:
+      "Spanish-made booster pump engineered for reliable water pressure improvement in residential and commercial plumbing systems. Known for quality construction and efficient performance.",
+    full_description_ar:
+      "مضخة دفع إسبانية مصممة لتحسين ضغط المياه بشكل موثوق في أنظمة السباكة السكنية والتجارية. معروفة بجودة التصنيع وكفاءة الأداء.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: [
+      "Spanish manufacturing quality",
+      "Improves water pressure",
+      "Reliable performance",
+      "Suitable for residential and commercial use",
+    ],
+    features_ar: [
+      "جودة تصنيع إسبانية",
+      "تحسين ضغط المياه",
+      "أداء موثوق",
+      "مناسب للاستخدام السكني والتجاري",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "pump",
+    badge_en: "Spanish quality",
+    badge_ar: "جودة إسبانية",
+  },
+  // Heater systems (اوتوماتيك، سيستم امريكي، سيستم ايطالي)
+  {
+    id: "automatic-system",
+    image: "/waterheater.webp",
+    title_en: "Automatic Heater System",
+    title_ar: "نظام أوتوماتيك",
+    subtitle_en: "Automatic Central Heating System",
+    subtitle_ar: "نظام تسخين مركزي أوتوماتيكي",
+    short_description_en:
+      "Automatic central water heating system designed for reliable hot water supply with smart control.",
+    short_description_ar:
+      "نظام تسخين مياه مركزي أوتوماتيكي مصمم لتوفير مياه ساخنة موثوقة مع تحكم ذكي.",
+    full_description_en:
+      "Automatic central water heating system engineered for reliable hot water supply in residential and commercial buildings. Features smart automatic control for efficient operation.",
+    full_description_ar:
+      "نظام تسخين مياه مركزي أوتوماتيكي مصمم لتوفير مياه ساخنة موثوقة في المباني السكنية والتجارية. يتميز بتحكم أوتوماتيكي ذكي للتشغيل الفعال.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: [
+      "Automatic control",
+      "Reliable hot water supply",
+      "Smart operation",
+      "Suitable for central systems",
+    ],
+    features_ar: [
+      "تحكم أوتوماتيكي",
+      "توفير مياه ساخنة موثوقة",
+      "تشغيل ذكي",
+      "مناسب للأنظمة المركزية",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "heater-system",
+    badge_en: "Automatic",
+    badge_ar: "أوتوماتيك",
+  },
+  {
+    id: "american-system",
+    image: "/waterheater.webp",
+    title_en: "American Heater System",
+    title_ar: "سيستم أمريكي",
+    subtitle_en: "American Central Heating System",
+    subtitle_ar: "نظام تسخين مركزي أمريكي",
+    short_description_en:
+      "American-designed central water heating system for reliable hot water in villas and buildings.",
+    short_description_ar:
+      "نظام تسخين مياه مركزي بتصميم أمريكي لتوفير مياه ساخنة موثوقة للفلل والمباني.",
+    full_description_en:
+      "American-designed central water heating system engineered for reliable hot water supply in villas and residential buildings. Integrates with filtration and pump systems.",
+    full_description_ar:
+      "نظام تسخين مياه مركزي بتصميم أمريكي مصمم لتوفير مياه ساخنة موثوقة في الفلل والمباني السكنية. يتكامل مع أنظمة الفلترة والمضخات.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: [
+      "American design quality",
+      "Central heating system",
+      "Filtration compatible",
+      "Suitable for villas and buildings",
+    ],
+    features_ar: [
+      "جودة التصميم الأمريكي",
+      "نظام تسخين مركزي",
+      "متوافق مع الفلترة",
+      "مناسب للفلل والمباني",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "heater-system",
+    badge_en: "American system",
+    badge_ar: "سيستم أمريكي",
+  },
+  {
+    id: "american-system-mexico",
+    image: "/waterheater.webp",
+    title_en: "American Heater System (Mexican Assembly)",
+    title_ar: "سيستم أمريكي تجميع مكسيكي",
+    subtitle_en: "American System – Mexican Assembly",
+    subtitle_ar: "نظام أمريكي بتجميع مكسيكي",
+    short_description_en:
+      "American-designed central heating system with Mexican assembly for quality and value.",
+    short_description_ar:
+      "نظام تسخين مركزي بتصميم أمريكي وتجميع مكسيكي للجودة والقيمة.",
+    full_description_en:
+      "American-designed central water heating system with Mexican assembly. Combines American design standards with cost-effective manufacturing for reliable hot water supply.",
+    full_description_ar:
+      "نظام تسخين مياه مركزي بتصميم أمريكي وتجميع مكسيكي. يجمع معايير التصميم الأمريكي مع التصنيع الفعال من حيث التكلفة لتوفير مياه ساخنة موثوقة.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: [
+      "American design, Mexican assembly",
+      "Central heating system",
+      "Cost-effective quality",
+      "Suitable for residential and commercial",
+    ],
+    features_ar: [
+      "تصميم أمريكي، تجميع مكسيكي",
+      "نظام تسخين مركزي",
+      "جودة فعالة من حيث التكلفة",
+      "مناسب للسكني والتجاري",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "heater-system",
+    badge_en: "Mexican assembly",
+    badge_ar: "تجميع مكسيكي",
+  },
+  {
+    id: "italian-system",
+    image: "/waterheater.webp",
+    title_en: "Italian Heater System",
+    title_ar: "سيستم إيطالي",
+    subtitle_en: "Italian Central Heating System",
+    subtitle_ar: "نظام تسخين مركزي إيطالي",
+    short_description_en:
+      "Italian-designed central water heating system for reliable, continuous hot water in central systems.",
+    short_description_ar:
+      "نظام تسخين مياه مركزي بتصميم إيطالي لتوفير مياه ساخنة موثوقة ومتواصلة.",
+    full_description_en:
+      "Italian-designed central water heating system engineered for reliable, continuous hot water in central systems. Known for quality construction and stable performance.",
+    full_description_ar:
+      "نظام تسخين مياه مركزي بتصميم إيطالي مصمم لتوفير مياه ساخنة موثوقة ومتواصلة في الأنظمة المركزية. معروف بجودة البناء وأداء مستقر.",
+    warranty_en: "Manufacturer warranty",
+    warranty_ar: "ضمان المصنع",
+    features_en: [
+      "Italian design quality",
+      "Central heating system",
+      "Stable performance",
+      "Suitable for central systems",
+    ],
+    features_ar: [
+      "جودة التصميم الإيطالي",
+      "نظام تسخين مركزي",
+      "أداء مستقر",
+      "مناسب للأنظمة المركزية",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "heater-system",
+    badge_en: "Italian system",
+    badge_ar: "سيستم إيطالي",
+  },
+  // Base network & pipes (from PlumbingAccessories)
+  {
+    id: "base-network-pipes",
+    image: "/stand.webp",
+    title_en: "Base Network & Pipes – 10 Year Warranty",
+    title_ar: "شبكة القاعدة والبايبات كفالة 10 سنوات",
+    subtitle_en: "Plumbing Base and Pipe Network",
+    subtitle_ar: "شبكة قاعدة وأنابيب للسباكة",
+    short_description_en:
+      "High-quality base network and pipes for plumbing and heater systems with 10-year warranty.",
+    short_description_ar:
+      "شبكة قاعدة وأنابيب عالية الجودة لأنظمة السباكة والسخانات مع كفالة 10 سنوات.",
+    full_description_en:
+      "Durable base network and pipe system for plumbing and water heater installations. 10-year warranty ensures long-term reliability and quality for residential and commercial applications.",
+    full_description_ar:
+      "شبكة قاعدة وأنابيب متينة لتركيبات السباكة والسخانات. كفالة 10 سنوات تضمن الاعتمادية والجودة على المدى الطويل للتطبيقات السكنية والتجارية.",
+    warranty_en: "10 Year Warranty",
+    warranty_ar: "كفالة 10 سنوات",
+    features_en: [
+      "10 year warranty",
+      "Durable base and pipe network",
+      "Suitable for plumbing and heater systems",
+      "High quality construction",
+    ],
+    features_ar: [
+      "كفالة 10 سنوات",
+      "شبكة قاعدة وأنابيب متينة",
+      "مناسب لأنظمة السباكة والسخانات",
+      "جودة بناء عالية",
+    ],
+    specs_en: [],
+    specs_ar: [],
+    category: "accessory",
+    badge_en: "10 Year Warranty",
+    badge_ar: "كفالة 10 سنوات",
   },
 ];
 

@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Droplet, Wrench, Layers } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/content/translations";
 import { servicesCatalog, type Service } from "@/content/services";
+import { OrderRequestModal } from "@/components/OrderRequestModal";
 
 const categoryIcon: Record<string, any> = {
   installation: Layers,
@@ -17,7 +19,9 @@ const categoryIcon: Record<string, any> = {
 
 export default function ServicesCatalog() {
   const { language, isRTL } = useLanguage();
+  const t = translations[language];
   const [services, setServices] = useState<Service[]>(servicesCatalog);
+  const [requestService, setRequestService] = useState<Service | null>(null);
 
   useEffect(() => {
     fetch("/api/services")
@@ -108,22 +112,30 @@ export default function ServicesCatalog() {
                   </div>
                 )}
 
-                <div
-                  className={`mt-4 inline-flex items-center text-xs font-semibold text-primary-600 transition ${
+                <button
+                  type="button"
+                  onClick={() => setRequestService(service)}
+                  className={`mt-4 inline-flex items-center rounded-xl bg-primary-600 px-4 py-2 text-xs font-semibold text-white shadow-md transition hover:bg-primary-700 ${
                     isRTL ? "flex-row-reverse" : ""
                   }`}
                 >
-                  <span>
-                    {language === "ar"
-                      ? "تفاصيل الخدمة عند الطلب"
-                      : "Details available on request"}
-                  </span>
-                </div>
+                  {language === "ar" ? "اطلب الخدمة" : "Request Service"}
+                </button>
               </motion.article>
             );
           })}
         </div>
       </div>
+
+      {requestService && (
+        <OrderRequestModal
+          type="service"
+          itemId={requestService.id}
+          itemName={language === "ar" ? requestService.title_ar : requestService.title_en}
+          onClose={() => setRequestService(null)}
+          language={language}
+        />
+      )}
     </section>
   );
 }

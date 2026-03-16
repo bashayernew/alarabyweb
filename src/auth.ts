@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "@/lib/db";
+import { createActivityLog } from "@/lib/activity-log";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -17,16 +18,29 @@ export const authOptions: NextAuthOptions = {
         const email = String(credentials.email).trim().toLowerCase();
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user?.passwordHash) return null;
+        if (!user.isActive) return null;
         const ok = await compare(
           String(credentials.password),
           user.passwordHash
         );
         if (!ok) return null;
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { lastLoginAt: new Date() },
+        });
+        const role = user.role === "admin" ? "super_admin" : user.role;
+        await createActivityLog({
+          user: { id: user.id, email: user.email, name: user.name, role },
+          action: "sign_in",
+          module: "auth",
+          itemLabel: user.email,
+        });
         return {
           id: user.id,
           email: user.email,
           name: user.name ?? null,
           image: null,
+          role,
         };
       },
     }),
@@ -40,6 +54,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.email = user.email;
+        token.role = (user as { role?: string }).role ?? "viewer";
       }
       return token;
     },
@@ -47,6 +62,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
+        session.user.role = (token.role as string) ?? "viewer";
       }
       return session;
     },

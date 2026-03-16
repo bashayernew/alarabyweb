@@ -1,20 +1,69 @@
 export const translations = {
   ar: {
+    brand: {
+      name: "شركة الرائد العربي",
+      nameLong: "شركة الرائد العربي للسخانات المركزية وأنظمة المياه",
+      tagline: "حلول أنظمة المياه والسخانات المركزية",
+      logoAlt: "شعار شركة الرائد العربي",
+    },
     nav: {
       home: "الرئيسية",
-      about: "من نحن",
-      services: "الخدمات",
+      aboutAndServices: "من نحن والخدمات",
       products: "المنتجات",
-      projects: "المشاريع",
+      offers: "العروض",
       maintenance: "الصيانة",
       contact: "اتصل بنا",
     },
+    aboutServicesPage: {
+      heroTitle: "من نحن",
+      heroText:
+        "شركة الرائد العربي متخصصة في أنظمة المياه والسستم المركزي، حيث نقدم حلولاً متكاملة تشمل تركيب وصيانة السخانات المركزية، فلاتر المياه، المضخات، وتنظيف الخزانات. نحرص على تقديم خدمات عالية الجودة باستخدام أفضل المعدات وفريق فني متخصص لضمان أفضل أداء لأنظمة المياه في المنازل والمباني.",
+      experienceTitle: "خبرتنا",
+      experienceText:
+        "نمتلك خبرة واسعة في مجال أنظمة المياه والسستم المركزي، حيث قمنا بتنفيذ العديد من المشاريع وتركيب وصيانة الأنظمة المختلفة للمنازل والمباني. يعتمد عملنا على الدقة في التنفيذ واستخدام أفضل المعدات لضمان الكفاءة العالية وطول عمر الأنظمة.",
+      whyChooseTitle: "لماذا تختارنا؟",
+      whyChoose: [
+        "فريق فني متخصص",
+        "خبرة في أنظمة المياه والسستم المركزي",
+        "سرعة في الاستجابة",
+        "جودة في العمل والخدمة",
+      ],
+      ctaTitle: "تواصل معنا",
+      ctaText:
+        "إذا كنت بحاجة إلى تركيب أو صيانة أنظمة المياه، تواصل معنا الآن وسيقوم فريقنا بخدمتك في أسرع وقت.",
+      ctaContact: "تواصل معنا",
+      ctaRequest: "طلب خدمة",
+    },
+    maintenancePage: {
+      heroTitle: "خدمات الصيانة",
+      heroText:
+        "نقدم خدمات صيانة احترافية لجميع أنظمة المياه والفلاتر والسخانات والسستم المركزي باستخدام أفضل المعدات وفريق فني متخصص.",
+      servicesTitle: "خدمات الصيانة لدينا",
+      servicesSubtitle: "نقدم مجموعة شاملة من خدمات الصيانة لضمان عمل أنظمتك بكفاءة عالية",
+      services: [
+        { title: "صيانة السستم المركزي", description: "فحص وصيانة أنظمة السستم المركزي لضمان عملها بكفاءة عالية وتوفير المياه الساخنة بشكل مستمر." },
+        { title: "صيانة الفلاتر المنزلية والمركزية", description: "تنظيف وصيانة جميع أنواع الفلاتر مع تبديل الشمعات لضمان نقاء المياه وجودتها." },
+        { title: "صيانة المضخات", description: "فحص وصيانة مضخات المياه الإيطالية والإسبانية ومعالجة مشاكل ضغط المياه." },
+        { title: "غسيل وتنظيف التانكي", description: "تنظيف وتعقيم خزانات المياه لضمان مياه نظيفة وصحية للاستخدام." },
+        { title: "تسليك الصرف الصحي", description: "حل مشاكل الانسداد في المجاري والصرف الصحي باستخدام معدات متطورة." },
+        { title: "فحص ضغط المياه", description: "فحص ضغط المياه في المنزل وضبط المضخات لضمان تدفق المياه بشكل مثالي." },
+      ],
+      whyChooseTitle: "لماذا تختارنا؟",
+      whyChoose: ["فريق فني متخصص", "خبرة في أنظمة المياه والسستم المركزي", "سرعة في الاستجابة", "استخدام معدات حديثة"],
+      ctaTitle: "هل تحتاج صيانة؟",
+      ctaText: "تواصل معنا الآن وسيقوم فريقنا الفني بخدمتك في أسرع وقت.",
+      ctaRequest: "طلب صيانة",
+      ctaContact: "تواصل معنا",
+      whatsappMessage: "أحتاج طلب صيانة",
+    },
     hero: {
+      badge: "شركة الرائد العربي – حلول متكاملة لأنظمة المياه في الكويت",
       headline: "حلول متكاملة للسخانات المركزية وتنقية المياه في الكويت",
       subheadline:
         "نوفر حلولاً متكاملة للمنازل والمباني تشمل السخانات المركزية، الفلاتر، المضخات، التركيب والصيانة بأعلى معايير الجودة.",
       cta1: "اطلب عرض سعر",
-      cta2: "تواصل عبر واتساب",
+      cta2: "تصفح المنتجات",
+      cta3: "تواصل عبر واتساب",
     },
     trust: {
       title: "لماذا تختار شركتنا",
@@ -173,14 +222,14 @@ export const translations = {
       title: "ملحقات السباكة وأنظمة التكييف",
       items: [
         {
-          name: "قاعدة كفاله 4 سنوات",
+          name: "قاعدة كفالة 4 سنوات",
           description:
             "قاعدة عالية الجودة لأنظمة السباكة والسخانات مع كفالة لمدة 4 سنوات لضمان المتانة والأداء الموثوق.",
         },
         {
-          name: "قاعدة كفاله 10 سنوات",
+          name: "شبكة القاعدة والبايبات كفالة 10 سنوات",
           description:
-            "قاعدة متينة لأنظمة الأنابيب والسخانات مع كفالة لمدة 10 سنوات لضمان أعلى مستوى من الجودة والاعتمادية.",
+            "شبكة قاعدة وأنابيب متينة لأنظمة السباكة والسخانات مع كفالة لمدة 10 سنوات لضمان أعلى مستوى من الجودة والاعتمادية.",
         },
         {
           name: "كنترول مضخة",
@@ -195,48 +244,51 @@ export const translations = {
       ],
     },
     coolingSystems: {
-      title: "أجهزة تبريد الخزانات",
+      title: "أجهزة تبريد المياه",
       intro:
-        "أنظمة تبريد متخصصة للحفاظ على برودة مياه الخزانات في الأجواء الحارة في الكويت ودول الخليج.",
+        "وحدات تبريد مائية مستقلة عالية الكفاءة للاستخدام المنزلي والتجاري. أجهزة تبريد يمكن بيعها وتركيبها بشكل منفصل.",
       products: [
         {
           slug: "water-cooling-device",
-          title: "جهاز تبريد مائي",
+          title: "جهاز تبريد المائي",
           description:
-            "نظام تبريد مخصص لخزانات المياه يساعد على تقليل حرارة المياه في الأجواء الحارة ويزيد من راحة استخدام المياه داخل المبنى.",
+            "جهاز تبريد مائي عالي الكفاءة يستخدم لتبريد المياه بكفاءة عالية، مناسب للاستخدام المنزلي والتجاري.",
           features: [
-            "مناسب لخزانات الأسطح",
-            "أداء تبريد موثوق",
-            "هيكل خارجي متين",
-            "مصمم للأجواء الحارة",
+            "نظام تبريد مائي فعال",
+            "مناسب للاستخدام المنزلي والتجاري",
+            "أداء ثابت وموثوق",
+            "تصميم متين",
+            "كفالة سنتين شرط التبريد",
           ],
-          warrantyLabel: "كفالة محدودة",
+          warrantyLabel: "كفالة سنتين شرط التبريد",
         },
         {
           slug: "dynamo-cooling-system",
-          title: "جهاز تبريد نظام دينمو مائي",
+          title: "جهاز تبريد نظام دينمو المائي",
           description:
-            "نظام تبريد متكامل يعمل مع دينمو المياه لتحسين أداء الضخ وتقليل حرارة مياه الخزان.",
+            "جهاز تبريد يعمل بنظام الدينمو المائي لتوفير أداء تبريد مستقر وكفاءة تشغيل عالية.",
           features: [
-            "متوافق مع أنظمة الدينمو المختلفة",
-            "تحسين كفاءة نظام المياه",
-            "تصميم عملي وسهل التركيب",
-            "مناسب للاستخدام السكني والتجاري",
+            "نظام دينمو مائي",
+            "كفاءة تشغيل عالية",
+            "تصميم قوي للاستخدام المستمر",
+            "مناسب للمنازل والمباني",
+            "كفالة سنة شرط التبريد",
           ],
-          warrantyLabel: "كفالة محدودة",
+          warrantyLabel: "كفالة سنة شرط التبريد",
         },
         {
           slug: "saudi-dynamo-cooling-system",
           title: "جهاز تبريد نظام دينمو سعودي",
           description:
-            "حل تبريد متطور مستوحى من الأنظمة المستخدمة في السوق السعودي، مناسب للخزانات ذات السعة العالية.",
+            "جهاز تبريد يعمل بنظام الدينمو السعودي يوفر أداء تبريد قوي مع استهلاك طاقة فعال.",
           features: [
-            "أداء ثابت في درجات الحرارة العالية",
-            "هيكل معتمد للاستخدام الخارجي",
-            "مناسب للفلل والمباني الكبيرة",
-            "سهل الصيانة والاستبدال",
+            "نظام دينمو سعودي",
+            "تبريد قوي وفعال",
+            "مناسب للاستخدام السكني والتجاري",
+            "تصميم متين",
+            "كفالة سنة شرط التبريد",
           ],
-          warrantyLabel: "كفالة محدودة",
+          warrantyLabel: "كفالة سنة شرط التبريد",
         },
       ],
     },
@@ -317,9 +369,9 @@ export const translations = {
         },
       ],
     },
-    projects: {
-      title: "مشاريعنا",
-      subtitle: "نماذج من أعمال التركيب لأنظمة المياه والسخانات المركزية.",
+    offers: {
+      title: "قسم العروض",
+      subtitle: "عروض حصرية على أنظمة المياه والسخانات المركزية.",
     },
     testimonials: {
       title: "آراء عملائنا",
@@ -371,12 +423,27 @@ export const translations = {
     },
     contact: {
       title: "اتصل بنا",
-      phone: "+965 9934 6138",
-      email: "info@water-systems.com",
+      companyName: "شركة الرائد العربي",
+      phones: ["96961960", "96931919", "92241241"],
+      mainPhone: "96961960",
+      email: "alraed.alarabyq8@gmail.com",
       address: "الكويت",
+      fullAddress: [
+        "شركة الرائد العربي",
+        "مجمع صبحان سنتر",
+        "الدور الأول",
+        "الضجيج – الكويت",
+      ],
+      googleMapsUrl: "https://maps.app.goo.gl/iqXYBZub4mTU2LvaA",
+      googleMapsEmbedUrl:
+        "https://www.google.com/maps?q=%D8%B4%D8%B1%D9%83%D8%A9+%D8%A7%D9%84%D8%B1%D8%A7%D8%A6%D8%AF+%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A+%D9%85%D8%AC%D9%85%D8%B9+%D8%B5%D8%A8%D8%AD%D8%A7%D9%86+%D8%B3%D9%86%D8%AA%D8%B1+%D8%A7%D9%84%D8%B6%D8%AC%D9%8A%D8%AC+%D8%A7%D9%84%D9%83%D9%88%D9%8A%D8%AA&output=embed",
+      openInMaps: "فتح الموقع في خرائط جوجل",
+      ourLocation: "موقعنا",
       whatsapp: "تواصل عبر واتساب",
+      instagram: "https://www.instagram.com/alraed_alaraby.q8",
+      tiktok: "https://www.tiktok.com/@alraedalaraby",
       form: {
-        headline: "طلب صيانة أو تركيب",
+        headline: "شركة الرائد العربي – طلب صيانة أو تركيب",
         description:
           "املأ البيانات التالية وسيتواصل معك فريقنا لتقييم احتياجك وتقديم عرض سعر مناسب.",
         nameLabel: "الاسم الكامل",
@@ -395,7 +462,7 @@ export const translations = {
     },
     footer: {
       about:
-        "شركة كويتية متخصصة في حلول أنظمة المياه والسخانات المركزية وفلاتر المياه والمضخات مع خدمات تركيب وصيانة احترافية.",
+        "حلول أنظمة المياه والسخانات المركزية وفلاتر المياه والمضخات مع خدمات تركيب وصيانة احترافية.",
       quickLinks: "روابط سريعة",
       contact: "معلومات التواصل",
       followUs: "تابعنا",
@@ -403,22 +470,71 @@ export const translations = {
     },
   },
   en: {
+    brand: {
+      name: "Al Raed Al Araby",
+      nameLong: "Al Raed Al Araby for Central Water Heaters & Water Systems",
+      tagline: "Water & central heating systems",
+      logoAlt: "Al Raed Al Araby company logo",
+    },
     nav: {
       home: "Home",
-      about: "About",
-      services: "Services",
+      aboutAndServices: "About & Services",
       products: "Products",
-      projects: "Projects",
+      offers: "Offers",
       maintenance: "Maintenance",
       contact: "Contact",
     },
+    aboutServicesPage: {
+      heroTitle: "About Us",
+      heroText:
+        "Al Raed Al Araby specializes in water systems and central heating. We provide integrated solutions including installation and maintenance of central water heaters, water filters, pumps, and tank cleaning. We deliver high-quality services using the best equipment and a specialized technical team to ensure optimal performance of water systems in homes and buildings.",
+      experienceTitle: "Our Experience",
+      experienceText:
+        "We have extensive experience in water systems and central heating. We have completed many projects and installed and maintained various systems for homes and buildings. Our work is based on precision in execution and the use of the best equipment to ensure high efficiency and long system lifespan.",
+      whyChooseTitle: "Why Choose Us?",
+      whyChoose: [
+        "Specialized technical team",
+        "Experience in water systems and central heating",
+        "Fast response time",
+        "Quality work and service",
+      ],
+      ctaTitle: "Contact Us",
+      ctaText:
+        "If you need installation or maintenance of water systems, contact us now and our team will serve you as soon as possible.",
+      ctaContact: "Contact Us",
+      ctaRequest: "Request Service",
+    },
+    maintenancePage: {
+      heroTitle: "Maintenance Services",
+      heroText:
+        "We provide professional maintenance services for all water systems, filters, heaters, and central heating using the best equipment and a specialized technical team.",
+      servicesTitle: "Our Maintenance Services",
+      servicesSubtitle: "We offer a comprehensive range of maintenance services to ensure your systems operate efficiently",
+      services: [
+        { title: "Central Heating System Maintenance", description: "Inspection and maintenance of central heating systems to ensure high efficiency and continuous hot water supply." },
+        { title: "Home & Central Filter Maintenance", description: "Cleaning and maintenance of all filter types with cartridge replacement for water purity and quality." },
+        { title: "Pump Maintenance", description: "Inspection and maintenance of Italian and Spanish water pumps and pressure issue resolution." },
+        { title: "Tank Cleaning", description: "Cleaning and sanitizing of water tanks for clean and healthy water for use." },
+        { title: "Sewage Unclogging", description: "Resolving blockages in drains and sewage using advanced equipment." },
+        { title: "Water Pressure Check", description: "Checking water pressure in the home and adjusting pumps for optimal water flow." },
+      ],
+      whyChooseTitle: "Why Choose Us?",
+      whyChoose: ["Specialized technical team", "Experience in water systems and central heating", "Fast response time", "Modern equipment"],
+      ctaTitle: "Need Maintenance?",
+      ctaText: "Contact us now and our technical team will serve you as soon as possible.",
+      ctaRequest: "Request Maintenance",
+      ctaContact: "Contact Us",
+      whatsappMessage: "I need maintenance service",
+    },
     hero: {
+      badge: "Al Raed Al Araby – End-to-end water system solutions in Kuwait",
       headline:
         "Integrated Solutions for Central Heating and Water Filtration in Kuwait",
       subheadline:
         "We provide complete solutions for homes and buildings including central heaters, water filters, pumps, installation, and maintenance with high quality standards.",
       cta1: "Request a Quote",
-      cta2: "Contact on WhatsApp",
+      cta2: "View Products",
+      cta3: "Contact on WhatsApp",
     },
     trust: {
       title: "Why Clients Trust Us",
@@ -605,48 +721,51 @@ export const translations = {
       ],
     },
     coolingSystems: {
-      title: "Water Tank Cooling Systems",
+      title: "Water Cooling Units",
       intro:
-        "Premium cooling systems designed to help keep tank water cooler in the extreme heat of Kuwait and the Gulf region.",
+        "Standalone high-efficiency water cooling units for residential and commercial use. Individual units that can be sold and installed separately.",
       products: [
         {
           slug: "water-cooling-device",
-          title: "Water Cooling Device",
+          title: "Water Cooling Unit",
           description:
-            "Premium cooling system designed for water tanks to help maintain lower water temperature in hot climates.",
+            "High-efficiency water cooling unit designed to cool water effectively for residential and commercial applications.",
           features: [
-            "Suitable for rooftop tanks",
-            "Reliable cooling performance",
-            "Durable external housing",
-            "Designed for hot climates",
+            "Efficient water cooling system",
+            "Suitable for residential and commercial use",
+            "Reliable and stable performance",
+            "Durable construction",
+            "2-year cooling warranty",
           ],
-          warrantyLabel: "Limited warranty",
+          warrantyLabel: "2 Year Cooling Warranty",
         },
         {
           slug: "dynamo-cooling-system",
-          title: "Dynamo Water Cooling System",
+          title: "Water Cooling System with Dynamo",
           description:
-            "Cooling solution that integrates with water pump dynamo systems to help reduce tank water temperature.",
+            "Water cooling unit powered by a dynamo system providing stable performance and efficient cooling.",
           features: [
-            "Works with various pump systems",
-            "Improves overall water system performance",
-            "Practical, installation‑friendly design",
-            "Suitable for residential and commercial use",
+            "Dynamo powered water cooling system",
+            "High operational efficiency",
+            "Strong build for continuous use",
+            "Suitable for homes and buildings",
+            "1-year cooling warranty",
           ],
-          warrantyLabel: "Limited warranty",
+          warrantyLabel: "1 Year Cooling Warranty",
         },
         {
           slug: "saudi-dynamo-cooling-system",
-          title: "Saudi Dynamo Cooling System",
+          title: "Saudi Dynamo Water Cooling Unit",
           description:
-            "Advanced cooling concept inspired by systems used in the Saudi market, ideal for large capacity tanks.",
+            "Water cooling unit using a Saudi dynamo system delivering powerful cooling with efficient energy usage.",
           features: [
-            "Stable performance in high temperatures",
-            "Outdoor‑ready durable housing",
-            "Ideal for large villas and buildings",
-            "Easy to service and upgrade",
+            "Saudi dynamo cooling system",
+            "Strong and efficient cooling",
+            "Suitable for residential and commercial use",
+            "Durable design",
+            "1-year cooling warranty",
           ],
-          warrantyLabel: "Limited warranty",
+          warrantyLabel: "1 Year Cooling Warranty",
         },
       ],
     },
@@ -727,10 +846,10 @@ export const translations = {
         },
       ],
     },
-    projects: {
-      title: "Our Projects",
+    offers: {
+      title: "Offers",
       subtitle:
-        "Sample installations of central heaters, filters, pumps, and complete water systems.",
+        "Exclusive offers on water systems and central heaters.",
     },
     testimonials: {
       title: "Client Testimonials",
@@ -782,12 +901,27 @@ export const translations = {
     },
     contact: {
       title: "Contact Us",
-      phone: "+965 9934 6138",
-      email: "info@water-systems.com",
+      companyName: "Al Raed Al Araby",
+      phones: ["96961960", "96931919", "92241241"],
+      mainPhone: "96961960",
+      email: "alraed.alarabyq8@gmail.com",
       address: "Kuwait",
+      fullAddress: [
+        "Al Raed Al Araby",
+        "Subhan Center",
+        "First Floor",
+        "Al Dajeej – Kuwait",
+      ],
+      googleMapsUrl: "https://maps.app.goo.gl/iqXYBZub4mTU2LvaA",
+      googleMapsEmbedUrl:
+        "https://www.google.com/maps?q=%D8%B4%D8%B1%D9%83%D8%A9+%D8%A7%D9%84%D8%B1%D8%A7%D8%A6%D8%AF+%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A+%D9%85%D8%AC%D9%85%D8%B9+%D8%B5%D8%A8%D8%AD%D8%A7%D9%86+%D8%B3%D9%86%D8%AA%D8%B1+%D8%A7%D9%84%D8%B6%D8%AC%D9%8A%D8%AC+%D8%A7%D9%84%D9%83%D9%88%D9%8A%D8%AA&output=embed",
+      openInMaps: "Open in Google Maps",
+      ourLocation: "Our Location",
       whatsapp: "Contact on WhatsApp",
+      instagram: "https://www.instagram.com/alraed_alaraby.q8",
+      tiktok: "https://www.tiktok.com/@alraedalaraby",
       form: {
-        headline: "Maintenance or Installation Request",
+        headline: "Al Raed Al Araby – Maintenance or Installation Request",
         description:
           "Share a few details and our team will contact you to assess your needs and provide a tailored quote.",
         nameLabel: "Full name",
@@ -806,7 +940,7 @@ export const translations = {
     },
     footer: {
       about:
-        "A Kuwait-based company specialized in water system solutions, central heaters, filters, and pumps with professional installation and maintenance.",
+        "Water system solutions, central heaters, filters, and pumps with professional installation and maintenance in Kuwait.",
       quickLinks: "Quick Links",
       contact: "Contact Information",
       followUs: "Follow Us",

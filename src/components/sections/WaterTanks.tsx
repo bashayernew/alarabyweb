@@ -1,17 +1,23 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Droplet } from "lucide-react";
+import { useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/content/translations";
+import { OrderRequestModal } from "@/components/OrderRequestModal";
+import { catalogProducts } from "@/content/products";
 
 export default function WaterTanks() {
   const { language, isRTL } = useLanguage();
   const t = translations[language];
+  const [orderTank, setOrderTank] = useState<string | null>(null);
 
-  // Uses the provided water tank product image. Place file at `public/watergallonsmall.webp`
-  // (or keep both `watergallonsmall.webp` and `watergallon.jpg` for different sizes if needed).
-  const imageSrc = "/watergallonsmall.webp";
+  const getImageForSlug = (slug: string) => {
+    const p = catalogProducts.find((x) => x.id === slug);
+    return p?.image ?? "/watergallonsmall.webp";
+  };
 
   return (
     <section
@@ -44,12 +50,12 @@ export default function WaterTanks() {
               key={tank.slug}
               className="group flex flex-col overflow-hidden rounded-3xl border border-[#DCEBFA] bg-white/95 shadow-[0_14px_40px_rgba(15,23,42,0.10)] transition hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(15,23,42,0.15)]"
             >
-              <div className="relative h-52 w-full overflow-hidden bg-[#EAF4FF]">
+              <div className="relative min-h-[280px] w-full overflow-hidden bg-[#EAF4FF] sm:min-h-[300px]">
                 <Image
-                  src={imageSrc}
+                  src={getImageForSlug(tank.slug)}
                   alt={tank.title}
                   fill
-                  className="object-cover"
+                  className="object-contain p-6"
                   sizes="(min-width: 1024px) 560px, 100vw"
                   priority={false}
                 />
@@ -96,11 +102,43 @@ export default function WaterTanks() {
                     </li>
                   ))}
                 </ul>
+
+                <div
+                  className={`mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3 ${
+                    isRTL ? "sm:flex-row-reverse" : ""
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOrderTank(tank.slug)}
+                    className="inline-flex flex-1 items-center justify-center rounded-xl bg-primary-600 px-4 py-2.5 text-xs font-semibold text-white shadow-md transition hover:bg-primary-700 sm:text-sm"
+                  >
+                    {language === "ar" ? "اطلب عرض سعر" : "Request Quote"}
+                  </button>
+                  <Link
+                    href={`/products/${tank.slug}`}
+                    className="inline-flex flex-1 items-center justify-center rounded-xl border-2 border-primary-600 bg-white px-4 py-2.5 text-xs font-semibold text-primary-600 transition hover:bg-primary-50 sm:text-sm"
+                  >
+                    {language === "ar" ? "عرض المنتج" : "View Product"}
+                  </Link>
+                </div>
               </div>
             </article>
           ))}
         </div>
       </div>
+
+      {orderTank && (
+        <OrderRequestModal
+          type="product"
+          itemId={orderTank}
+          itemName={
+            t.tanks.items.find((x) => x.slug === orderTank)?.title ?? ""
+          }
+          onClose={() => setOrderTank(null)}
+          language={language}
+        />
+      )}
     </section>
   );
 }

@@ -1,9 +1,11 @@
 "use client";
 
 import { useLanguage } from "@/hooks/useLanguage";
+import { translations } from "@/content/translations";
 
 export default function FinalCTA() {
   const { language, isRTL } = useLanguage();
+  const t = translations[language];
 
   return (
     <section className="bg-gradient-to-r from-primary-600 via-primary-700 to-[#12304A] py-14 sm:py-16 lg:py-20">
@@ -15,8 +17,8 @@ export default function FinalCTA() {
         </h2>
         <p className="mt-3 text-balance text-xs text-primary-100 sm:mt-4 sm:text-sm lg:text-base">
           {language === "ar"
-            ? "تواصل معنا للحصول على استشارة مجانية وعرض سعر يناسب احتياجك بدقة."
-            : "Get in touch for a free consultation and a tailored quotation for your property."}
+            ? "تواصل مع شركة الرائد العربي للحصول على استشارة مجانية وعرض سعر يناسب احتياجك بدقة."
+            : "Get in touch with Al Raed Al Araby for a free consultation and a tailored quotation for your property."}
         </p>
 
         <div
@@ -25,7 +27,7 @@ export default function FinalCTA() {
           }`}
         >
           <a
-            href="https://wa.me/96599346138"
+            href={`https://wa.me/965${t.contact.mainPhone}`}
             className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-xs font-semibold text-primary-700 shadow-md transition hover:bg-primary-50 sm:text-sm"
           >
             {language === "ar" ? "تواصل عبر واتساب" : "Contact on WhatsApp"}

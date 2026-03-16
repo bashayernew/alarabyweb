@@ -17,9 +17,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Aqua Systems | Central Water Heaters & Filtration in Kuwait",
+  title: {
+    default: "شركة الرائد العربي | السخانات المركزية وأنظمة المياه في الكويت",
+    template: "%s | شركة الرائد العربي",
+  },
   description:
-    "Premium central water heaters, water filtration, pumps, tanks, and complete water system solutions with professional installation and maintenance in Kuwait.",
+    "شركة الرائد العربي للسخانات المركزية وأنظمة المياه - حلول متكاملة للسخانات المركزية، فلاتر المياه، المضخات، والتركيب والصيانة الاحترافية في الكويت.",
 };
 
 export default function RootLayout({
