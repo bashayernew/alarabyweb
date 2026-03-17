@@ -18,19 +18,21 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (!process.env.DATABASE_URL) {
+      throw new Error("DATABASE_URL is not set");
+    }
+
     const adminEmail = process.env.ADMIN_EMAIL ?? "admin123@gmail.com";
     const adminPassword = process.env.ADMIN_PASSWORD ?? "admin123";
 
-    await prisma.$connect();
-
-    const hash = bcrypt.hashSync(adminPassword, 10);
+    const hashed = await bcrypt.hash(adminPassword, 10);
 
     await prisma.user.upsert({
       where: { email: adminEmail },
-      update: { passwordHash: hash, role: "super_admin", isActive: true },
+      update: { passwordHash: hashed, role: "super_admin", isActive: true },
       create: {
         email: adminEmail,
-        passwordHash: hash,
+        passwordHash: hashed,
         name: "Admin",
         role: "super_admin",
         isActive: true,
@@ -49,7 +51,7 @@ export async function GET(req: NextRequest) {
       {
         error: "Seed failed",
         details: err.message,
-        ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+        stack: err.stack,
       },
       { status: 500 }
     );
