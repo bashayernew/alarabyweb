@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { put } from "@vercel/blob";
 import { requireWrite } from "@/lib/auth-helpers";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
@@ -11,12 +10,11 @@ export async function POST(req: NextRequest) {
   const auth = await requireWrite();
   if (auth.res) return auth.res;
 
-  // On Vercel, filesystem is read-only. Uploads need Vercel Blob or similar.
-  if (process.env.VERCEL) {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return NextResponse.json(
       {
         error:
-          "File uploads are not available in production. Configure Vercel Blob Storage or use an external storage provider.",
+          "BLOB_READ_WRITE_TOKEN is not configured. Add Vercel Blob Storage to your project.",
       },
       { status: 503 }
     );
@@ -52,16 +50,16 @@ export async function POST(req: NextRequest) {
     const safeExt = ["jpg", "jpeg", "png", "webp", "gif"].includes(ext)
       ? ext
       : "jpg";
-    const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${safeExt}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads", targetFolder);
-    await mkdir(uploadDir, { recursive: true });
-    const filepath = path.join(uploadDir, filename);
-    const bytes = await file.arrayBuffer();
-    await writeFile(filepath, Buffer.from(bytes));
-    const url = `/uploads/${targetFolder}/${filename}`;
-    return NextResponse.json({ url });
+    const pathname = `${targetFolder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${safeExt}`;
+
+    const blob = await put(pathname, file, {
+      access: "public",
+      addRandomSuffix: false,
+    });
+
+    return NextResponse.json({ url: blob.url });
   } catch (e) {
-    console.error(e);
+    console.error("[upload]", e);
     return NextResponse.json(
       { error: "Failed to upload image" },
       { status: 500 }
