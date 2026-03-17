@@ -4,8 +4,18 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Droplet, Wrench, Layers } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
-import { servicesCatalog, type Service } from "@/content/services";
 import { OrderRequestModal } from "@/components/OrderRequestModal";
+
+type Service = {
+  id: string;
+  category: string;
+  title_en: string;
+  title_ar: string;
+  description_en: string;
+  description_ar: string;
+  options_en?: string[];
+  options_ar?: string[];
+};
 
 const categoryIcon: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
   installation: Layers,
@@ -18,14 +28,14 @@ const categoryIcon: Record<string, React.ComponentType<{ className?: string; siz
 
 export default function ServicesCatalog() {
   const { language, isRTL } = useLanguage();
-  const [services, setServices] = useState<Service[]>(servicesCatalog);
+  const [services, setServices] = useState<Service[]>([]);
   const [requestService, setRequestService] = useState<Service | null>(null);
 
   useEffect(() => {
     fetch("/api/services")
-      .then((res) => (res.ok ? res.json() : null))
+      .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setServices(data);
+        if (Array.isArray(data)) setServices(data);
       })
       .catch(() => {});
   }, []);

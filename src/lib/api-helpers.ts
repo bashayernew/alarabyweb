@@ -47,7 +47,7 @@ export function serviceToJson(s: Service) {
     subtitle_ar: s.subtitleAr ?? undefined,
     description_en: s.descriptionEn,
     description_ar: s.descriptionAr,
-    options_en: s.optionsEn ? (JSON.parse(s.optionsEn) as string[]) : undefined,
-    options_ar: s.optionsAr ? (JSON.parse(s.optionsAr) as string[]) : undefined,
+    options_en: safeParseJson<string[]>(s.optionsEn ?? "", []),
+    options_ar: safeParseJson<string[]>(s.optionsAr ?? "", []),
   };
 }

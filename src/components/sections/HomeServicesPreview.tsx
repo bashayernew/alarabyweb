@@ -1,10 +1,19 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Droplet, Wrench, Layers } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
-import { servicesCatalog } from "@/content/services";
+
+type Service = {
+  id: string;
+  category: string;
+  title_en: string;
+  title_ar: string;
+  description_en: string;
+  description_ar: string;
+};
 
 const iconByCategory: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
   installation: Layers,
@@ -17,8 +26,18 @@ const iconByCategory: Record<string, React.ComponentType<{ className?: string; s
 
 export default function HomeServicesPreview() {
   const { language, isRTL } = useLanguage();
+  const [services, setServices] = useState<Service[]>([]);
 
-  const highlighted = servicesCatalog.slice(0, 4);
+  useEffect(() => {
+    fetch("/api/services")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setServices(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  const highlighted = services.slice(0, 4);
 
   return (
     <section
@@ -43,7 +62,7 @@ export default function HomeServicesPreview() {
         </div>
 
         <div className="mt-10 grid gap-6 md:mt-14 md:grid-cols-2 lg:grid-cols-4">
-          {highlighted.map((service, index) => {
+          {highlighted.map((service: Service, index) => {
             const Icon =
               iconByCategory[service.category] ?? Wrench;
             const title =

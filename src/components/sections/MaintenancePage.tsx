@@ -54,35 +54,11 @@ export default function MaintenancePage() {
     fetch("/api/maintenance-services")
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setServices(data);
-        } else {
-          setServices(
-            mp.services.map((s, i) => ({
-              id: `static-${i}`,
-              titleEn: s.title,
-              titleAr: s.title,
-              descriptionEn: s.description,
-              descriptionAr: s.description,
-              icon: Object.keys(ICON_MAP)[i] ?? "Wrench",
-            }))
-          );
-        }
+        if (Array.isArray(data)) setServices(data);
       })
-      .catch(() => {
-        setServices(
-          mp.services.map((s, i) => ({
-            id: `static-${i}`,
-            titleEn: s.title,
-            titleAr: s.title,
-            descriptionEn: s.description,
-            descriptionAr: s.description,
-            icon: Object.keys(ICON_MAP)[i] ?? "Wrench",
-          }))
-        );
-      })
+      .catch(() => setServices([]))
       .finally(() => setLoading(false));
-  }, [language, mp.services]);
+  }, []);
 
   const requestLabel = language === "ar" ? "اطلب الخدمة" : "Request Service";
 
