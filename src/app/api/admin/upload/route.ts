@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
   const pathname = `${targetFolder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${safeExt}`;
 
   try {
-    const buffer = await blobLike.arrayBuffer();
+    const buffer = Buffer.from(await blobLike.arrayBuffer());
     const blob = await put(pathname, buffer, {
       access: "public",
       addRandomSuffix: false,

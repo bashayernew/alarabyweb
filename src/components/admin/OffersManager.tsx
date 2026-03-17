@@ -99,8 +99,9 @@ export function OffersManager() {
         body: fd,
       });
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Upload failed");
+        const err = await res.json().catch(() => ({}));
+        const msg = err.details ? `${err.error}: ${err.details}` : (err.error || "Upload failed");
+        throw new Error(msg);
       }
       const { url } = await res.json();
       setForm((f) => ({ ...f, image: url }));
