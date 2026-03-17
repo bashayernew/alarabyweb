@@ -4,15 +4,34 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/hooks/useLanguage";
-import { catalogProducts } from "@/content/products";
+import { useEffect, useState } from "react";
+
+type ProductJson = {
+  id: string;
+  image: string;
+  title_en: string;
+  title_ar: string;
+  subtitle_en: string;
+  subtitle_ar: string;
+  category: string;
+};
 
 export default function HomeProductsPreview() {
   const { language, isRTL } = useLanguage();
+  const [products, setProducts] = useState<ProductJson[]>([]);
 
-  // Pick one representative product per category for teaser
-  const uniqueByCategory = Array.from(
-    new Map(catalogProducts.map((p) => [p.category, p])).values(),
-  ).slice(0, 4);
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.ok ? res.json() : [])
+      .then((data) => {
+        const list = Array.isArray(data) ? data : [];
+        const uniqueByCategory = Array.from(
+          new Map(list.map((p: ProductJson) => [p.category, p])).values(),
+        ).slice(0, 4);
+        setProducts(uniqueByCategory);
+      })
+      .catch(() => setProducts([]));
+  }, []);
 
   return (
     <section
@@ -37,11 +56,12 @@ export default function HomeProductsPreview() {
         </div>
 
         <div className="mt-10 grid gap-6 md:mt-14 md:grid-cols-2 lg:grid-cols-4">
-          {uniqueByCategory.map((product, index) => {
+          {products.map((product, index) => {
             const title =
               language === "ar" ? product.title_ar : product.title_en;
             const subtitle =
               language === "ar" ? product.subtitle_ar : product.subtitle_en;
+            const imageSrc = product.image?.startsWith("/") ? product.image : `/${product.image}`;
 
             return (
               <motion.article
@@ -54,7 +74,7 @@ export default function HomeProductsPreview() {
               >
                 <div className="relative h-40 w-full overflow-hidden rounded-t-2xl bg-white">
                   <Image
-                    src={product.image}
+                    src={imageSrc}
                     alt={title}
                     fill
                     className="object-contain p-4 transition-transform duration-300 group-hover:scale-[1.03]"

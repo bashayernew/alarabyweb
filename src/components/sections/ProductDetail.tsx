@@ -4,12 +4,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, ArrowLeft, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
-import type { CatalogProduct } from "@/content/products";
 import { OrderRequestModal } from "@/components/OrderRequestModal";
 import { useState } from "react";
 
+type ProductJson = {
+  id: string;
+  image: string;
+  title_en: string;
+  title_ar: string;
+  subtitle_en: string;
+  subtitle_ar: string;
+  full_description_en: string;
+  full_description_ar: string;
+  warranty_en: string;
+  warranty_ar: string;
+  features_en: string[];
+  features_ar: string[];
+  specs_en?: string[];
+  specs_ar?: string[];
+};
+
 type Props = {
-  product: CatalogProduct;
+  product: ProductJson;
 };
 
 export default function ProductDetail({ product }: Props) {

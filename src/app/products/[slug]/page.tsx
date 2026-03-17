@@ -3,45 +3,50 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ProductDetail from "@/components/sections/ProductDetail";
-import { catalogProducts } from "@/content/products";
+import { prisma } from "@/lib/db";
+import { productToJson } from "@/lib/api-helpers";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
-  return catalogProducts.map((p) => ({ slug: p.id }));
+  try {
+    const products = await prisma.product.findMany({
+      where: { isActive: true },
+      select: { slug: true },
+    });
+    return products.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = catalogProducts.find((p) => p.id === slug);
-  if (!product) return { title: "Product" };
-  return {
-    title: product.title_en,
-    description: product.short_description_en,
-  };
-}
-
-function getBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_BASE_URL) return process.env.NEXT_PUBLIC_BASE_URL;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "http://localhost:3000";
+  try {
+    const product = await prisma.product.findFirst({
+      where: { slug, isActive: true },
+    });
+    if (!product) return { title: "Product" };
+    return {
+      title: product.titleEn,
+      description: product.shortDescriptionEn,
+    };
+  } catch {
+    return { title: "Product" };
+  }
 }
 
 async function getProduct(slug: string) {
-  const fromCatalog = catalogProducts.find((p) => p.id === slug);
-  if (fromCatalog) return fromCatalog;
   try {
-    const baseUrl = getBaseUrl();
-    const res = await fetch(`${baseUrl}/api/products/${slug}`, {
-      cache: "no-store",
+    const product = await prisma.product.findFirst({
+      where: { slug, isActive: true },
     });
-    if (res.ok) return res.json();
+    return product ? productToJson(product) : null;
   } catch {
-    /* ignore */
+    return null;
   }
-  return null;
 }
 
 export default async function ProductPage({ params }: Props) {

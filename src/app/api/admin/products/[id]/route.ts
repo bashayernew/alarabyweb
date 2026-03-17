@@ -26,6 +26,7 @@ const updateProductSchema = z.object({
   badgeEn: z.string().optional().nullable(),
   badgeAr: z.string().optional().nullable(),
   isActive: z.boolean().optional(),
+  isFeatured: z.boolean().optional(),
   sortOrder: z.number().optional(),
 });
 
@@ -75,6 +76,12 @@ export async function PUT(
         );
       }
     }
+    if (data.isFeatured === true) {
+      await prisma.product.updateMany({
+        where: { id: { not: id } },
+        data: { isFeatured: false },
+      });
+    }
     const changes: Array<{ field: string; oldValue: unknown; newValue: unknown }> = [];
     if (data.titleEn !== undefined && data.titleEn !== existing.titleEn)
       changes.push({ field: "titleEn", oldValue: existing.titleEn, newValue: data.titleEn });
@@ -106,6 +113,7 @@ export async function PUT(
         ...(data.badgeEn !== undefined && { badgeEn: data.badgeEn }),
         ...(data.badgeAr !== undefined && { badgeAr: data.badgeAr }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
+        ...(data.isFeatured !== undefined && { isFeatured: data.isFeatured }),
         ...(data.sortOrder !== undefined && { sortOrder: data.sortOrder }),
       },
     });

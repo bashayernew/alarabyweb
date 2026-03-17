@@ -10,6 +10,9 @@ import {
   Save,
   Image as ImageIcon,
   X,
+  ChevronUp,
+  ChevronDown,
+  Star,
 } from "lucide-react";
 import { AdminPageWrapper } from "./AdminPageWrapper";
 import { useAdminUser } from "./AdminUserContext";
@@ -38,6 +41,7 @@ type Product = {
   badgeEn: string | null;
   badgeAr: string | null;
   isActive: boolean;
+  isFeatured: boolean;
   sortOrder: number;
 };
 
@@ -63,6 +67,7 @@ const defaultForm = () => ({
   badgeEn: "",
   badgeAr: "",
   isActive: true,
+  isFeatured: false,
   sortOrder: 0,
 });
 
@@ -75,6 +80,8 @@ export function ProductsManager() {
   const [creating, setCreating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [reordering, setReordering] = useState<string | null>(null);
+  const [featuring, setFeaturing] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState(defaultForm());
 
@@ -138,6 +145,7 @@ export function ProductsManager() {
         specsAr: form.specsAr || null,
         badgeEn: form.badgeEn || null,
         badgeAr: form.badgeAr || null,
+        isFeatured: form.isFeatured ?? false,
       };
       if (editing) {
         const res = await fetch(`/api/admin/products/${editing.id}`, {
@@ -166,6 +174,38 @@ export function ProductsManager() {
       alert(err instanceof Error ? err.message : "Failed to save");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleReorder(id: string, direction: "up" | "down") {
+    setReordering(id);
+    try {
+      const res = await fetch("/api/admin/products/reorder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, direction }),
+      });
+      if (res.ok) await fetchProducts();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to reorder");
+    } finally {
+      setReordering(null);
+    }
+  }
+
+  async function handleSetFeatured(id: string) {
+    setFeaturing(id);
+    try {
+      const res = await fetch(`/api/admin/products/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isFeatured: true }),
+      });
+      if (res.ok) await fetchProducts();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to set hero");
+    } finally {
+      setFeaturing(null);
     }
   }
 
@@ -208,6 +248,7 @@ export function ProductsManager() {
       badgeEn: p.badgeEn ?? "",
       badgeAr: p.badgeAr ?? "",
       isActive: p.isActive,
+      isFeatured: (p as Product).isFeatured ?? false,
       sortOrder: p.sortOrder,
     });
     setCreating(false);
@@ -402,16 +443,24 @@ export function ProductsManager() {
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
               />
             </div>
-            <div className="flex items-center gap-2 sm:col-span-2">
-              <input
-                type="checkbox"
-                id="isActive"
-                checked={form.isActive}
-                onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
-                className="rounded border-slate-300"
-              />
-              <label htmlFor="isActive" className="text-sm text-slate-700">
-                {t("products.productActive")}
+            <div className="flex flex-wrap items-center gap-4 sm:col-span-2">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={form.isActive}
+                  onChange={(e) => setForm((f) => ({ ...f, isActive: e.target.checked }))}
+                  className="rounded border-slate-300"
+                />
+                <span className="text-sm text-slate-700">{t("products.productActive")}</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={form.isFeatured}
+                  onChange={(e) => setForm((f) => ({ ...f, isFeatured: e.target.checked }))}
+                  className="rounded border-slate-300"
+                />
+                <span className="text-sm text-slate-700">{t("products.heroProduct")}</span>
               </label>
             </div>
           </div>
@@ -452,6 +501,7 @@ export function ProductsManager() {
                   <th className={`px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-500 ${isRTL ? "text-right" : "text-left"}`}>{t("products.category")}</th>
                   <th className={`px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-500 ${isRTL ? "text-right" : "text-left"}`}>{t("products.priceCol")}</th>
                   <th className={`px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-500 ${isRTL ? "text-right" : "text-left"}`}>{t("products.orderCol")}</th>
+                  <th className={`px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-500 ${isRTL ? "text-right" : "text-left"}`}>{t("products.heroCol")}</th>
                   <th className={`px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-slate-500 ${isRTL ? "text-right" : "text-left"}`}>{t("common.actions")}</th>
                 </tr>
               </thead>
@@ -472,7 +522,43 @@ export function ProductsManager() {
                     <td className="px-5 py-3.5 font-medium text-slate-800">{lang === "ar" ? (p.titleAr || p.titleEn) : (p.titleEn || p.titleAr)}</td>
                     <td className="px-5 py-3.5 text-slate-600">{p.category}</td>
                     <td className="px-5 py-3.5 text-slate-600">{p.price != null ? p.price : "—"}</td>
-                    <td className="px-5 py-3.5 text-slate-600">{p.sortOrder}</td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleReorder(p.id, "up")}
+                          disabled={reordering === p.id || products.findIndex((x) => x.id === p.id) === 0}
+                          className="rounded p-1.5 text-slate-500 hover:bg-slate-100 disabled:opacity-40"
+                          title={t("products.moveUp")}
+                        >
+                          <ChevronUp className="h-4 w-4" />
+                        </button>
+                        <span className="min-w-[1.5rem] text-center text-slate-600">{p.sortOrder}</span>
+                        <button
+                          onClick={() => handleReorder(p.id, "down")}
+                          disabled={reordering === p.id || products.findIndex((x) => x.id === p.id) === products.length - 1}
+                          className="rounded p-1.5 text-slate-500 hover:bg-slate-100 disabled:opacity-40"
+                          title={t("products.moveDown")}
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      {canWrite && (
+                        <button
+                          onClick={() => handleSetFeatured(p.id)}
+                          disabled={featuring === p.id || (p as Product).isFeatured}
+                          className={`rounded-lg p-2 transition-colors ${
+                            (p as Product).isFeatured
+                              ? "bg-amber-100 text-amber-600"
+                              : "border border-slate-200 text-slate-400 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-600"
+                          }`}
+                          title={t("products.setAsHero")}
+                        >
+                          {featuring === p.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Star className={`h-4 w-4 ${(p as Product).isFeatured ? "fill-current" : ""}`} />}
+                        </button>
+                      )}
+                    </td>
                     <td className="px-5 py-3.5">
                       {canWrite && (
                         <div className="flex gap-2">

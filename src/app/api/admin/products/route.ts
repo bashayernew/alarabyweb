@@ -27,6 +27,7 @@ const createProductSchema = z.object({
   badgeEn: z.string().optional().nullable(),
   badgeAr: z.string().optional().nullable(),
   isActive: z.boolean().optional().default(true),
+  isFeatured: z.boolean().optional().default(false),
   sortOrder: z.number().optional().default(0),
 });
 
@@ -84,6 +85,7 @@ export async function POST(req: NextRequest) {
         badgeEn: data.badgeEn ?? null,
         badgeAr: data.badgeAr ?? null,
         isActive: data.isActive ?? true,
+        isFeatured: data.isFeatured ?? false,
         sortOrder: data.sortOrder ?? 0,
       },
     });

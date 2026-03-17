@@ -4,13 +4,13 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminEmail = process.env.ADMIN_EMAIL ?? "admin@aquasystems.com";
+  const adminEmail = process.env.ADMIN_EMAIL ?? "admin123@gmail.com";
   const adminPassword = process.env.ADMIN_PASSWORD ?? "admin123";
   const hash = await bcrypt.hash(adminPassword, 10);
 
   await prisma.user.upsert({
     where: { email: adminEmail },
-    update: { role: "super_admin", isActive: true },
+    update: { passwordHash: hash, role: "super_admin", isActive: true },
     create: {
       email: adminEmail,
       passwordHash: hash,
@@ -26,10 +26,16 @@ async function main() {
   });
   console.log("Admin user upserted:", adminEmail);
 
+  // Remove discontinued products from database
+  const removedSlugs = ["spanish-booster-pump", "pressure-reducer", "filter-copper", "automatic-system"];
+  const deleted = await prisma.product.deleteMany({ where: { slug: { in: removedSlugs } } });
+  if (deleted.count > 0) console.log("Removed discontinued products:", deleted.count);
+
   // Seed products from static content (dynamic import from project root)
   const { catalogProducts } = await import("../src/content/products");
   const products = "length" in catalogProducts ? catalogProducts : [];
 
+  let sortOrder = 0;
   for (const p of products as Array<{
     id: string;
     image: string;
@@ -51,10 +57,13 @@ async function main() {
     badge_en?: string;
     badge_ar?: string;
   }>) {
+    const isFirst = sortOrder === 0;
     await prisma.product.upsert({
       where: { slug: p.id },
       update: {
         image: p.image,
+        sortOrder,
+        isFeatured: isFirst,
         titleEn: p.title_en,
         titleAr: p.title_ar,
         subtitleEn: p.subtitle_en,
@@ -75,6 +84,8 @@ async function main() {
       },
       create: {
         slug: p.id,
+        sortOrder,
+        isFeatured: isFirst,
         image: p.image,
         titleEn: p.title_en,
         titleAr: p.title_ar,
@@ -95,6 +106,7 @@ async function main() {
         badgeAr: p.badge_ar ?? null,
       },
     });
+    sortOrder++;
   }
   console.log("Products seeded:", products.length);
 

@@ -5,31 +5,47 @@ import { ShoppingCart, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/content/translations";
-import { catalogProducts, type CatalogProduct } from "@/content/products";
 import { useEffect, useState } from "react";
 import { OrderRequestModal } from "@/components/OrderRequestModal";
+
+export type ProductJson = {
+  id: string;
+  image: string;
+  title_en: string;
+  title_ar: string;
+  subtitle_en: string;
+  subtitle_ar: string;
+  short_description_en: string;
+  short_description_ar: string;
+  full_description_en: string;
+  full_description_ar: string;
+  warranty_en: string;
+  warranty_ar: string;
+  features_en: string[];
+  features_ar: string[];
+  specs_en?: string[];
+  specs_ar?: string[];
+  category: string;
+  badge_en?: string;
+  badge_ar?: string;
+};
 
 export default function Products() {
   const { language, isRTL } = useLanguage();
   const t = translations[language];
-  const [products, setProducts] = useState<CatalogProduct[]>(catalogProducts);
-  const [activeProduct, setActiveProduct] = useState<CatalogProduct | null>(
-    null,
-  );
-  const [orderProduct, setOrderProduct] = useState<CatalogProduct | null>(null);
+  const [products, setProducts] = useState<ProductJson[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeProduct, setActiveProduct] = useState<ProductJson | null>(null);
+  const [orderProduct, setOrderProduct] = useState<ProductJson | null>(null);
 
   useEffect(() => {
     fetch("/api/products")
-      .then((res) => res.ok ? res.json() : null)
+      .then((res) => res.ok ? res.json() : [])
       .then((data) => {
-        if (!Array.isArray(data)) return;
-        // Merge API products with catalog: API overrides by id, then add any catalog items not in API
-        const byId = new Map<string, CatalogProduct>();
-        catalogProducts.forEach((p) => byId.set(p.id, p));
-        data.forEach((p: CatalogProduct) => byId.set(p.id, p));
-        setProducts(Array.from(byId.values()));
+        setProducts(Array.isArray(data) ? data : []);
       })
-      .catch(() => {});
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -65,7 +81,16 @@ export default function Products() {
         </div>
 
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:mt-14 lg:grid-cols-4">
-          {products.map((product, index) => {
+          {loading ? (
+            <div className="col-span-full py-12 text-center text-slate-500">
+              {language === "ar" ? "جاري التحميل..." : "Loading..."}
+            </div>
+          ) : products.length === 0 ? (
+            <div className="col-span-full py-12 text-center text-slate-500">
+              {language === "ar" ? "لا توجد منتجات حالياً." : "No products available."}
+            </div>
+          ) : (
+          products.map((product, index) => {
             const warrantyLabel =
               language === "ar" ? product.warranty_ar : product.warranty_en;
             const title =
@@ -154,7 +179,8 @@ export default function Products() {
                 </div>
               </motion.article>
             );
-          })}
+          })
+          )}
         </div>
       </div>
 
@@ -185,7 +211,7 @@ export default function Products() {
 }
 
 type ProductDetailsModalProps = {
-  product: CatalogProduct;
+  product: ProductJson;
   language: "ar" | "en";
   isRTL: boolean;
   onClose: () => void;

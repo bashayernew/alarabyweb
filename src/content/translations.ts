@@ -424,14 +424,12 @@ export const translations = {
     contact: {
       title: "اتصل بنا",
       companyName: "شركة الرائد العربي",
-      phones: ["96961960", "96931919", "92241241"],
+      phones: ["96961960", "96931919"],
       mainPhone: "96961960",
       email: "alraed.alarabyq8@gmail.com",
       address: "الكويت",
       fullAddress: [
-        "شركة الرائد العربي",
-        "مجمع صبحان سنتر",
-        "الدور الأول",
+        "مكتب 7، مجمع صهيب سنتر، الدور الاول",
         "الضجيج – الكويت",
       ],
       googleMapsUrl: "https://maps.app.goo.gl/iqXYBZub4mTU2LvaA",
@@ -902,15 +900,13 @@ export const translations = {
     contact: {
       title: "Contact Us",
       companyName: "Al Raed Al Araby",
-      phones: ["96961960", "96931919", "92241241"],
+      phones: ["96961960", "96931919"],
       mainPhone: "96961960",
       email: "alraed.alarabyq8@gmail.com",
       address: "Kuwait",
       fullAddress: [
-        "Al Raed Al Araby",
-        "Subhan Center",
-        "First Floor",
-        "Al Dajeej – Kuwait",
+        "Office 7, Suhaib Center, First Floor",
+        "Al-Dajeej – Kuwait",
       ],
       googleMapsUrl: "https://maps.app.goo.gl/iqXYBZub4mTU2LvaA",
       googleMapsEmbedUrl:

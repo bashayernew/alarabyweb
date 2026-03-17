@@ -1,5 +1,14 @@
 import type { Product, Service } from "@prisma/client";
 
+function safeParseJson<T>(json: string, fallback: T): T {
+  try {
+    if (!json || json.trim() === "") return fallback;
+    return JSON.parse(json) as T;
+  } catch {
+    return fallback;
+  }
+}
+
 export function productToJson(p: Product) {
   return {
     id: p.slug,
@@ -16,10 +25,10 @@ export function productToJson(p: Product) {
     full_description_ar: p.fullDescriptionAr,
     warranty_en: p.warrantyEn,
     warranty_ar: p.warrantyAr,
-    features_en: JSON.parse(p.featuresEn) as string[],
-    features_ar: JSON.parse(p.featuresAr) as string[],
-    specs_en: p.specsEn ? (JSON.parse(p.specsEn) as string[]) : undefined,
-    specs_ar: p.specsAr ? (JSON.parse(p.specsAr) as string[]) : undefined,
+    features_en: safeParseJson<string[]>(p.featuresEn, []),
+    features_ar: safeParseJson<string[]>(p.featuresAr, []),
+    specs_en: p.specsEn ? safeParseJson<string[]>(p.specsEn, []) : undefined,
+    specs_ar: p.specsAr ? safeParseJson<string[]>(p.specsAr, []) : undefined,
     category: p.category,
     badge_en: p.badgeEn ?? undefined,
     badge_ar: p.badgeAr ?? undefined,

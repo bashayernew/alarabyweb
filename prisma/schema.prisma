@@ -46,6 +46,7 @@ model Product {
   image               String
   price               Float?
   isActive            Boolean  @default(true)
+  isFeatured          Boolean  @default(false)
   sortOrder           Int      @default(0)
   titleEn             String
   titleAr             String

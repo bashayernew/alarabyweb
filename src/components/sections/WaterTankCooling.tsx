@@ -3,22 +3,33 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Snowflake } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/content/translations";
 import { OrderRequestModal } from "@/components/OrderRequestModal";
-import { catalogProducts } from "@/content/products";
 
 export default function WaterTankCooling() {
   const { language, isRTL } = useLanguage();
   const t = translations[language];
   const products = t.coolingSystems.products;
   const [orderProduct, setOrderProduct] = useState<string | null>(null);
+  const [imageBySlug, setImageBySlug] = useState<Record<string, string>>({});
 
-  const getImageForSlug = (slug: string) => {
-    const p = catalogProducts.find((x) => x.id === slug);
-    return p?.image ?? "/watertankcooler.webp";
-  };
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.ok ? res.json() : [])
+      .then((data) => {
+        const map: Record<string, string> = {};
+        (Array.isArray(data) ? data : []).forEach((p: { id: string; image: string }) => {
+          map[p.id] = p.image?.startsWith("/") ? p.image : `/${p.image}`;
+        });
+        setImageBySlug(map);
+      })
+      .catch(() => {});
+  }, []);
+
+  const getImageForSlug = (slug: string) =>
+    imageBySlug[slug] ?? "/watertankcooler.webp";
 
   return (
     <section
