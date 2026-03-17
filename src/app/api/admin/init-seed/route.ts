@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 
+export const runtime = "nodejs";
+
 /**
  * One-time setup: creates admin user. Call once after deploy.
  * GET /api/admin/init-seed?secret=YOUR_INIT_SECRET
@@ -18,7 +20,10 @@ export async function GET(req: NextRequest) {
 
     const adminEmail = process.env.ADMIN_EMAIL ?? "admin123@gmail.com";
     const adminPassword = process.env.ADMIN_PASSWORD ?? "admin123";
-    const hash = await bcrypt.hash(adminPassword, 10);
+
+    await prisma.$connect();
+
+    const hash = bcrypt.hashSync(adminPassword, 10);
 
     await prisma.user.upsert({
       where: { email: adminEmail },
@@ -37,8 +42,16 @@ export async function GET(req: NextRequest) {
       message: "Admin user created",
       email: adminEmail,
     });
-  } catch (e) {
-    console.error("[init-seed]", e);
-    return NextResponse.json({ error: "Seed failed" }, { status: 500 });
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error(String(error));
+    console.error("INIT SEED ERROR:", err);
+    return NextResponse.json(
+      {
+        error: "Seed failed",
+        details: err.message,
+        ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+      },
+      { status: 500 }
+    );
   }
 }
