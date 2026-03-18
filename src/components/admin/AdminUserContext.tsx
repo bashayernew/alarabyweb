@@ -19,8 +19,8 @@ export function AdminUserProvider({
   children: React.ReactNode;
   userRole: string;
 }) {
-  const canWrite =
-    userRole === "super_admin" || userRole === "admin" || userRole === "editor";
+  // All authenticated admin users can edit (API enforces auth)
+  const canWrite = true;
   const canManageUsers =
     userRole === "super_admin" || userRole === "admin";
   const canViewLogs = canManageUsers;

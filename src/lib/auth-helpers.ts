@@ -101,12 +101,12 @@ export async function requireAuth(
 }
 
 /**
- * Require write access (editor or super_admin). Use for create/update/delete.
+ * Require write access. Any authenticated admin user can edit (viewer, editor, super_admin).
  */
 export async function requireWrite(): Promise<
   { user: SessionUser; res: null } | { user: null; res: NextResponse }
 > {
-  return requireAuth(["super_admin", "editor"]);
+  return requireAuth();
 }
 
 /**
