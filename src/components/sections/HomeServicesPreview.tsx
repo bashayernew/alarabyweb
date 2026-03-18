@@ -29,7 +29,7 @@ export default function HomeServicesPreview() {
   const [services, setServices] = useState<Service[]>([]);
 
   useEffect(() => {
-    fetch("/api/services", { cache: "no-store" })
+    fetch(`/api/services?t=${Date.now()}`, { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) setServices(data);

@@ -42,7 +42,7 @@ export default function OffersCatalog() {
   useEffect(() => {
     async function fetchOffers() {
       try {
-        const res = await fetch("/api/offers", { cache: "no-store" });
+        const res = await fetch(`/api/offers?t=${Date.now()}`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           setOffers(data);

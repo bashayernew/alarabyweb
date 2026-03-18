@@ -38,7 +38,7 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
-    fetch("/api/products?hero=1", { cache: "no-store" })
+    fetch(`/api/products?hero=1&t=${Date.now()}`, { cache: "no-store" })
       .then((res) => res.ok ? res.json() : null)
       .then((data) => setHeroProduct(data))
       .catch(() => setHeroProduct(null));

@@ -48,12 +48,14 @@ When editing Products, Services, Maintenance Services, or Offers in the admin da
 | `src/components/sections/WaterTanks.tsx` | Filter by category `tank` from API; removed `translations.tanks.items` fallback |
 | `src/components/sections/WaterTankCooling.tsx` | Filter by category `cooling` from API; removed `translations.coolingSystems.products` fallback |
 
-### Client fetches (already correct)
-All public data fetches use `cache: "no-store"`:
+### Client fetches – cache busting
+All public data fetches use `cache: "no-store"` **and** `?t=${Date.now()}` to force fresh data on every page load:
 - Hero, HomeProductsPreview, Products, WaterHeaterSystems, WaterTanks, WaterTankCooling
 - HomeServicesPreview, ServicesCatalog
 - MaintenancePage
 - Offers, OffersCatalog
+
+The `?t=${Date.now()}` query param ensures each page load gets a unique URL, bypassing any CDN or browser cache.
 
 ### Admin APIs – revalidation (already in place)
 All admin create/update/delete routes call `revalidatePath`:

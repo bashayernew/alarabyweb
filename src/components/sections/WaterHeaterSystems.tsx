@@ -38,7 +38,7 @@ export default function WaterHeaterSystems() {
   const [orderProduct, setOrderProduct] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/products", { cache: "no-store" })
+    fetch(`/api/products?t=${Date.now()}`, { cache: "no-store" })
       .then((res) => res.ok ? res.json() : [])
       .then((data: ApiProduct[]) => {
         const list = Array.isArray(data) ? data : [];

@@ -2,30 +2,62 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 const orderSchema = z.object({
   productId: z.string().min(1, "Product is required"),
   productSlug: z.string().optional(),
-  customerName: z.string().min(1, "Name is required").max(200),
+  customerName: z.string().max(200).optional(),
+  name: z.string().max(200).optional(),
   email: z.union([z.string().email("Invalid email"), z.literal("")]).optional(),
   phone: z.string().min(1, "Phone is required").max(50),
   area: z.string().max(200).optional(),
   message: z.string().max(2000).optional(),
+  notes: z.string().max(2000).optional(),
   language: z.enum(["en", "ar"]).optional().default("en"),
 });
 
 export async function POST(req: Request) {
+  let body: unknown;
   try {
-    const body = await req.json();
-    const parsed = orderSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: "Validation failed", details: parsed.error.flatten() },
-        { status: 400 }
-      );
-    }
-    const { productId, productSlug, customerName, email, phone, area, message, language } =
-      parsed.data;
+    body = await req.json();
+  } catch (e) {
+    console.error("[api/orders] Invalid JSON body:", e);
+    return NextResponse.json(
+      { error: "Invalid request body" },
+      { status: 400 }
+    );
+  }
 
+  const parsed = orderSchema.safeParse(body);
+  if (!parsed.success) {
+    const msg = parsed.error.errors.map((e) => e.message).join("; ");
+    console.error("[api/orders] Validation failed:", parsed.error.flatten());
+    return NextResponse.json(
+      { error: "Validation failed", details: msg },
+      { status: 400 }
+    );
+  }
+
+  const parsedData = parsed.data;
+  const customerName = (parsedData.customerName || parsedData.name || "").trim();
+  const message = parsedData.message ?? parsedData.notes ?? null;
+  const { productId, productSlug, email, phone, area, language } = parsedData;
+
+  if (!customerName) {
+    return NextResponse.json(
+      { error: "Name is required" },
+      { status: 400 }
+    );
+  }
+  if (!phone.trim()) {
+    return NextResponse.json(
+      { error: "Phone is required" },
+      { status: 400 }
+    );
+  }
+
+  try {
     const product = await prisma.product.findFirst({
       where: productSlug
         ? { slug: productSlug }
@@ -42,18 +74,24 @@ export async function POST(req: Request) {
       data: {
         productId: product.id,
         customerName,
-        email: email && email.trim() ? email.trim() : null,
-        phone,
-        area: area && area.trim() ? area.trim() : null,
-        message: message ?? null,
-        language,
+        email: email && String(email).trim() ? String(email).trim() : null,
+        phone: phone.trim(),
+        area: area && String(area).trim() ? String(area).trim() : null,
+        message: message && String(message).trim() ? String(message).trim() : null,
+        status: "new",
+        language: language ?? "en",
       },
     });
     return NextResponse.json({ success: true });
   } catch (e) {
-    console.error(e);
+    const err = e instanceof Error ? e : new Error(String(e));
+    console.error("[api/orders] Create failed:", err.message, err.stack);
+    const safeMessage =
+      process.env.NODE_ENV === "development"
+        ? err.message
+        : "Failed to create order";
     return NextResponse.json(
-      { error: "Failed to create order" },
+      { error: safeMessage },
       { status: 500 }
     );
   }
