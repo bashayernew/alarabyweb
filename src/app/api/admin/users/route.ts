@@ -17,31 +17,27 @@ export async function GET() {
   if (auth.res) return auth.res;
 
   try {
-    // Raw query to avoid Prisma client sync issues
-    const users = await prisma.$queryRaw<
-      Array<{
-        id: string;
-        email: string;
-        name: string | null;
-        role: string;
-        isActive: number;
-        lastLoginAt: string | null;
-        createdAt: string;
-      }>
-    >`
-      SELECT id, email, name, role, "isActive", "lastLoginAt", "createdAt"
-      FROM "User"
-      ORDER BY "createdAt" DESC
-    `;
+    const users = await prisma.user.findMany({
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        lastLoginAt: true,
+        createdAt: true,
+      },
+    });
     return NextResponse.json(
       users.map((u) => ({
         id: u.id,
         email: u.email,
         name: u.name,
         role: u.role,
-        isActive: u.isActive === 1,
-        lastLoginAt: u.lastLoginAt,
-        createdAt: u.createdAt,
+        isActive: u.isActive,
+        lastLoginAt: u.lastLoginAt ? u.lastLoginAt.toISOString() : null,
+        createdAt: u.createdAt.toISOString(),
       }))
     );
   } catch (e) {

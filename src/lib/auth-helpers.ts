@@ -49,12 +49,11 @@ export async function getSessionWithUser(): Promise<{
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return null;
 
-  // Use raw query to avoid Prisma client sync issues (e.g. isActive field)
-  const rows = await prisma.$queryRaw<Array<{ id: string; email: string; name: string | null; role: string; isActive: number }>>`
-    SELECT id, email, name, role, "isActive" FROM "User" WHERE id = ${session.user.id}
-  `;
-  const dbUser = rows[0];
-  if (!dbUser || dbUser.isActive === 0) return null;
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { id: true, email: true, name: true, role: true, isActive: true },
+  });
+  if (!dbUser || !dbUser.isActive) return null;
 
   // Normalize legacy "admin" to "super_admin"
   const role = dbUser.role === "admin" ? "super_admin" : dbUser.role;

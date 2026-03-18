@@ -30,8 +30,8 @@ const BASE_SIDEBAR_LINKS = [
   { href: "/admin/offer-requests", key: "nav.offerRequests", icon: FileText },
   { href: "/admin/maintenance-services", key: "nav.maintenance", icon: Settings },
   { href: "/admin/maintenance-orders", key: "nav.maintenanceOrders", icon: ClipboardList },
-  { href: "/admin/users", key: "nav.users", icon: "Users" as const },
-  { href: "/admin/activity-logs", key: "nav.activityLogs", icon: "ScrollText" as const },
+  { href: "/admin/users", key: "nav.users", icon: "Users" as const, superAdminOnly: true },
+  { href: "/admin/activity-logs", key: "nav.activityLogs", icon: "ScrollText" as const, superAdminOnly: true },
 ];
 
 type AdminLayoutShellProps = {
@@ -47,6 +47,7 @@ export function AdminLayoutShell({ children, userEmail, userName, userRole }: Ad
   const { t, isRTL } = useAdminLanguage();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isSuperAdmin = userRole === "super_admin" || userRole === "admin";
 
   return (
     <div className="flex min-h-screen bg-slate-50" dir={isRTL ? "rtl" : "ltr"}>
@@ -88,7 +89,7 @@ export function AdminLayoutShell({ children, userEmail, userName, userRole }: Ad
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto px-3 py-4">
             <ul className="space-y-0.5">
-              {BASE_SIDEBAR_LINKS.map((item) => {
+              {BASE_SIDEBAR_LINKS.filter((item) => !(item as { superAdminOnly?: boolean }).superAdminOnly || isSuperAdmin).map((item) => {
                 const Icon = typeof item.icon === "string" ? SUPER_ADMIN_ICONS[item.icon] : item.icon;
                 return (
                   <li key={item.href}>

@@ -18,41 +18,43 @@ export async function GET(req: NextRequest) {
   const offset = parseInt(searchParams.get("offset") ?? "0", 10);
 
   try {
-    // Build WHERE conditions for raw SQL (avoid Prisma client sync issues)
+    // Build WHERE conditions for raw SQL (PostgreSQL uses $1, $2, ...)
     const conditions: string[] = [];
     const params: (string | number)[] = [];
 
     if (userId) {
-      conditions.push(`"userId" = ?`);
+      conditions.push(`"userId" = $${params.length + 1}`);
       params.push(userId);
     }
     if (role) {
-      conditions.push(`"userRole" = ?`);
+      conditions.push(`"userRole" = $${params.length + 1}`);
       params.push(role);
     }
     if (action) {
-      conditions.push(`action = ?`);
+      conditions.push(`action = $${params.length + 1}`);
       params.push(action);
     }
     if (moduleFilter) {
-      conditions.push(`module = ?`);
+      conditions.push(`module = $${params.length + 1}`);
       params.push(moduleFilter);
     }
     if (from) {
-      conditions.push(`"createdAt" >= ?`);
+      conditions.push(`"createdAt" >= $${params.length + 1}`);
       params.push(new Date(from).toISOString());
     }
     if (to) {
-      conditions.push(`"createdAt" <= ?`);
+      conditions.push(`"createdAt" <= $${params.length + 1}`);
       params.push(new Date(to).toISOString());
     }
     if (search?.trim()) {
       const searchVal = `%${search.trim()}%`;
-      conditions.push(`("userEmail" LIKE ? OR "userName" LIKE ? OR "itemLabel" LIKE ?)`);
+      conditions.push(`("userEmail" LIKE $${params.length + 1} OR "userName" LIKE $${params.length + 2} OR "itemLabel" LIKE $${params.length + 3})`);
       params.push(searchVal, searchVal, searchVal);
     }
 
     const whereClause = conditions.length > 0 ? conditions.join(" AND ") : "1=1";
+    const limitIdx = params.length + 1;
+    const offsetIdx = params.length + 2;
 
     const logs = await prisma.$queryRawUnsafe<
       Array<{
@@ -75,13 +77,13 @@ export async function GET(req: NextRequest) {
        FROM "ActivityLog"
        WHERE ${whereClause}
        ORDER BY "createdAt" DESC
-       LIMIT ? OFFSET ?`,
+       LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
       ...params,
       limit,
       offset
     );
 
-    const countResult = await prisma.$queryRawUnsafe<Array<{ count: number }>>(
+    const countResult = await prisma.$queryRawUnsafe<Array<{ count: bigint }>>(
       `SELECT COUNT(*) as count FROM "ActivityLog" WHERE ${whereClause}`,
       ...params
     );
