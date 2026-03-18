@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { requireAuth, requireWrite } from "@/lib/auth-helpers";
 import { createActivityLog, buildChangeDetails, getRequestMeta } from "@/lib/activity-log";
 import { prisma } from "@/lib/db";
@@ -98,6 +99,8 @@ export async function PUT(
       details: changes.length > 0 ? buildChangeDetails(changes) : undefined,
       ...meta,
     });
+    revalidatePath("/");
+    revalidatePath("/services");
     return NextResponse.json(service);
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -136,6 +139,8 @@ export async function DELETE(
       itemLabel: existing.titleEn || existing.titleAr,
       ...meta,
     });
+    revalidatePath("/");
+    revalidatePath("/services");
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error(e);

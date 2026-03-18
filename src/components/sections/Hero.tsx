@@ -180,9 +180,9 @@ export default function Hero() {
             </div>
         </div>
 
-        {/* Subheadline - row 2 on desktop. Mobile: stronger shadow for readability */}
+        {/* Subheadline - blue text for clarity over video background */}
         <p
-            className={`max-w-[92%] break-words text-[13px] font-medium leading-[1.65] text-white min-[360px]:max-w-[95%] min-[360px]:text-sm min-[390px]:text-[15px] sm:max-w-xl sm:text-base sm:leading-[1.65] sm:text-white/95 md:row-start-2 md:text-lg md:max-w-2xl ${isRTL ? "md:col-start-2" : "md:col-start-1"}`}
+            className={`max-w-[92%] break-words text-[13px] font-medium leading-[1.65] min-[360px]:max-w-[95%] min-[360px]:text-sm min-[390px]:text-[15px] sm:max-w-xl sm:text-base sm:leading-[1.65] md:row-start-2 md:text-lg md:max-w-2xl ${isRTL ? "md:col-start-2" : "md:col-start-1"} text-[#0EA5E9] sm:text-[#38BDF8]`}
             style={{ textShadow: "0 2px 10px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.5)" }}
           >
             {t.hero.subheadline}
@@ -215,15 +215,15 @@ export default function Hero() {
             </a>
           </div>
 
-        {/* Trust stats - row 4 on desktop. Mobile: 2x2 grid, readable */}
+        {/* Trust stats - row 4 on desktop. Blue text, stronger background for clarity */}
         <div className={`grid grid-cols-2 gap-2 min-[360px]:gap-2.5 sm:grid-cols-4 sm:gap-4 md:row-start-4 ${isRTL ? "md:col-start-2" : "md:col-start-1"}`}>
             {t.trust.badges.map((badge) => (
               <div
                 key={badge.label}
-                className="flex flex-col gap-0.5 rounded-lg border border-white/15 bg-white/5 px-2.5 py-2.5 backdrop-blur-sm min-[360px]:rounded-xl min-[360px]:px-3 min-[360px]:py-3 sm:gap-1.5 sm:rounded-2xl sm:px-5 sm:py-4"
+                className="flex flex-col gap-0.5 rounded-lg border border-white/25 bg-[#0A1F32]/80 px-2.5 py-2.5 backdrop-blur-md min-[360px]:rounded-xl min-[360px]:px-3 min-[360px]:py-3 sm:gap-1.5 sm:rounded-2xl sm:px-5 sm:py-4"
               >
-                <span className="text-base font-bold text-primary-300 min-[360px]:text-lg min-[390px]:text-xl sm:text-2xl">{badge.value}</span>
-                <p className="text-[9px] font-medium text-white/80 min-[360px]:text-[10px] min-[390px]:text-[11px] sm:text-xs">{badge.label}</p>
+                <span className="text-base font-bold text-[#38BDF8] min-[360px]:text-lg min-[390px]:text-xl sm:text-2xl">{badge.value}</span>
+                <p className="text-[9px] font-medium text-[#7DD3FC] min-[360px]:text-[10px] min-[390px]:text-[11px] sm:text-xs">{badge.label}</p>
               </div>
             ))}
         </div>

@@ -32,7 +32,7 @@ export default function ServicesCatalog() {
   const [requestService, setRequestService] = useState<Service | null>(null);
 
   useEffect(() => {
-    fetch("/api/services")
+    fetch("/api/services", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
         if (Array.isArray(data)) setServices(data);

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { requireAuth, requireWrite } from "@/lib/auth-helpers";
 import { createActivityLog, getRequestMeta } from "@/lib/activity-log";
 import { prisma } from "@/lib/db";
@@ -77,6 +78,8 @@ export async function POST(req: NextRequest) {
       details: { slug: service.slug },
       ...meta,
     });
+    revalidatePath("/");
+    revalidatePath("/services");
     return NextResponse.json(service);
   } catch (e) {
     if (e instanceof z.ZodError) {

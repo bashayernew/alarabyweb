@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const now = new Date();
@@ -11,7 +14,7 @@ export async function GET() {
       },
       orderBy: [{ displayOrder: "asc" }, { startDate: "desc" }],
     });
-    return NextResponse.json(
+    const res = NextResponse.json(
       offers.map((o) => ({
         id: o.id,
         slug: o.slug,
@@ -30,6 +33,8 @@ export async function GET() {
         ctaTextEn: o.ctaTextEn,
       }))
     );
+    res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    return res;
   } catch (e) {
     console.error("[api/offers]", e);
     return NextResponse.json([], { status: 200 });

@@ -51,7 +51,7 @@ export default function MaintenancePage() {
     useState<MaintenanceServiceFromApi | null>(null);
 
   useEffect(() => {
-    fetch("/api/maintenance-services")
+    fetch("/api/maintenance-services", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
         if (Array.isArray(data)) setServices(data);

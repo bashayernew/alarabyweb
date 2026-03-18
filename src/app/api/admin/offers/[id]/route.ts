@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { requireAuth, requireWrite } from "@/lib/auth-helpers";
 import { createActivityLog, getRequestMeta } from "@/lib/activity-log";
 import { prisma } from "@/lib/db";
@@ -186,6 +187,8 @@ export async function DELETE(
         ...meta,
       });
     }
+    revalidatePath("/");
+    revalidatePath("/offers");
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error(e);
