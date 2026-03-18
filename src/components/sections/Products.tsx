@@ -39,7 +39,7 @@ export default function Products() {
   const [orderProduct, setOrderProduct] = useState<ProductJson | null>(null);
 
   useEffect(() => {
-    fetch("/api/products")
+    fetch("/api/products", { cache: "no-store" })
       .then((res) => res.ok ? res.json() : [])
       .then((data) => {
         setProducts(Array.isArray(data) ? data : []);

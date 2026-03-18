@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { requireAuth, requireWrite } from "@/lib/auth-helpers";
 import { createActivityLog, buildChangeDetails, getRequestMeta } from "@/lib/activity-log";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
+
+function revalidateProductPages(slug?: string) {
+  revalidatePath("/");
+  revalidatePath("/products");
+  if (slug) revalidatePath(`/products/${slug}`);
+}
 
 const updateProductSchema = z.object({
   slug: z.string().min(1).regex(/^[a-z0-9-]+$/).optional(),
@@ -126,6 +133,10 @@ export async function PUT(
       details: changes.length > 0 ? buildChangeDetails(changes) : undefined,
       ...meta,
     });
+    revalidateProductPages(product.slug);
+    if (data.slug && data.slug !== existing.slug) {
+      revalidatePath(`/products/${existing.slug}`);
+    }
     return NextResponse.json(product);
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -164,6 +175,7 @@ export async function DELETE(
       itemLabel: existing.titleEn || existing.titleAr,
       ...meta,
     });
+    revalidateProductPages(existing.slug);
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error(e);

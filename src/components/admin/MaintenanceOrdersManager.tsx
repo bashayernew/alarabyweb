@@ -40,6 +40,7 @@ type MaintenanceOrder = {
   language: string;
   status: string;
   createdAt: string;
+  completedByName?: string | null;
 };
 
 export function MaintenanceOrdersManager() {
@@ -78,8 +79,9 @@ export function MaintenanceOrdersManager() {
         body: JSON.stringify({ status }),
       });
       if (!res.ok) throw new Error("Failed to update");
+      const data = await res.json();
       setOrders((prev) =>
-        prev.map((o) => (o.id === id ? { ...o, status } : o))
+        prev.map((o) => (o.id === id ? { ...o, ...data } : o))
       );
     } catch (e) {
       console.error(e);
@@ -234,20 +236,27 @@ export function MaintenanceOrdersManager() {
                         {o.preferredTime ? ` (${o.preferredTime})` : ""}
                       </td>
                       <td className="px-4 py-3">
-                        <select
-                          value={o.status}
-                          onChange={(e) =>
-                            updateStatus(o.id, e.target.value)
-                          }
-                          disabled={updating === o.id || !canWrite}
-                          className="rounded border border-slate-300 bg-white px-2 py-1 text-xs disabled:opacity-50"
-                        >
-                          {STATUS_OPTIONS.filter((x) => x.value).map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                              {opt.label}
-                            </option>
-                          ))}
-                        </select>
+                        <div className="flex flex-col gap-0.5">
+                          <select
+                            value={o.status}
+                            onChange={(e) =>
+                              updateStatus(o.id, e.target.value)
+                            }
+                            disabled={updating === o.id || !canWrite}
+                            className="rounded border border-slate-300 bg-white px-2 py-1 text-xs disabled:opacity-50"
+                          >
+                            {STATUS_OPTIONS.filter((x) => x.value).map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+                          {o.status === "completed" && o.completedByName && (
+                            <span className="text-[10px] text-slate-500">
+                              {t("dashboard.doneBy")} {o.completedByName}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2">

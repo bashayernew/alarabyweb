@@ -22,9 +22,17 @@ export async function PUT(
     const body = await req.json();
     const { status } = updateSchema.parse(body);
     const existing = await prisma.maintenanceOrder.findUnique({ where: { id } });
+    const updateData: { status: string; completedById?: string; completedByName?: string; completedAt?: Date } = {
+      status,
+    };
+    if (status === "completed") {
+      updateData.completedById = auth.user.id;
+      updateData.completedByName = auth.user.name || auth.user.email || "Admin";
+      updateData.completedAt = new Date();
+    }
     const order = await prisma.maintenanceOrder.update({
       where: { id },
-      data: { status },
+      data: updateData,
     });
     if (existing) {
       await createActivityLog({

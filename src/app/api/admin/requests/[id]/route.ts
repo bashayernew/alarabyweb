@@ -24,9 +24,17 @@ export async function PUT(
     if (!existing) {
       return NextResponse.json({ error: "Request not found" }, { status: 404 });
     }
+    const updateData: { status: string; completedById?: string; completedByName?: string; completedAt?: Date } = {
+      status: data.status,
+    };
+    if (data.status === "completed") {
+      updateData.completedById = auth.user.id;
+      updateData.completedByName = auth.user.name || auth.user.email || "Admin";
+      updateData.completedAt = new Date();
+    }
     const request = await prisma.serviceRequest.update({
       where: { id },
-      data: { status: data.status },
+      data: updateData,
     });
     await createActivityLog({
       user: auth.user,

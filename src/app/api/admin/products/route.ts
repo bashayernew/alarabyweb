@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { requireAuth, requireWrite } from "@/lib/auth-helpers";
 import { createActivityLog } from "@/lib/activity-log";
 import { getRequestMeta } from "@/lib/activity-log";
@@ -98,6 +99,9 @@ export async function POST(req: NextRequest) {
       details: { slug: product.slug },
       ...meta,
     });
+    revalidatePath("/");
+    revalidatePath("/products");
+    revalidatePath(`/products/${product.slug}`);
     return NextResponse.json(product);
   } catch (e) {
     if (e instanceof z.ZodError) {

@@ -39,6 +39,7 @@ type OfferRequest = {
   language: string;
   status: string;
   createdAt: string;
+  completedByName?: string | null;
 };
 
 export function OfferRequestsManager() {
@@ -77,8 +78,9 @@ export function OfferRequestsManager() {
         body: JSON.stringify({ status }),
       });
       if (!res.ok) throw new Error("Failed to update");
+      const data = await res.json();
       setRequests((prev) =>
-        prev.map((r) => (r.id === id ? { ...r, status } : r))
+        prev.map((r) => (r.id === id ? { ...r, ...data } : r))
       );
     } catch (e) {
       console.error(e);
@@ -226,20 +228,27 @@ export function OfferRequestsManager() {
                       </td>
                       <td className="px-4 py-3">{r.area ?? "—"}</td>
                       <td className="px-4 py-3">
-                        <select
-                          value={r.status}
-                          onChange={(e) =>
-                            updateStatus(r.id, e.target.value)
-                          }
-                          disabled={updating === r.id || !canWrite}
-                          className="rounded border border-slate-300 bg-white px-2 py-1 text-xs disabled:opacity-50"
-                        >
-                          {STATUS_OPTIONS.filter((x) => x.value).map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                              {opt.label}
-                            </option>
-                          ))}
-                        </select>
+                        <div className="flex flex-col gap-0.5">
+                          <select
+                            value={r.status}
+                            onChange={(e) =>
+                              updateStatus(r.id, e.target.value)
+                            }
+                            disabled={updating === r.id || !canWrite}
+                            className="rounded border border-slate-300 bg-white px-2 py-1 text-xs disabled:opacity-50"
+                          >
+                            {STATUS_OPTIONS.filter((x) => x.value).map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
+                          {r.status === "completed" && r.completedByName && (
+                            <span className="text-[10px] text-slate-500">
+                              {t("dashboard.doneBy")} {r.completedByName}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2">

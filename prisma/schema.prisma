@@ -91,31 +91,37 @@ model Service {
 }
 
 model ProductOrder {
-  id          String   @id @default(cuid())
-  productId   String
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  customerName String
-  email       String?
-  phone       String
-  area        String?
-  message     String?
-  status      String   @default("new")
-  language    String   @default("en")
-  createdAt   DateTime @default(now())
+  id             String    @id @default(cuid())
+  productId      String
+  product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  customerName   String
+  email          String?
+  phone          String
+  area           String?
+  message        String?
+  status         String    @default("new")
+  language       String    @default("en")
+  completedById  String?
+  completedByName String?
+  completedAt    DateTime?
+  createdAt      DateTime  @default(now())
 }
 
 model ServiceRequest {
-  id           String   @id @default(cuid())
-  serviceId    String
-  service      Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  customerName String
-  email        String?
-  phone        String
-  area         String?
-  message      String?
-  status       String   @default("new")
-  language     String   @default("en")
-  createdAt    DateTime @default(now())
+  id              String    @id @default(cuid())
+  serviceId       String
+  service         Service   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  customerName    String
+  email           String?
+  phone           String
+  area            String?
+  message         String?
+  status          String    @default("new")
+  language        String    @default("en")
+  completedById   String?
+  completedByName String?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
 }
 
 model Offer {
@@ -144,21 +150,24 @@ model Offer {
 }
 
 model OfferRequest {
-  id           String   @id @default(cuid())
-  offerId      String?
-  offer        Offer?   @relation(fields: [offerId], references: [id], onDelete: SetNull)
-  offerTitleAr String
-  offerTitleEn String
-  customerName String
-  customerPhone String
-  customerEmail String?
-  address      String?
-  area         String?
-  notes        String?
-  language     String   @default("en")
-  status       String   @default("new") // new, contacted, in_progress, completed, cancelled
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              String    @id @default(cuid())
+  offerId         String?
+  offer           Offer?    @relation(fields: [offerId], references: [id], onDelete: SetNull)
+  offerTitleAr    String
+  offerTitleEn    String
+  customerName    String
+  customerPhone   String
+  customerEmail   String?
+  address         String?
+  area            String?
+  notes           String?
+  language        String    @default("en")
+  status          String    @default("new") // new, contacted, in_progress, completed, cancelled
+  completedById   String?
+  completedByName String?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model MaintenanceService {
@@ -178,10 +187,10 @@ model MaintenanceService {
 }
 
 model MaintenanceOrder {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   serviceId       String?
   service         MaintenanceService? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
-  serviceTitleAr  String   // snapshot for display when service deleted
+  serviceTitleAr  String    // snapshot for display when service deleted
   serviceTitleEn  String
   customerName    String
   customerPhone   String
@@ -191,8 +200,11 @@ model MaintenanceOrder {
   preferredDate   String?
   preferredTime   String?
   notes           String?
-  language        String   @default("en")
-  status          String   @default("new") // new, in_progress, completed, cancelled
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  language        String    @default("en")
+  status          String    @default("new") // new, in_progress, completed, cancelled
+  completedById   String?
+  completedByName String?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }

@@ -6,10 +6,8 @@ import {
   Pencil,
   Trash2,
   Loader2,
-  Upload,
   Save,
   Image as ImageIcon,
-  X,
 } from "lucide-react";
 import { AdminPageWrapper } from "./AdminPageWrapper";
 import { useAdminUser } from "./AdminUserContext";
@@ -57,7 +55,6 @@ export function ServicesManager() {
   const [creating, setCreating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState(defaultForm());
 
   function resetForm() {
@@ -80,29 +77,6 @@ export function ServicesManager() {
   useEffect(() => {
     fetchServices();
   }, []);
-
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("folder", "services");
-      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Upload failed");
-      }
-      const { url } = await res.json();
-      setForm((f) => ({ ...f, image: url }));
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Upload failed");
-    } finally {
-      setUploading(false);
-      e.target.value = "";
-    }
-  }
 
   function parseOptions(val: string): string | null {
     if (!val.trim()) return null;
@@ -253,28 +227,6 @@ export function ServicesManager() {
                 <option value="pump">pump</option>
                 <option value="heater">heater</option>
               </select>
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">{t("common.image")}</label>
-              <div className="flex items-center gap-2">
-                {form.image ? (
-                  <div className="relative h-16 w-16 overflow-hidden rounded-lg border">
-                    <img src={form.image} alt="" className="h-full w-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => setForm((f) => ({ ...f, image: "" }))}
-                      className="absolute top-0.5 right-0.5 rounded-full bg-red-500 p-1 text-white"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ) : null}
-                <label className="flex h-16 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 text-slate-500 hover:border-primary-400">
-                  {uploading ? <Loader2 className="h-6 w-6 animate-spin" /> : <Upload className="h-6 w-6" />}
-                  <span className="text-xs">{t("common.upload")}</span>
-                  <input type="file" accept="image/*" onChange={handleUpload} className="hidden" disabled={uploading} />
-                </label>
-              </div>
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-700">{t("services.sortOrder")}</label>

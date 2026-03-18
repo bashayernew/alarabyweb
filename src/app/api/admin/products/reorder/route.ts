@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { requireWrite } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
@@ -31,6 +32,8 @@ export async function POST(req: NextRequest) {
       prisma.product.update({ where: { id: a.id }, data: { sortOrder: b.sortOrder } }),
       prisma.product.update({ where: { id: b.id }, data: { sortOrder: a.sortOrder } }),
     ]);
+    revalidatePath("/");
+    revalidatePath("/products");
     return NextResponse.json({ success: true });
   } catch (e) {
     if (e instanceof z.ZodError) {

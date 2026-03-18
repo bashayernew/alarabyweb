@@ -26,14 +26,19 @@ export default function Hero() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+    video.muted = true;
     const play = () => video.play().catch(() => {});
-    play();
     video.addEventListener("loadeddata", play);
-    return () => video.removeEventListener("loadeddata", play);
+    video.addEventListener("canplay", play);
+    play();
+    return () => {
+      video.removeEventListener("loadeddata", play);
+      video.removeEventListener("canplay", play);
+    };
   }, []);
 
   useEffect(() => {
-    fetch("/api/products?hero=1")
+    fetch("/api/products?hero=1", { cache: "no-store" })
       .then((res) => res.ok ? res.json() : null)
       .then((data) => setHeroProduct(data))
       .catch(() => setHeroProduct(null));
@@ -45,20 +50,21 @@ export default function Hero() {
       className="hero-waves relative min-h-[85vh] overflow-hidden bg-[#0A1F32] sm:min-h-[80vh] md:min-h-[90vh]"
       dir={isRTL ? "rtl" : "ltr"}
     >
-      {/* Video background - object-cover for correct scaling on all devices */}
+      {/* Video background - poster shows when autoplay blocked or loading */}
       <video
         ref={videoRef}
         src="/heroheater.mp4"
+        poster="/waterheater.webp"
         autoPlay
         muted
         loop
         playsInline
         preload="auto"
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="absolute inset-0 h-full w-full min-h-full min-w-full object-cover object-center"
+        style={{ minHeight: "100%", minWidth: "100%" }}
       />
-
-      {/* Subtle gradient for text readability - no heavy overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent" />
+      {/* Stronger overlay on mobile for text readability; lighter on desktop */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-black/10 sm:from-black/40 sm:via-black/12 sm:to-transparent md:from-black/30 md:via-black/8 md:to-transparent" />
 
       {/* Mobile: 1 col, order badge→headline→media→subheadline→ctas→stats. Desktop: 2-col grid */}
       <div
@@ -82,13 +88,13 @@ export default function Hero() {
             <span className="truncate">{t.hero.badge}</span>
           </div>
 
-          {/* 2. Headline - mobile-first typography (320→430px optimized) */}
+          {/* 2. Headline - mobile: stronger shadow for readability over video */}
           <h1
             className="max-w-[95%] text-balance text-[1.5rem] font-extrabold leading-[1.25] tracking-tight min-[360px]:text-[1.65rem] min-[375px]:text-[1.75rem] min-[390px]:text-[1.85rem] min-[412px]:text-[1.95rem] min-[430px]:text-[2.05rem] sm:max-w-xl sm:text-3xl md:max-w-2xl md:text-[2.6rem] lg:text-[3rem] lg:leading-[1.12]"
             style={{
               color: "#FFFFFF",
               textShadow:
-                "0 1px 2px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.7), 0 4px 16px rgba(0,0,0,0.5), 0 0 40px rgba(0,0,0,0.3)",
+                "0 1px 3px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.95), 0 4px 20px rgba(0,0,0,0.8), 0 0 60px rgba(0,0,0,0.5)",
             }}
           >
             {t.hero.headline}
@@ -103,6 +109,10 @@ export default function Hero() {
           }`}
         >
             <div className="relative mx-auto w-full max-w-[260px] min-[360px]:max-w-[280px] min-[375px]:max-w-[290px] min-[390px]:max-w-[300px] min-[412px]:max-w-[320px] min-[430px]:max-w-[340px] sm:max-w-[360px] md:max-w-[420px] lg:max-w-[480px]">
+              <Link
+                href={heroProduct ? `/products/${heroProduct.id}` : "/products"}
+                className="block"
+              >
               <div className="relative overflow-hidden rounded-xl border border-white/20 bg-white/[0.1] p-2.5 shadow-2xl backdrop-blur-xl min-[360px]:rounded-2xl min-[360px]:p-3 sm:rounded-3xl sm:p-5 md:p-8">
                 <div className="absolute -top-24 -right-24 hidden h-48 w-48 rounded-full bg-primary-400/20 blur-3xl md:block" />
                 <div className="absolute -bottom-16 -left-16 hidden h-40 w-40 rounded-full bg-secondary-200/15 blur-3xl md:block" />
@@ -156,6 +166,7 @@ export default function Hero() {
                   </span>
                 </div>
               </div>
+              </Link>
 
               {/* Water tank hint - desktop only */}
               <div className={`absolute -bottom-4 -right-4 hidden w-28 overflow-hidden rounded-2xl border border-white/25 bg-white/90 shadow-xl backdrop-blur-md md:block ${isRTL ? "right-auto left-4" : ""}`}>
@@ -169,10 +180,10 @@ export default function Hero() {
             </div>
         </div>
 
-        {/* Subheadline - row 2 on desktop. Mobile: narrower for readability, overflow-wrap for RTL */}
+        {/* Subheadline - row 2 on desktop. Mobile: stronger shadow for readability */}
         <p
-            className={`max-w-[92%] break-words text-[13px] font-medium leading-[1.65] text-white/95 min-[360px]:max-w-[95%] min-[360px]:text-sm min-[390px]:text-[15px] sm:max-w-xl sm:text-base sm:leading-[1.65] md:row-start-2 md:text-lg md:max-w-2xl ${isRTL ? "md:col-start-2" : "md:col-start-1"}`}
-            style={{ textShadow: "0 2px 8px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.4)" }}
+            className={`max-w-[92%] break-words text-[13px] font-medium leading-[1.65] text-white min-[360px]:max-w-[95%] min-[360px]:text-sm min-[390px]:text-[15px] sm:max-w-xl sm:text-base sm:leading-[1.65] sm:text-white/95 md:row-start-2 md:text-lg md:max-w-2xl ${isRTL ? "md:col-start-2" : "md:col-start-1"}`}
+            style={{ textShadow: "0 2px 10px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.5)" }}
           >
             {t.hero.subheadline}
           </p>

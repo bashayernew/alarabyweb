@@ -21,7 +21,7 @@ export default function HomeProductsPreview() {
   const [products, setProducts] = useState<ProductJson[]>([]);
 
   useEffect(() => {
-    fetch("/api/products")
+    fetch("/api/products", { cache: "no-store" })
       .then((res) => res.ok ? res.json() : [])
       .then((data) => {
         const list = Array.isArray(data) ? data : [];

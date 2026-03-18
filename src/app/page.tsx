@@ -13,6 +13,9 @@ import FAQ from "@/components/sections/FAQ";
 import ContactSection from "@/components/sections/ContactSection";
 import FinalCTA from "@/components/sections/FinalCTA";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-white">

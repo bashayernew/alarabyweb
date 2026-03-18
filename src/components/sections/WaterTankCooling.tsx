@@ -8,28 +8,72 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { translations } from "@/content/translations";
 import { OrderRequestModal } from "@/components/OrderRequestModal";
 
+type ApiProduct = {
+  id: string;
+  image: string;
+  title_en: string;
+  title_ar: string;
+  short_description_en: string;
+  short_description_ar: string;
+  features_en: string[];
+  features_ar: string[];
+  warranty_en: string;
+  warranty_ar: string;
+};
+
+const COOLING_SLUGS = ["water-cooling-device", "dynamo-cooling-system", "saudi-dynamo-cooling-system"];
+
 export default function WaterTankCooling() {
   const { language, isRTL } = useLanguage();
   const t = translations[language];
-  const products = t.coolingSystems.products;
+  const fallbackProducts = t.coolingSystems.products;
+  const [products, setProducts] = useState<Array<{
+    slug: string;
+    title: string;
+    description: string;
+    features: string[];
+    warrantyLabel: string;
+    image: string;
+  }>>(() => fallbackProducts.map((p) => ({ ...p, features: [...p.features], image: "/watertankcooler.webp" })));
   const [orderProduct, setOrderProduct] = useState<string | null>(null);
-  const [imageBySlug, setImageBySlug] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    fetch("/api/products")
+    fetch("/api/products", { cache: "no-store" })
       .then((res) => res.ok ? res.json() : [])
-      .then((data) => {
-        const map: Record<string, string> = {};
-        (Array.isArray(data) ? data : []).forEach((p: { id: string; image: string }) => {
-          map[p.id] = p.image?.startsWith("/") ? p.image : `/${p.image}`;
-        });
-        setImageBySlug(map);
+      .then((data: ApiProduct[]) => {
+        const list = Array.isArray(data) ? data : [];
+        const coolingMap = new Map(list.map((p) => [p.id, p]));
+        const merged = COOLING_SLUGS.map((slug) => {
+          const api = coolingMap.get(slug);
+          const fallback = fallbackProducts.find((f) => f.slug === slug);
+          if (api) {
+            return {
+              slug: api.id,
+              title: language === "ar" ? api.title_ar : api.title_en,
+              description: language === "ar" ? api.short_description_ar : api.short_description_en,
+              features: language === "ar" ? api.features_ar : api.features_en,
+              warrantyLabel: language === "ar" ? api.warranty_ar : api.warranty_en,
+              image: api.image?.startsWith("/") ? api.image : `/${api.image}`,
+            };
+          }
+          return fallback
+            ? { ...fallback, features: [...fallback.features], image: "/watertankcooler.webp" }
+            : null;
+        }).filter(Boolean) as Array<{
+          slug: string;
+          title: string;
+          description: string;
+          features: string[];
+          warrantyLabel: string;
+          image: string;
+        }>;
+        setProducts(merged.length > 0 ? merged : fallbackProducts.map((p) => ({ ...p, features: [...p.features], image: "/watertankcooler.webp" })));
       })
-      .catch(() => {});
-  }, []);
+      .catch(() => setProducts(fallbackProducts.map((p) => ({ ...p, features: [...p.features], image: "/watertankcooler.webp" }))));
+  }, [language]);
 
   const getImageForSlug = (slug: string) =>
-    imageBySlug[slug] ?? "/watertankcooler.webp";
+    products.find((p) => p.slug === slug)?.image ?? "/watertankcooler.webp";
 
   return (
     <section
@@ -60,7 +104,7 @@ export default function WaterTankCooling() {
               {/* Image block */}
               <div className="relative min-h-[220px] w-full overflow-hidden bg-[#EAF4FF] sm:min-h-[240px]">
                 <Image
-                  src={getImageForSlug(product.slug)}
+                  src={product.image || getImageForSlug(product.slug)}
                   alt={product.title}
                   fill
                   className="object-contain p-6"

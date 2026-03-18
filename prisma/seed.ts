@@ -35,6 +35,16 @@ async function main() {
   const { catalogProducts } = await import("../src/content/products");
   const products = "length" in catalogProducts ? catalogProducts : [];
 
+  const heaterCategories = ["heater", "heater-system"];
+  let firstHeaterIndex: number | null = null;
+  for (let i = 0; i < products.length; i++) {
+    const p = (products as Array<{ category: string }>)[i];
+    if (heaterCategories.includes(p.category)) {
+      firstHeaterIndex = i;
+      break;
+    }
+  }
+
   let sortOrder = 0;
   for (const p of products as Array<{
     id: string;
@@ -57,7 +67,7 @@ async function main() {
     badge_en?: string;
     badge_ar?: string;
   }>) {
-    const isFirst = sortOrder === 0;
+    const isFirst = firstHeaterIndex !== null && sortOrder === firstHeaterIndex;
     await prisma.product.upsert({
       where: { slug: p.id },
       update: {

@@ -64,6 +64,7 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "doneBy": "Done by",
     "exportAll": "Export All Client Requests",
     "exportAllDesc": "Export product orders, service requests, offer requests, and maintenance orders in one file.",
     "productOrders": "Product Orders",

@@ -11,11 +11,12 @@ import {
   combinedRequestsToExport,
 } from "@/lib/admin-export";
 
+// Orders and service requests APIs use "in progress" (space); offer/maintenance use "in_progress"
 const STATUS_OPTIONS = [
   { value: "", key: "statusOptions.all" },
   { value: "new", key: "statusOptions.new" },
   { value: "contacted", key: "statusOptions.contacted" },
-  { value: "in_progress", key: "statusOptions.inProgress" },
+  { value: "in progress", key: "statusOptions.inProgress" },
   { value: "completed", key: "statusOptions.completed" },
   { value: "cancelled", key: "statusOptions.cancelled" },
 ] as const;
@@ -30,6 +31,7 @@ type Order = {
   status: string;
   language: string;
   createdAt: string;
+  completedByName?: string | null;
   product: { slug: string; titleEn: string; titleAr: string };
 };
 
@@ -43,6 +45,7 @@ type Request = {
   status: string;
   language: string;
   createdAt: string;
+  completedByName?: string | null;
   service: { slug: string; titleEn: string; titleAr: string };
 };
 
@@ -58,6 +61,7 @@ type OfferRequest = {
   notes: string | null;
   status: string;
   createdAt: string;
+  completedByName?: string | null;
 };
 
 type MaintenanceOrder = {
@@ -74,6 +78,7 @@ type MaintenanceOrder = {
   notes: string | null;
   status: string;
   createdAt: string;
+  completedByName?: string | null;
 };
 
 export function AdminDashboard() {
@@ -122,8 +127,9 @@ export function AdminDashboard() {
         body: JSON.stringify({ status }),
       });
       if (!res.ok) throw new Error("Failed to update");
+      const updated = await res.json();
       setOrders((prev) =>
-        prev.map((o) => (o.id === id ? { ...o, status } : o))
+        prev.map((o) => (o.id === id ? { ...o, ...updated } : o))
       );
     } catch (e) {
       console.error(e);
@@ -141,8 +147,9 @@ export function AdminDashboard() {
         body: JSON.stringify({ status }),
       });
       if (!res.ok) throw new Error("Failed to update");
+      const updated = await res.json();
       setRequests((prev) =>
-        prev.map((r) => (r.id === id ? { ...r, status } : r))
+        prev.map((r) => (r.id === id ? { ...r, ...updated } : r))
       );
     } catch (e) {
       console.error(e);
@@ -296,18 +303,25 @@ export function AdminDashboard() {
                       <td className="px-5 py-3.5 text-slate-600">{o.phone}</td>
                       <td className="px-5 py-3.5 text-slate-600">{o.area ?? "—"}</td>
                       <td className="px-5 py-3.5">
-                        <select
-                          value={o.status}
-                          onChange={(e) => updateOrderStatus(o.id, e.target.value)}
-                          disabled={updatingOrder === o.id || !canWrite}
-                          className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs shadow-sm focus:border-primary-400 focus:outline-none disabled:opacity-50"
-                        >
-                          {STATUS_OPTIONS.filter((x) => x.value).map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                              {t(opt.key)}
-                            </option>
-                          ))}
-                        </select>
+                        <div className="flex flex-col gap-0.5">
+                          <select
+                            value={o.status}
+                            onChange={(e) => updateOrderStatus(o.id, e.target.value)}
+                            disabled={updatingOrder === o.id || !canWrite}
+                            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs shadow-sm focus:border-primary-400 focus:outline-none disabled:opacity-50"
+                          >
+                            {STATUS_OPTIONS.filter((x) => x.value).map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {t(opt.key)}
+                              </option>
+                            ))}
+                          </select>
+                          {o.status === "completed" && o.completedByName && (
+                            <span className="text-[10px] text-slate-500">
+                              {t("dashboard.doneBy")} {o.completedByName}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="max-w-[150px] truncate px-5 py-3.5 text-slate-500">
                         {o.message ?? "—"}
@@ -393,18 +407,25 @@ export function AdminDashboard() {
                       <td className="px-5 py-3.5 text-slate-600">{r.phone}</td>
                       <td className="px-5 py-3.5 text-slate-600">{r.area ?? "—"}</td>
                       <td className="px-5 py-3.5">
-                        <select
-                          value={r.status}
-                          onChange={(e) => updateRequestStatus(r.id, e.target.value)}
-                          disabled={updatingRequest === r.id || !canWrite}
-                          className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs shadow-sm focus:border-primary-400 focus:outline-none disabled:opacity-50"
-                        >
-                          {STATUS_OPTIONS.filter((x) => x.value).map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                              {t(opt.key)}
-                            </option>
-                          ))}
-                        </select>
+                        <div className="flex flex-col gap-0.5">
+                          <select
+                            value={r.status}
+                            onChange={(e) => updateRequestStatus(r.id, e.target.value)}
+                            disabled={updatingRequest === r.id || !canWrite}
+                            className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs shadow-sm focus:border-primary-400 focus:outline-none disabled:opacity-50"
+                          >
+                            {STATUS_OPTIONS.filter((x) => x.value).map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {t(opt.key)}
+                              </option>
+                            ))}
+                          </select>
+                          {r.status === "completed" && r.completedByName && (
+                            <span className="text-[10px] text-slate-500">
+                              {t("dashboard.doneBy")} {r.completedByName}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="max-w-[150px] truncate px-5 py-3.5 text-slate-500">
                         {r.message ?? "—"}

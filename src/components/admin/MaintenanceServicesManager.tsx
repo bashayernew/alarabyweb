@@ -6,9 +6,7 @@ import {
   Pencil,
   Trash2,
   Loader2,
-  Upload,
   Save,
-  X,
   Wrench,
 } from "lucide-react";
 import { AdminPageWrapper } from "./AdminPageWrapper";
@@ -28,24 +26,13 @@ type MaintenanceService = {
   displayOrder: number;
 };
 
-const ICON_OPTIONS = [
-  "Flame",
-  "Filter",
-  "Gauge",
-  "Droplets",
-  "Wrench",
-  "Zap",
-  "Settings",
-  "Tool",
-];
-
 const defaultForm = () => ({
   titleEn: "",
   titleAr: "",
   descriptionEn: "",
   descriptionAr: "",
-  icon: "Wrench",
-  image: "",
+  icon: null as string | null,
+  image: null as string | null,
   category: "",
   isActive: true,
   displayOrder: 0,
@@ -60,7 +47,6 @@ export function MaintenanceServicesManager() {
   const [creating, setCreating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState(defaultForm());
 
   function resetForm() {
@@ -84,32 +70,6 @@ export function MaintenanceServicesManager() {
     fetchServices();
   }, []);
 
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("folder", "maintenance");
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: fd,
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Upload failed");
-      }
-      const { url } = await res.json();
-      setForm((f) => ({ ...f, image: url }));
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Upload failed");
-    } finally {
-      setUploading(false);
-      e.target.value = "";
-    }
-  }
-
   async function handleSave() {
     if (!form.titleEn.trim() || !form.titleAr.trim()) {
       alert(t("errors.enterTitleBoth"));
@@ -122,8 +82,8 @@ export function MaintenanceServicesManager() {
         titleAr: form.titleAr.trim(),
         descriptionEn: form.descriptionEn.trim() || form.titleEn,
         descriptionAr: form.descriptionAr.trim() || form.titleAr,
-        icon: form.icon || null,
-        image: form.image || null,
+        icon: form.icon ?? null,
+        image: form.image ?? null,
         category: form.category.trim() || null,
         isActive: form.isActive,
         displayOrder: form.displayOrder,
@@ -186,8 +146,8 @@ export function MaintenanceServicesManager() {
       titleAr: s.titleAr,
       descriptionEn: s.descriptionEn,
       descriptionAr: s.descriptionAr,
-      icon: s.icon ?? "Wrench",
-      image: s.image ?? "",
+      icon: s.icon ?? null,
+      image: s.image ?? null,
       category: s.category ?? "",
       isActive: s.isActive,
       displayOrder: s.displayOrder,
@@ -281,62 +241,6 @@ export function MaintenanceServicesManager() {
                 rows={3}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
               />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                {t("maintenance.icon")}
-              </label>
-              <select
-                value={form.icon}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, icon: e.target.value }))
-                }
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
-              >
-                {ICON_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-slate-700">
-                {t("common.image")}
-              </label>
-              <div className="flex items-center gap-2">
-                {form.image ? (
-                  <div className="relative h-16 w-16 overflow-hidden rounded-lg border">
-                    <img
-                      src={form.image}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setForm((f) => ({ ...f, image: "" }))}
-                      className="absolute top-0.5 right-0.5 rounded-full bg-red-500 p-1 text-white"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </div>
-                ) : null}
-                <label className="flex h-16 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 text-slate-500 hover:border-primary-400">
-                  {uploading ? (
-                    <Loader2 className="h-6 w-6 animate-spin" />
-                  ) : (
-                    <Upload className="h-6 w-6" />
-                  )}
-                  <span className="text-xs">{t("common.upload")}</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleUpload}
-                    className="hidden"
-                    disabled={uploading}
-                  />
-                </label>
-              </div>
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-700">

@@ -22,7 +22,7 @@ import {
 import { useAdminLanguage } from "@/hooks/useAdminLanguage";
 import { AdminLanguageSwitcher } from "./AdminLanguageSwitcher";
 
-const SIDEBAR_LINKS = [
+const BASE_SIDEBAR_LINKS = [
   { href: "/admin", key: "nav.dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/products", key: "nav.products", icon: Package },
   { href: "/admin/services", key: "nav.services", icon: Wrench },
@@ -30,9 +30,6 @@ const SIDEBAR_LINKS = [
   { href: "/admin/offer-requests", key: "nav.offerRequests", icon: FileText },
   { href: "/admin/maintenance-services", key: "nav.maintenance", icon: Settings },
   { href: "/admin/maintenance-orders", key: "nav.maintenanceOrders", icon: ClipboardList },
-];
-
-const SUPER_ADMIN_LINKS = [
   { href: "/admin/users", key: "nav.users", icon: "Users" as const },
   { href: "/admin/activity-logs", key: "nav.activityLogs", icon: "ScrollText" as const },
 ];
@@ -48,7 +45,6 @@ const SUPER_ADMIN_ICONS = { Users, ScrollText } as const;
 
 export function AdminLayoutShell({ children, userEmail, userName, userRole }: AdminLayoutShellProps) {
   const { t, isRTL } = useAdminLanguage();
-  const isSuperAdmin = userRole === "super_admin" || userRole === "admin";
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -92,8 +88,8 @@ export function AdminLayoutShell({ children, userEmail, userName, userRole }: Ad
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto px-3 py-4">
             <ul className="space-y-0.5">
-              {SIDEBAR_LINKS.map((item) => {
-                const Icon = item.icon;
+              {BASE_SIDEBAR_LINKS.map((item) => {
+                const Icon = typeof item.icon === "string" ? SUPER_ADMIN_ICONS[item.icon] : item.icon;
                 return (
                   <li key={item.href}>
                     <Link
@@ -121,37 +117,6 @@ export function AdminLayoutShell({ children, userEmail, userName, userRole }: Ad
                   </li>
                 );
               })}
-              {isSuperAdmin && (
-                <>
-                  <li className="my-2 border-t border-slate-200 pt-2">
-                    <span className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                      {t("nav.admin")}
-                    </span>
-                  </li>
-                  {SUPER_ADMIN_LINKS.map((item) => {
-                const Icon = SUPER_ADMIN_ICONS[item.icon];
-                const isActive = pathname.startsWith(item.href);
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={() => setSidebarOpen(false)}
-                      title={t(item.key)}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                        isActive
-                          ? "bg-primary-50 text-primary-700"
-                          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                      }`}
-                    >
-                      <Icon className={`h-5 w-5 shrink-0 ${isActive ? "text-primary-600" : "text-slate-400"}`} />
-                      <span className="flex-1">{t(item.key)}</span>
-                      {isActive && <ChevronRight className={`h-4 w-4 shrink-0 text-primary-600 ${isRTL ? "rotate-180" : ""}`} />}
-                    </Link>
-                  </li>
-                );
-              })}
-                </>
-              )}
             </ul>
           </nav>
         </div>
