@@ -13,18 +13,6 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateStaticParams() {
-  try {
-    const products = await prisma.product.findMany({
-      where: { isActive: true },
-      select: { slug: true },
-    });
-    return products.map((p) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   try {

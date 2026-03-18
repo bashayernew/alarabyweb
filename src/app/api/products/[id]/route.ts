@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { productToJson } from "@/lib/api-helpers";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -14,7 +17,9 @@ export async function GET(
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
-    return NextResponse.json(productToJson(product));
+    const res = NextResponse.json(productToJson(product));
+    res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    return res;
   } catch (e) {
     console.error(e);
     return NextResponse.json(

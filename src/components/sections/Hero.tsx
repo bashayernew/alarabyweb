@@ -88,13 +88,12 @@ export default function Hero() {
             <span className="truncate">{t.hero.badge}</span>
           </div>
 
-          {/* 2. Headline - mobile: stronger shadow for readability over video */}
+          {/* 2. Headline - black for readability */}
           <h1
-            className="max-w-[95%] text-balance text-[1.5rem] font-extrabold leading-[1.25] tracking-tight min-[360px]:text-[1.65rem] min-[375px]:text-[1.75rem] min-[390px]:text-[1.85rem] min-[412px]:text-[1.95rem] min-[430px]:text-[2.05rem] sm:max-w-xl sm:text-3xl md:max-w-2xl md:text-[2.6rem] lg:text-[3rem] lg:leading-[1.12]"
+            className="max-w-[95%] text-balance text-[1.5rem] font-extrabold leading-[1.25] tracking-tight text-black min-[360px]:text-[1.65rem] min-[375px]:text-[1.75rem] min-[390px]:text-[1.85rem] min-[412px]:text-[1.95rem] min-[430px]:text-[2.05rem] sm:max-w-xl sm:text-3xl md:max-w-2xl md:text-[2.6rem] lg:text-[3rem] lg:leading-[1.12]"
             style={{
-              color: "#FFFFFF",
               textShadow:
-                "0 1px 3px rgba(0,0,0,1), 0 2px 8px rgba(0,0,0,0.95), 0 4px 20px rgba(0,0,0,0.8), 0 0 60px rgba(0,0,0,0.5)",
+                "0 1px 2px rgba(255,255,255,0.8), 0 2px 8px rgba(255,255,255,0.5)",
             }}
           >
             {t.hero.headline}
@@ -180,10 +179,10 @@ export default function Hero() {
             </div>
         </div>
 
-        {/* Subheadline - blue text for clarity over video background */}
+        {/* Subheadline - black text for clarity */}
         <p
-            className={`max-w-[92%] break-words text-[13px] font-medium leading-[1.65] min-[360px]:max-w-[95%] min-[360px]:text-sm min-[390px]:text-[15px] sm:max-w-xl sm:text-base sm:leading-[1.65] md:row-start-2 md:text-lg md:max-w-2xl ${isRTL ? "md:col-start-2" : "md:col-start-1"} text-[#0EA5E9] sm:text-[#38BDF8]`}
-            style={{ textShadow: "0 2px 10px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.5)" }}
+            className={`max-w-[92%] break-words text-[13px] font-medium leading-[1.65] min-[360px]:max-w-[95%] min-[360px]:text-sm min-[390px]:text-[15px] sm:max-w-xl sm:text-base sm:leading-[1.65] md:row-start-2 md:text-lg md:max-w-2xl ${isRTL ? "md:col-start-2" : "md:col-start-1"} text-black`}
+            style={{ textShadow: "0 1px 2px rgba(255,255,255,0.8), 0 2px 8px rgba(255,255,255,0.5)" }}
           >
             {t.hero.subheadline}
           </p>

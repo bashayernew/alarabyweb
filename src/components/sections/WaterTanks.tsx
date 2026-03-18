@@ -17,21 +17,19 @@ type ApiProduct = {
   short_description_ar: string;
   features_en: string[];
   features_ar: string[];
+  category: string;
 };
-
-const TANK_SLUGS = ["tank-1000", "tank-1200"];
 
 export default function WaterTanks() {
   const { language, isRTL } = useLanguage();
   const t = translations[language];
-  const fallbackItems = t.tanks.items;
   const [items, setItems] = useState<Array<{
     slug: string;
     title: string;
     description: string;
     features: string[];
     image: string;
-  }>>(() => fallbackItems.map((p) => ({ ...p, features: [...p.features], image: "/watergallonsmall.webp" })));
+  }>>([]);
   const [orderTank, setOrderTank] = useState<string | null>(null);
 
   useEffect(() => {
@@ -39,26 +37,18 @@ export default function WaterTanks() {
       .then((res) => res.ok ? res.json() : [])
       .then((data: ApiProduct[]) => {
         const list = Array.isArray(data) ? data : [];
-        const tankMap = new Map(list.map((p) => [p.id, p]));
-        const merged = TANK_SLUGS.map((slug) => {
-          const api = tankMap.get(slug);
-          const fallback = fallbackItems.find((f) => f.slug === slug);
-          if (api) {
-            return {
-              slug: api.id,
-              title: language === "ar" ? api.title_ar : api.title_en,
-              description: language === "ar" ? api.short_description_ar : api.short_description_en,
-              features: language === "ar" ? api.features_ar : api.features_en,
-              image: api.image?.startsWith("/") ? api.image : `/${api.image}`,
-            };
-          }
-          return fallback
-            ? { ...fallback, features: [...fallback.features], image: "/watergallonsmall.webp" }
-            : null;
-        }).filter(Boolean) as Array<{ slug: string; title: string; description: string; features: string[]; image: string }>;
-        setItems(merged.length > 0 ? merged : fallbackItems.map((p) => ({ ...p, features: [...p.features], image: "/watergallonsmall.webp" })));
+        const tankProducts = list
+          .filter((p) => p.category === "tank")
+          .map((p) => ({
+            slug: p.id,
+            title: language === "ar" ? p.title_ar : p.title_en,
+            description: language === "ar" ? p.short_description_ar : p.short_description_en,
+            features: language === "ar" ? p.features_ar : p.features_en,
+            image: p.image?.startsWith("/") ? p.image : `/${p.image}`,
+          }));
+        setItems(tankProducts);
       })
-      .catch(() => setItems(fallbackItems.map((p) => ({ ...p, features: [...p.features], image: "/watergallonsmall.webp" }))));
+      .catch(() => setItems([]));
   }, [language]);
 
   const getImageForSlug = (slug: string) =>

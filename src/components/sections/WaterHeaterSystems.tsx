@@ -19,14 +19,14 @@ type ApiProduct = {
   features_ar: string[];
   warranty_en: string;
   warranty_ar: string;
+  category: string;
 };
 
-const HEATER_SLUGS = ["american-80-mexico", "american-80", "italian-80"];
+const HEATER_CATEGORIES = ["heater", "heater-system"];
 
 export default function WaterHeaterSystems() {
   const { language, isRTL } = useLanguage();
   const t = translations[language];
-  const fallbackProducts = t.heaterSystems.products;
   const [products, setProducts] = useState<Array<{
     slug: string;
     title: string;
@@ -34,7 +34,7 @@ export default function WaterHeaterSystems() {
     features: string[];
     warrantyLabel: string;
     image: string;
-  }>>(() => fallbackProducts.map((p) => ({ ...p, features: [...p.features], image: "/waterheater.webp" })));
+  }>>([]);
   const [orderProduct, setOrderProduct] = useState<string | null>(null);
 
   useEffect(() => {
@@ -42,41 +42,19 @@ export default function WaterHeaterSystems() {
       .then((res) => res.ok ? res.json() : [])
       .then((data: ApiProduct[]) => {
         const list = Array.isArray(data) ? data : [];
-        const heaterMap = new Map(list.map((p) => [p.id, p]));
-        const merged = HEATER_SLUGS.map((slug) => {
-          const api = heaterMap.get(slug);
-          const fallback = fallbackProducts.find((f) => f.slug === slug);
-          if (api) {
-            return {
-              slug: api.id,
-              title: language === "ar" ? api.title_ar : api.title_en,
-              description: language === "ar" ? api.short_description_ar : api.short_description_en,
-              features: language === "ar" ? api.features_ar : api.features_en,
-              warrantyLabel: language === "ar" ? api.warranty_ar : api.warranty_en,
-              image: api.image?.startsWith("/") ? api.image : `/${api.image}`,
-            };
-          }
-          return fallback
-            ? {
-                slug: fallback.slug,
-                title: fallback.title,
-                description: fallback.description,
-                features: [...fallback.features],
-                warrantyLabel: fallback.warrantyLabel,
-                image: "/waterheater.webp",
-              }
-            : null;
-        }).filter(Boolean) as Array<{
-          slug: string;
-          title: string;
-          description: string;
-          features: string[];
-          warrantyLabel: string;
-          image: string;
-        }>;
-        setProducts(merged.length > 0 ? merged : fallbackProducts.map((p) => ({ ...p, features: [...p.features], image: "/waterheater.webp" })));
+        const heaterProducts = list
+          .filter((p) => HEATER_CATEGORIES.includes(p.category))
+          .map((p) => ({
+            slug: p.id,
+            title: language === "ar" ? p.title_ar : p.title_en,
+            description: language === "ar" ? p.short_description_ar : p.short_description_en,
+            features: language === "ar" ? p.features_ar : p.features_en,
+            warrantyLabel: language === "ar" ? p.warranty_ar : p.warranty_en,
+            image: p.image?.startsWith("/") ? p.image : `/${p.image}`,
+          }));
+        setProducts(heaterProducts);
       })
-      .catch(() => setProducts(fallbackProducts.map((p) => ({ ...p, features: [...p.features], image: "/waterheater.webp" }))));
+      .catch(() => setProducts([]));
   }, [language]);
 
   const getImageForSlug = (slug: string) =>
