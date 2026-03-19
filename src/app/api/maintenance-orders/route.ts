@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
+import { handleApiError } from "@/lib/api-error";
+
+export const dynamic = "force-dynamic";
 
 const orderSchema = z.object({
   serviceId: z.string().min(1, "Service is required"),
@@ -71,10 +74,6 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ success: true });
   } catch (e) {
-    console.error(e);
-    return NextResponse.json(
-      { error: "Failed to create maintenance order" },
-      { status: 500 }
-    );
+    return handleApiError(e, "api/maintenance-orders", "Failed to create maintenance order");
   }
 }

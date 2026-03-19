@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
+import { handleApiError } from "@/lib/api-error";
 
 export const dynamic = "force-dynamic";
 
@@ -84,15 +85,6 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ success: true });
   } catch (e) {
-    const err = e instanceof Error ? e : new Error(String(e));
-    console.error("[api/orders] Create failed:", err.message, err.stack);
-    const safeMessage =
-      process.env.NODE_ENV === "development"
-        ? err.message
-        : "Failed to create order";
-    return NextResponse.json(
-      { error: safeMessage },
-      { status: 500 }
-    );
+    return handleApiError(e, "api/orders", "Failed to create order");
   }
 }
