@@ -11,7 +11,7 @@ export async function GET() {
     });
     return NextResponse.json(requests);
   } catch (e) {
-    console.error(e);
+    console.error("[admin/offer-requests] query failed:", e);
     return NextResponse.json(
       { error: "Failed to fetch offer requests" },
       { status: 500 }

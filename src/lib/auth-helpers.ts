@@ -46,29 +46,34 @@ export async function getSessionWithUser(): Promise<{
   session: { user: SessionUser };
   user: SessionUser;
 } | null> {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return null;
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) return null;
 
-  const dbUser = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { id: true, email: true, name: true, role: true, isActive: true },
-  });
-  if (!dbUser || !dbUser.isActive) return null;
+    const dbUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { id: true, email: true, name: true, role: true, isActive: true },
+    });
+    if (!dbUser || !dbUser.isActive) return null;
 
-  // Normalize legacy "admin" to "super_admin"
-  const role = dbUser.role === "admin" ? "super_admin" : dbUser.role;
+    // Normalize legacy "admin" to "super_admin"
+    const role = dbUser.role === "admin" ? "super_admin" : dbUser.role;
 
-  const user: SessionUser = {
-    id: dbUser.id,
-    email: dbUser.email,
-    name: dbUser.name,
-    role,
-  };
+    const user: SessionUser = {
+      id: dbUser.id,
+      email: dbUser.email,
+      name: dbUser.name,
+      role,
+    };
 
-  return {
-    session: { user: { ...session.user, ...user } },
-    user,
-  };
+    return {
+      session: { user: { ...session.user, ...user } },
+      user,
+    };
+  } catch (error) {
+    console.error("[admin/auth] getSessionWithUser failed:", error);
+    return null;
+  }
 }
 
 export type AllowedRoles = UserRole | UserRole[];

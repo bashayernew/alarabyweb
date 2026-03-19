@@ -96,24 +96,69 @@ export function AdminDashboard() {
   const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
   const [updatingRequest, setUpdatingRequest] = useState<string | null>(null);
 
+  const [ordersError, setOrdersError] = useState<string | null>(null);
+  const [requestsError, setRequestsError] = useState<string | null>(null);
+
   useEffect(() => {
     async function fetchData() {
+      const results = await Promise.allSettled([
+        fetch("/api/admin/orders"),
+        fetch("/api/admin/requests"),
+        fetch("/api/admin/offer-requests"),
+        fetch("/api/admin/maintenance-orders"),
+      ]);
+      const [ordersRes, requestsRes, offerRes, maintRes] = results;
       try {
-        const [ordersRes, requestsRes, offerRes, maintRes] = await Promise.all([
-          fetch("/api/admin/orders"),
-          fetch("/api/admin/requests"),
-          fetch("/api/admin/offer-requests"),
-          fetch("/api/admin/maintenance-orders"),
-        ]);
-        if (ordersRes.ok) setOrders(await ordersRes.json());
-        if (requestsRes.ok) setRequests(await requestsRes.json());
-        if (offerRes.ok) setOfferRequests(await offerRes.json());
-        if (maintRes.ok) setMaintenanceOrders(await maintRes.json());
+        if (ordersRes.status === "fulfilled" && ordersRes.value.ok) {
+          setOrders(await ordersRes.value.json());
+          setOrdersError(null);
+        } else {
+          if (ordersRes.status === "rejected") {
+            console.error("[admin/orders] fetch failed:", ordersRes.reason);
+          } else if (ordersRes.status === "fulfilled" && !ordersRes.value.ok) {
+            console.error("[admin/orders] API returned non-ok:", ordersRes.value.status);
+          }
+          setOrdersError("Failed to load product orders");
+        }
       } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
+        console.error("[admin/orders] parse failed:", e);
+        setOrdersError("Failed to load product orders");
       }
+      try {
+        if (requestsRes.status === "fulfilled" && requestsRes.value.ok) {
+          setRequests(await requestsRes.value.json());
+          setRequestsError(null);
+        } else {
+          if (requestsRes.status === "rejected") {
+            console.error("[admin/requests] fetch failed:", requestsRes.reason);
+          } else if (requestsRes.status === "fulfilled" && !requestsRes.value.ok) {
+            console.error("[admin/requests] API returned non-ok:", requestsRes.value.status);
+          }
+          setRequestsError("Failed to load service requests");
+        }
+      } catch (e) {
+        console.error("[admin/requests] parse failed:", e);
+        setRequestsError("Failed to load service requests");
+      }
+      try {
+        if (offerRes.status === "fulfilled" && offerRes.value.ok) {
+          setOfferRequests(await offerRes.value.json());
+        } else if (offerRes.status === "rejected") {
+          console.error("[admin/offer-requests] fetch failed:", offerRes.reason);
+        }
+      } catch (e) {
+        console.error("[admin/offer-requests] parse failed:", e);
+      }
+      try {
+        if (maintRes.status === "fulfilled" && maintRes.value.ok) {
+          setMaintenanceOrders(await maintRes.value.json());
+        } else if (maintRes.status === "rejected") {
+          console.error("[admin/maintenance-orders] fetch failed:", maintRes.reason);
+        }
+      } catch (e) {
+        console.error("[admin/maintenance-orders] parse failed:", e);
+      }
+      setLoading(false);
     }
     fetchData();
   }, []);
@@ -272,7 +317,12 @@ export function AdminDashboard() {
           </select>
         </div>
         <div className="p-5">
-          {orders.length === 0 ? (
+          {ordersError ? (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 py-8 px-4 text-center">
+              <p className="text-amber-800 font-medium">{ordersError}</p>
+              <p className="mt-1 text-sm text-amber-700">Check server logs for details.</p>
+            </div>
+          ) : orders.length === 0 ? (
             <p className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-12 text-center text-slate-500">
               {t("dashboard.noOrders")}
             </p>
@@ -376,7 +426,12 @@ export function AdminDashboard() {
           </select>
         </div>
         <div className="p-5">
-          {requests.length === 0 ? (
+          {requestsError ? (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 py-8 px-4 text-center">
+              <p className="text-amber-800 font-medium">{requestsError}</p>
+              <p className="mt-1 text-sm text-amber-700">Check server logs for details.</p>
+            </div>
+          ) : requests.length === 0 ? (
             <p className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 py-12 text-center text-slate-500">
               لا توجد طلبات خدمات بعد. / No service requests yet.
             </p>

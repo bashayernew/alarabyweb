@@ -11,7 +11,7 @@ export async function GET() {
     });
     return NextResponse.json(orders);
   } catch (e) {
-    console.error(e);
+    console.error("[admin/maintenance-orders] query failed:", e);
     return NextResponse.json(
       { error: "Failed to fetch maintenance orders" },
       { status: 500 }
