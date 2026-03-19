@@ -47,16 +47,28 @@ export default function MaintenancePage() {
 
   const [services, setServices] = useState<MaintenanceServiceFromApi[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [selectedService, setSelectedService] =
     useState<MaintenanceServiceFromApi | null>(null);
 
   useEffect(() => {
+    setLoadError(null);
     fetch(`/api/maintenance-services?t=${Date.now()}`, { cache: "no-store" })
-      .then((res) => (res.ok ? res.json() : []))
+      .then((res) => {
+        if (!res.ok) {
+          setLoadError(res.status === 500 ? "Failed to load services" : null);
+          return [];
+        }
+        return res.json();
+      })
       .then((data) => {
         if (Array.isArray(data)) setServices(data);
       })
-      .catch(() => setServices([]))
+      .catch((e) => {
+        console.error("[MaintenancePage] fetch failed:", e);
+        setLoadError("Failed to load services");
+        setServices([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -97,6 +109,15 @@ export default function MaintenancePage() {
           {loading ? (
             <div className="mt-12 flex justify-center py-16">
               <Loader2 className="h-10 w-10 animate-spin text-primary-500" />
+            </div>
+          ) : loadError ? (
+            <div className="mt-12 rounded-xl border border-amber-200 bg-amber-50 p-6 text-center">
+              <p className="font-medium text-amber-800">{loadError}</p>
+              <p className="mt-1 text-sm text-amber-700">
+                {language === "ar"
+                  ? "يرجى المحاولة لاحقاً أو التواصل مع الدعم."
+                  : "Please try again later or contact support."}
+              </p>
             </div>
           ) : services.length === 0 ? (
             <p className="mt-12 text-center text-slate-500">

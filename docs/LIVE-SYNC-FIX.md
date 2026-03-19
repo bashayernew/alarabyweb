@@ -84,6 +84,17 @@ User visits public page → dynamic render → client fetch (cache: "no-store")
 - [x] Create items → public site shows them
 - [x] WaterHeaterSystems, WaterTanks, WaterTankCooling show DB products by category (no static fallback)
 
+## Maintenance Page Empty in Production
+
+If the Maintenance page shows "No maintenance services available" in production:
+
+1. **Production DB has no MaintenanceService rows** — Vercel build does not run `prisma db seed`.
+2. **Fix:** Call the init-seed endpoint with `maintenance=1`:
+   ```
+   GET /api/admin/init-seed?secret=YOUR_INIT_SECRET&maintenance=1
+   ```
+   This seeds 6 default maintenance services only when the table is empty.
+
 ## Redeploy
 
 **Yes, a redeploy is required** after these code changes. Once deployed:
@@ -91,6 +102,7 @@ User visits public page → dynamic render → client fetch (cache: "no-store")
 - No further redeploys needed for content edits
 - Admin edits appear on the public site after a normal refresh (F5 or navigate away and back)
 - On Vercel, a hard refresh (Ctrl+Shift+R) may help the first time after deploy
+- If Maintenance is empty: run init-seed with `&maintenance=1` once
 
 ## Category Mapping (Products)
 
