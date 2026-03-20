@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const runtime = "nodejs";
 
 export async function GET() {
   try {
@@ -14,6 +15,7 @@ export async function GET() {
       },
       orderBy: [{ displayOrder: "asc" }, { startDate: "desc" }],
     });
+    console.log("[public/offers] rows fetched:", offers.length);
     const res = NextResponse.json(
       offers.map((o) => ({
         id: o.id,
@@ -33,7 +35,8 @@ export async function GET() {
         ctaTextEn: o.ctaTextEn,
       }))
     );
-    res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+    res.headers.set("Pragma", "no-cache");
     return res;
   } catch (e) {
     console.error("[api/offers]", e);

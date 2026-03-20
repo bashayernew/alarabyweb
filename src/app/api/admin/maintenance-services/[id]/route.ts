@@ -28,6 +28,7 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
     const data = updateSchema.parse(body);
+    console.log("[admin/maintenance/update] payload:", JSON.stringify(data));
     const service = await prisma.maintenanceService.update({
       where: { id },
       data: {
@@ -48,6 +49,7 @@ export async function PUT(
         }),
       },
     });
+    console.log("[admin/maintenance/update] db result: id=", service.id);
     await createActivityLog({
       user: auth.user,
       action: "update",

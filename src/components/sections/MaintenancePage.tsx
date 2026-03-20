@@ -120,11 +120,13 @@ export default function MaintenancePage() {
               </p>
             </div>
           ) : services.length === 0 ? (
-            <p className="mt-12 text-center text-slate-500">
-              {language === "ar"
-                ? "لا توجد خدمات صيانة متاحة حالياً."
-                : "No maintenance services available at the moment."}
-            </p>
+            <div className="mt-12 rounded-xl border border-slate-200 bg-slate-50 p-6 text-center">
+              <p className="text-slate-600">
+                {language === "ar"
+                  ? "لا توجد خدمات صيانة متاحة حالياً. يرجى المحاولة لاحقاً أو تحديث الصفحة."
+                  : "No maintenance services available at the moment. Please try again later or refresh the page."}
+              </p>
+            </div>
           ) : (
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
               {services.map((service, i) => {

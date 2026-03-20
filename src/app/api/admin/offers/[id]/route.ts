@@ -101,6 +101,7 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
     const data = updateSchema.parse(body);
+    console.log("[admin/offers/update] payload:", JSON.stringify(data));
     const offer = await prisma.offer.update({
       where: { id },
       data: {
@@ -142,6 +143,7 @@ export async function PUT(
         ...(data.ctaTextEn !== undefined && { ctaTextEn: data.ctaTextEn }),
       },
     });
+    console.log("[admin/offers/update] db result: id=", offer.id);
     await createActivityLog({
       user: auth.user,
       action: "update",

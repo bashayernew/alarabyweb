@@ -3,6 +3,7 @@ import { productToJson } from "@/lib/api-helpers";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   try {
@@ -52,8 +53,10 @@ export async function GET(req: NextRequest) {
       where: { isActive: true },
       orderBy: [{ sortOrder: "asc" }, { category: "asc" }],
     });
+    console.log("[public/products] rows fetched:", products.length);
     const res = NextResponse.json(products.map(productToJson));
-    res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+    res.headers.set("Pragma", "no-cache");
     return res;
   } catch (e) {
     console.error("[api/products]", e);

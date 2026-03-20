@@ -96,6 +96,7 @@ export async function PUT(
       changes.push({ field: "titleAr", oldValue: existing.titleAr, newValue: data.titleAr });
     if (data.slug !== undefined && data.slug !== existing.slug)
       changes.push({ field: "slug", oldValue: existing.slug, newValue: data.slug });
+    console.log("[admin/products/update] payload:", JSON.stringify(data));
     const product = await prisma.product.update({
       where: { id },
       data: {
@@ -133,6 +134,7 @@ export async function PUT(
       details: changes.length > 0 ? buildChangeDetails(changes) : undefined,
       ...meta,
     });
+    console.log("[admin/products/update] db result: id=", product.id, "slug=", product.slug);
     revalidateProductPages(product.slug);
     if (data.slug && data.slug !== existing.slug) {
       revalidatePath(`/products/${existing.slug}`);

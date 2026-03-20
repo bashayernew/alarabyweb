@@ -54,6 +54,7 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
     const data = updateServiceSchema.parse(body);
+    console.log("[admin/services/update] payload:", JSON.stringify(data));
     const existing = await prisma.service.findUnique({ where: { id } });
     if (!existing) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
@@ -89,7 +90,8 @@ export async function PUT(
     if (data.titleEn !== undefined && data.titleEn !== existing.titleEn)
       changes.push({ field: "titleEn", oldValue: existing.titleEn, newValue: data.titleEn });
     if (data.titleAr !== undefined && data.titleAr !== existing.titleAr)
-      changes.push({ field: "titleAr", oldValue: existing.titleAr, newValue: data.titleAr });
+      changes.push({ field: "titleAr", oldValue: existing.titleAr, newValue: data.titleAr     });
+    console.log("[admin/services/update] db result: id=", service.id, "slug=", service.slug);
     await createActivityLog({
       user: auth.user,
       action: "update",
