@@ -8,6 +8,13 @@ import {
   Loader2,
   Save,
   Wrench,
+  Flame,
+  Filter,
+  Gauge,
+  Droplets,
+  Zap,
+  Settings,
+  Tool,
 } from "lucide-react";
 import { AdminPageWrapper } from "./AdminPageWrapper";
 import { useAdminUser } from "./AdminUserContext";
@@ -47,7 +54,13 @@ export function MaintenanceServicesManager() {
   const [creating, setCreating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [bootstrapping, setBootstrapping] = useState(false);
   const [form, setForm] = useState(defaultForm());
+
+  const ICON_OPTIONS = ["Flame", "Filter", "Gauge", "Droplets", "Wrench", "Zap", "Settings", "Tool"];
+  const ICON_COMPONENTS: Record<string, typeof Wrench> = {
+    Flame, Filter, Gauge, Droplets, Wrench, Zap, Settings, Tool,
+  };
 
   function resetForm() {
     setForm(defaultForm());
@@ -121,6 +134,22 @@ export function MaintenanceServicesManager() {
     }
   }
 
+  async function handleBootstrap() {
+    if (!confirm(t("maintenance.confirmBootstrap") || "Seed default maintenance services? This only runs when the table is empty."))
+      return;
+    setBootstrapping(true);
+    try {
+      const res = await fetch("/api/admin/maintenance-services/bootstrap", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Bootstrap failed");
+      await fetchServices();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Bootstrap failed");
+    } finally {
+      setBootstrapping(false);
+    }
+  }
+
   async function handleDelete(id: string) {
     if (!confirm(t("maintenance.confirmDeleteService")))
       return;
@@ -173,13 +202,29 @@ export function MaintenanceServicesManager() {
       title={t("maintenance.servicesTitle")}
       subtitle={t("maintenance.servicesSubtitle")}
       actions={canWrite ? (
-        <button
-          onClick={startCreate}
-          className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors hover:bg-primary-700 hover:shadow-lg"
-        >
-          <Plus className="h-4 w-4" />
-          {t("maintenance.addService")}
-        </button>
+        <div className="flex flex-wrap gap-2">
+          {services.length === 0 && (
+            <button
+              onClick={handleBootstrap}
+              disabled={bootstrapping}
+              className="inline-flex items-center gap-2 rounded-xl border-2 border-amber-500 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-800 shadow-sm transition-colors hover:bg-amber-100 disabled:opacity-50"
+            >
+              {bootstrapping ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Wrench className="h-4 w-4" />
+              )}
+              {t("maintenance.seedDefaults") || "Seed default services"}
+            </button>
+          )}
+          <button
+            onClick={startCreate}
+            className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors hover:bg-primary-700 hover:shadow-lg"
+          >
+            <Plus className="h-4 w-4" />
+            {t("maintenance.addService")}
+          </button>
+        </div>
       ) : undefined}
     >
     <div className="space-y-6" dir={isRTL ? "rtl" : "ltr"}>
@@ -241,6 +286,23 @@ export function MaintenanceServicesManager() {
                 rows={3}
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
               />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-slate-700">
+                {t("maintenance.icon")}
+              </label>
+              <select
+                value={form.icon ?? ""}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, icon: e.target.value || null }))
+                }
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800"
+              >
+                <option value="">—</option>
+                {ICON_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="mb-1 block text-sm font-medium text-slate-700">
@@ -347,7 +409,10 @@ export function MaintenanceServicesManager() {
                   <tr key={s.id} className="border-b border-slate-100">
                     <td className="px-4 py-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100">
-                        <Wrench className="h-5 w-5 text-primary-600" />
+                        {(() => {
+                          const IconC = ICON_COMPONENTS[s.icon ?? ""] ?? Wrench;
+                          return <IconC className="h-5 w-5 text-primary-600" />;
+                        })()}
                       </div>
                     </td>
                     <td className="px-4 py-3 font-medium text-slate-800">

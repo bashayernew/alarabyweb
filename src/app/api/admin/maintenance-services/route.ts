@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const data = createSchema.parse(body);
+    console.log("[admin/maintenance/create] payload:", JSON.stringify(data));
     const service = await prisma.maintenanceService.create({
       data: {
         titleEn: data.titleEn,
@@ -54,6 +55,7 @@ export async function POST(req: NextRequest) {
         displayOrder: data.displayOrder ?? 0,
       },
     });
+    console.log("[admin/maintenance/create] db result: id=", service.id);
     await createActivityLog({
       user: auth.user,
       action: "create",
@@ -64,6 +66,7 @@ export async function POST(req: NextRequest) {
     });
     revalidatePath("/");
     revalidatePath("/maintenance");
+    revalidatePath("/admin/maintenance-services");
     return NextResponse.json(service);
   } catch (e) {
     if (e instanceof z.ZodError) {

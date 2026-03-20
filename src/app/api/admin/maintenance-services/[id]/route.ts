@@ -60,6 +60,7 @@ export async function PUT(
     });
     revalidatePath("/");
     revalidatePath("/maintenance");
+    revalidatePath("/admin/maintenance-services");
     return NextResponse.json(service);
   } catch (e) {
     if (e instanceof z.ZodError) {
@@ -85,6 +86,7 @@ export async function DELETE(
   const meta = getRequestMeta(req);
   try {
     const { id } = await params;
+    console.log("[admin/maintenance/delete] id:", id);
     const existing = await prisma.maintenanceService.findUnique({ where: { id } });
     await prisma.maintenanceService.delete({ where: { id } });
     if (existing) {
@@ -99,6 +101,7 @@ export async function DELETE(
     }
     revalidatePath("/");
     revalidatePath("/maintenance");
+    revalidatePath("/admin/maintenance-services");
     return NextResponse.json({ success: true });
   } catch (e) {
     console.error(e);
