@@ -133,12 +133,15 @@ export function MaintenanceServicesManager() {
     }
   }
 
-  async function handleBootstrap() {
-    if (!confirm(t("maintenance.confirmBootstrap") || "Seed default maintenance services? This only runs when the table is empty."))
-      return;
+  async function handleBootstrap(replace = false) {
+    const msg = replace
+      ? (t("maintenance.confirmReset") || "Replace ALL maintenance services with the 6 defaults? This will delete existing data.")
+      : (t("maintenance.confirmBootstrap") || "Seed default maintenance services? This only runs when the table is empty.");
+    if (!confirm(msg)) return;
     setBootstrapping(true);
     try {
-      const res = await fetch("/api/admin/maintenance-services/bootstrap", { method: "POST" });
+      const url = replace ? "/api/admin/maintenance-services/bootstrap?replace=1" : "/api/admin/maintenance-services/bootstrap";
+      const res = await fetch(url, { method: "POST" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Bootstrap failed");
       await fetchServices();
@@ -202,9 +205,9 @@ export function MaintenanceServicesManager() {
       subtitle={t("maintenance.servicesSubtitle")}
       actions={canWrite ? (
         <div className="flex flex-wrap gap-2">
-          {services.length === 0 && (
+          {services.length === 0 ? (
             <button
-              onClick={handleBootstrap}
+              onClick={() => handleBootstrap(false)}
               disabled={bootstrapping}
               className="inline-flex items-center gap-2 rounded-xl border-2 border-amber-500 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-800 shadow-sm transition-colors hover:bg-amber-100 disabled:opacity-50"
             >
@@ -214,6 +217,19 @@ export function MaintenanceServicesManager() {
                 <Wrench className="h-4 w-4" />
               )}
               {t("maintenance.seedDefaults") || "Seed default services"}
+            </button>
+          ) : (
+            <button
+              onClick={() => handleBootstrap(true)}
+              disabled={bootstrapping}
+              className="inline-flex items-center gap-2 rounded-xl border-2 border-amber-500 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-800 shadow-sm transition-colors hover:bg-amber-100 disabled:opacity-50"
+            >
+              {bootstrapping ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Wrench className="h-4 w-4" />
+              )}
+              {t("maintenance.resetToDefaults") || "Reset to defaults"}
             </button>
           )}
           <button

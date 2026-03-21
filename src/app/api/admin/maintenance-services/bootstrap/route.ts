@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { requireWrite } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/db";
@@ -16,25 +16,34 @@ const MAINTENANCE_DEFAULTS = [
 
 /**
  * POST /api/admin/maintenance-services/bootstrap
- * Seeds default maintenance services when table is empty. Idempotent.
+ * ?replace=1 -> Delete all and re-seed the 6 defaults (use when page has wrong/placeholder data)
+ * No query -> Seed only when table is empty
  */
-export async function POST() {
+export async function POST(req: NextRequest) {
   const auth = await requireWrite();
   if (auth.res) return auth.res;
   try {
+    const { searchParams } = new URL(req.url);
+    const replace = searchParams.get("replace") === "1";
     const count = await prisma.maintenanceService.count();
-    if (count > 0) {
-      console.log("[admin/maintenance/bootstrap] table has", count, "rows, skipping");
-      return NextResponse.json({ ok: true, message: "Already has data", count });
+
+    if (replace || count === 0) {
+      if (replace && count > 0) {
+        console.log("[admin/maintenance/bootstrap] replace mode: deleting", count, "existing rows");
+        await prisma.maintenanceService.deleteMany({});
+      }
+      console.log("[admin/maintenance/bootstrap] seeding", MAINTENANCE_DEFAULTS.length, "default services");
+      await prisma.maintenanceService.createMany({ data: MAINTENANCE_DEFAULTS });
+      const after = await prisma.maintenanceService.count();
+      console.log("[admin/maintenance/bootstrap] db result: created", after, "rows");
+      revalidatePath("/");
+      revalidatePath("/maintenance");
+      revalidatePath("/admin/maintenance-services");
+      return NextResponse.json({ ok: true, message: replace ? "Reset and seeded" : "Seeded", count: after });
     }
-    console.log("[admin/maintenance/bootstrap] seeding", MAINTENANCE_DEFAULTS.length, "default services");
-    await prisma.maintenanceService.createMany({ data: MAINTENANCE_DEFAULTS });
-    const after = await prisma.maintenanceService.count();
-    console.log("[admin/maintenance/bootstrap] db result: created", after, "rows");
-    revalidatePath("/");
-    revalidatePath("/maintenance");
-    revalidatePath("/admin/maintenance-services");
-    return NextResponse.json({ ok: true, message: "Seeded", count: after });
+
+    console.log("[admin/maintenance/bootstrap] table has", count, "rows, skipping");
+    return NextResponse.json({ ok: true, message: "Already has data", count });
   } catch (e) {
     console.error("[admin/maintenance/bootstrap] failed:", e);
     return NextResponse.json(
