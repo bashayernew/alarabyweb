@@ -14,7 +14,6 @@ import {
   Droplets,
   Zap,
   Settings,
-  Tool,
 } from "lucide-react";
 import { AdminPageWrapper } from "./AdminPageWrapper";
 import { useAdminUser } from "./AdminUserContext";
@@ -57,9 +56,9 @@ export function MaintenanceServicesManager() {
   const [bootstrapping, setBootstrapping] = useState(false);
   const [form, setForm] = useState(defaultForm());
 
-  const ICON_OPTIONS = ["Flame", "Filter", "Gauge", "Droplets", "Wrench", "Zap", "Settings", "Tool"];
+  const ICON_OPTIONS = ["Flame", "Filter", "Gauge", "Droplets", "Wrench", "Zap", "Settings"];
   const ICON_COMPONENTS: Record<string, typeof Wrench> = {
-    Flame, Filter, Gauge, Droplets, Wrench, Zap, Settings, Tool,
+    Flame, Filter, Gauge, Droplets, Wrench, Zap, Settings,
   };
 
   function resetForm() {

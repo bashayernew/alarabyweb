@@ -28,7 +28,6 @@ const ICON_MAP: Record<string, typeof Flame> = {
   Wrench,
   Zap,
   Settings: Wrench,
-  Tool: Wrench,
 };
 
 export type MaintenanceServiceFromApi = {
