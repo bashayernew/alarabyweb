@@ -68,6 +68,7 @@ export async function PUT(
   const meta = getRequestMeta(req);
   try {
     const { id } = await params;
+    console.log("[admin/products/update] route hit id:", id);
     const body = await req.json();
     const data = updateProductSchema.parse(body);
     const existing = await prisma.product.findUnique({ where: { id } });

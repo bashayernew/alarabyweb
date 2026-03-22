@@ -99,6 +99,7 @@ export async function PUT(
   const meta = getRequestMeta(req);
   try {
     const { id } = await params;
+    console.log("[admin/offers/update] route hit id:", id);
     const body = await req.json();
     const data = updateSchema.parse(body);
     console.log("[admin/offers/update] payload:", JSON.stringify(data));

@@ -105,6 +105,7 @@ export function ServicesManager() {
         optionsAr: parseOptions(form.optionsAr),
       };
       if (editing) {
+        console.log("[admin/services/ui] submit payload id:", editing.id);
         const res = await fetch(`/api/admin/services/${editing.id}`, {
           method: "PUT",
           credentials: "include",
@@ -152,6 +153,7 @@ export function ServicesManager() {
   }
 
   function startEdit(s: Service) {
+    console.log("[admin/services/ui] edit clicked id:", s.id);
     setEditing(s);
     setForm({
       slug: s.slug,
@@ -190,6 +192,7 @@ export function ServicesManager() {
       subtitle={t("services.subtitle")}
       actions={canWrite ? (
         <button
+          type="button"
           onClick={startCreate}
           className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors hover:bg-primary-700 hover:shadow-lg"
         >
@@ -200,7 +203,13 @@ export function ServicesManager() {
     >
     <div className="space-y-6" dir={isRTL ? "rtl" : "ltr"}>
       {canWrite && (creating || editing) && (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <form
+          onSubmit={(ev) => {
+            ev.preventDefault();
+            handleSave();
+          }}
+          className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
+        >
           <h2 className="mb-4 text-lg font-semibold text-slate-800">
             {editing ? t("services.editService") : t("services.newService")}
           </h2>
@@ -300,7 +309,7 @@ export function ServicesManager() {
           </div>
           <div className="mt-6 flex gap-3">
             <button
-              onClick={handleSave}
+              type="submit"
               disabled={saving}
               className="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-50"
             >
@@ -308,13 +317,14 @@ export function ServicesManager() {
               {t("common.save")}
             </button>
             <button
+              type="button"
               onClick={resetForm}
               className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
             >
               {t("common.cancel")}
             </button>
           </div>
-        </div>
+        </form>
       )}
 
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
@@ -356,6 +366,7 @@ export function ServicesManager() {
                       {canWrite && (
                         <div className="flex gap-2">
                           <button
+                            type="button"
                             onClick={() => startEdit(s)}
                             className="rounded-lg border border-slate-300 p-2 text-slate-600 hover:bg-slate-50 hover:text-primary-600"
                             title={t("common.edit")}
