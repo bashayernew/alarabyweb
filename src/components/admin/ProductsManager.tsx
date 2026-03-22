@@ -130,50 +130,84 @@ export function ProductsManager() {
   }
 
   const handleSave = async () => {
-    console.log("HANDLE SAVE RUNNING", "editing:", editing?.id);
+    console.log("HANDLE SAVE RUNNING", "editing:", editing);
+
+    const formData = {
+      ...form,
+      price: form.price ?? null,
+      featuresEn: form.featuresEn,
+      featuresAr: form.featuresAr,
+      specsEn: form.specsEn || null,
+      specsAr: form.specsAr || null,
+      badgeEn: form.badgeEn || null,
+      badgeAr: form.badgeAr || null,
+      isFeatured: form.isFeatured ?? false,
+    };
+
+    console.log("STATE CHECK", { editing, formData });
+
+    if (editing) {
+      if (!editing.id) {
+        console.error("❌ ERROR: editing.id is missing");
+        return;
+      }
+
+      const url = `/api/admin/products/${editing.id}`;
+      console.log("🚀 Sending PUT request to:", url);
+
+      setSaving(true);
+      try {
+        console.log("📦 Form Data:", formData);
+
+        const res = await fetch(url, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(formData),
+        });
+
+        console.log("✅ Response status:", res.status);
+
+        const data = await res.json().catch(() => ({}));
+        console.log("✅ Response data:", data);
+
+        if (!res.ok) {
+          console.error("❌ Failed to update product");
+          alert(data?.error || "Failed to update product");
+          return;
+        }
+
+        await fetchProducts();
+        setEditing(null);
+        setForm(defaultForm());
+        setCreating(false);
+        alert("Product updated successfully");
+      } catch (err) {
+        console.error("🔥 FETCH ERROR:", err);
+        alert(err instanceof Error ? err.message : "Failed to save");
+      } finally {
+        setSaving(false);
+      }
+      return;
+    }
+
     if (!form.slug.trim() || !form.image || !form.titleEn.trim() || !form.titleAr.trim()) {
+      console.log("STATE CHECK: validation failed - missing required fields");
       alert("الرجاء إدخال الرابط والصور والعنوان");
       return;
     }
+
     setSaving(true);
     try {
-      const payload = {
-        ...form,
-        price: form.price ?? null,
-        featuresEn: form.featuresEn,
-        featuresAr: form.featuresAr,
-        specsEn: form.specsEn || null,
-        specsAr: form.specsAr || null,
-        badgeEn: form.badgeEn || null,
-        badgeAr: form.badgeAr || null,
-        isFeatured: form.isFeatured ?? false,
-      };
-      if (editing) {
-        const url = `/api/admin/products/${editing.id}`;
-        console.log("HANDLE SAVE: sending PUT to", url);
-        const res = await fetch(url, {
-          method: "PUT",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          const msg = err?.error || (res.status === 401 ? "Session expired – please sign in again" : "Failed to update");
-          throw new Error(msg);
-        }
-      } else {
-        const res = await fetch("/api/admin/products", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          const msg = err?.error || (res.status === 401 ? "Session expired – please sign in again" : "Failed to create");
-          throw new Error(msg);
-        }
+      const res = await fetch("/api/admin/products", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err?.error || "Failed to create");
       }
       await fetchProducts();
       resetForm();
@@ -234,7 +268,7 @@ export function ProductsManager() {
   }
 
   function startEdit(p: Product) {
-    console.log("[admin/products/ui] edit clicked id:", p.id);
+    console.log("EDIT CLICKED", p);
     setEditing(p);
     setForm({
       slug: p.slug,
@@ -299,8 +333,8 @@ export function ProductsManager() {
       {canWrite && (creating || editing) && (
         <form
           onSubmit={(e) => {
-            e.preventDefault();
             console.log("SUBMIT TRIGGERED");
+            e.preventDefault();
             handleSave();
           }}
           className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
@@ -582,7 +616,11 @@ export function ProductsManager() {
                       {canWrite && (
                         <div className="flex gap-2">
                           <button
-                            onClick={() => startEdit(p)}
+                            type="button"
+                            onClick={() => {
+                              console.log("EDIT CLICKED", p);
+                              startEdit(p);
+                            }}
                             className="rounded-lg border border-slate-200 p-2 text-slate-600 shadow-sm transition-colors hover:border-primary-300 hover:bg-primary-50 hover:text-primary-600"
                             title={t("common.edit")}
                           >
