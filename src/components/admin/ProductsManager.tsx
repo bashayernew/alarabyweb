@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Plus,
   Pencil,
@@ -84,11 +84,15 @@ export function ProductsManager() {
   const [featuring, setFeaturing] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState(defaultForm());
+  const editingIdRef = useRef<string | null>(null);
+
+  console.log("🧠 CURRENT STATE:", { editing, form });
 
   function resetForm() {
     setForm(defaultForm());
     setEditing(null);
     setCreating(false);
+    editingIdRef.current = null;
   }
 
   async function fetchProducts() {
@@ -130,9 +134,9 @@ export function ProductsManager() {
   }
 
   const handleSave = async () => {
-    console.log("HANDLE SAVE RUNNING", "editing:", editing);
+    console.log("🚀 HANDLE SAVE STARTED");
 
-    const formData = {
+    const payload = {
       ...form,
       price: form.price ?? null,
       featuresEn: form.featuresEn,
@@ -144,46 +148,71 @@ export function ProductsManager() {
       isFeatured: form.isFeatured ?? false,
     };
 
-    console.log("STATE CHECK", { editing, formData });
+    console.log("STATE CHECK", { editing, editingIdRef: editingIdRef.current, payload });
 
-    if (editing) {
-      if (!editing.id) {
-        console.error("❌ ERROR: editing.id is missing");
-        return;
-      }
+    const id = editingIdRef.current ?? editing?.id;
 
-      const url = `/api/admin/products/${editing.id}`;
-      console.log("🚀 Sending PUT request to:", url);
+    if (id) {
+      const url = `/api/admin/products/${id}`;
+      console.log("🌐 PUT URL:", url);
 
       setSaving(true);
       try {
-        console.log("📦 Form Data:", formData);
+        console.log("📦 PAYLOAD:", payload);
 
-        const res = await fetch(url, {
+        const response = await fetch(url, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         });
 
-        console.log("✅ Response status:", res.status);
+        console.log("✅ RESPONSE STATUS:", response.status);
 
-        const data = await res.json().catch(() => ({}));
-        console.log("✅ Response data:", data);
+        const data = await response.json().catch(() => ({}));
+        console.log("✅ RESPONSE DATA:", data);
 
-        if (!res.ok) {
-          console.error("❌ Failed to update product");
-          alert(data?.error || "Failed to update product");
-          return;
+        if (!response.ok) {
+          console.error("❌ Failed to update product", data);
+          throw new Error(data?.error || "Update failed");
         }
+
+        alert("✅ Product updated successfully");
 
         await fetchProducts();
         setEditing(null);
         setForm(defaultForm());
         setCreating(false);
-        alert("Product updated successfully");
+        editingIdRef.current = null;
+      } catch (error) {
+        console.error("🔥 SAVE ERROR:", error);
+        alert(error instanceof Error ? error.message : "Failed to save");
+      } finally {
+        setSaving(false);
+      }
+      return;
+    }
+
+    if (creating) {
+      if (!form.slug.trim() || !form.image || !form.titleEn.trim() || !form.titleAr.trim()) {
+        alert("الرجاء إدخال الرابط والصور والعنوان");
+        return;
+      }
+      setSaving(true);
+      try {
+        const res = await fetch("/api/admin/products", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err?.error || "Failed to create");
+        }
+        await fetchProducts();
+        resetForm();
       } catch (err) {
-        console.error("🔥 FETCH ERROR:", err);
         alert(err instanceof Error ? err.message : "Failed to save");
       } finally {
         setSaving(false);
@@ -191,31 +220,7 @@ export function ProductsManager() {
       return;
     }
 
-    if (!form.slug.trim() || !form.image || !form.titleEn.trim() || !form.titleAr.trim()) {
-      console.log("STATE CHECK: validation failed - missing required fields");
-      alert("الرجاء إدخال الرابط والصور والعنوان");
-      return;
-    }
-
-    setSaving(true);
-    try {
-      const res = await fetch("/api/admin/products", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.error || "Failed to create");
-      }
-      await fetchProducts();
-      resetForm();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to save");
-    } finally {
-      setSaving(false);
-    }
+    console.error("❌ editing is NULL and not creating - cannot save");
   };
 
   async function handleReorder(id: string, direction: "up" | "down") {
@@ -268,7 +273,8 @@ export function ProductsManager() {
   }
 
   function startEdit(p: Product) {
-    console.log("EDIT CLICKED", p);
+    console.log("✏️ EDIT CLICKED", p);
+    editingIdRef.current = p.id;
     setEditing(p);
     setForm({
       slug: p.slug,
@@ -333,8 +339,14 @@ export function ProductsManager() {
       {canWrite && (creating || editing) && (
         <form
           onSubmit={(e) => {
-            console.log("SUBMIT TRIGGERED");
+            console.log("🔥 SUBMIT TRIGGERED");
             e.preventDefault();
+
+            if (typeof handleSave !== "function") {
+              console.error("❌ handleSave is NOT a function");
+              return;
+            }
+
             handleSave();
           }}
           className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
@@ -527,7 +539,13 @@ export function ProductsManager() {
             </button>
             <button
               type="button"
-              onClick={resetForm}
+              onClick={() => {
+                console.log("🛑 EDIT CANCELLED");
+                setEditing(null);
+                editingIdRef.current = null;
+                setForm(defaultForm());
+                setCreating(false);
+              }}
               className="rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
             >
               {t("common.cancel")}
@@ -618,8 +636,35 @@ export function ProductsManager() {
                           <button
                             type="button"
                             onClick={() => {
-                              console.log("EDIT CLICKED", p);
-                              startEdit(p);
+                              console.log("✏️ EDIT CLICKED", p);
+                              setEditing(p);
+                              editingIdRef.current = p.id;
+                              setForm({
+                                slug: p.slug,
+                                image: p.image,
+                                price: p.price,
+                                titleEn: p.titleEn,
+                                titleAr: p.titleAr,
+                                subtitleEn: p.subtitleEn,
+                                subtitleAr: p.subtitleAr,
+                                shortDescriptionEn: p.shortDescriptionEn,
+                                shortDescriptionAr: p.shortDescriptionAr,
+                                fullDescriptionEn: p.fullDescriptionEn,
+                                fullDescriptionAr: p.fullDescriptionAr,
+                                warrantyEn: p.warrantyEn,
+                                warrantyAr: p.warrantyAr,
+                                featuresEn: p.featuresEn,
+                                featuresAr: p.featuresAr,
+                                specsEn: p.specsEn ?? "",
+                                specsAr: p.specsAr ?? "",
+                                category: p.category,
+                                badgeEn: p.badgeEn ?? "",
+                                badgeAr: p.badgeAr ?? "",
+                                isActive: p.isActive,
+                                isFeatured: (p as Product).isFeatured ?? false,
+                                sortOrder: p.sortOrder,
+                              });
+                              setCreating(false);
                             }}
                             className="rounded-lg border border-slate-200 p-2 text-slate-600 shadow-sm transition-colors hover:border-primary-300 hover:bg-primary-50 hover:text-primary-600"
                             title={t("common.edit")}
