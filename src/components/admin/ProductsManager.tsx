@@ -272,38 +272,6 @@ export function ProductsManager() {
     }
   }
 
-  function startEdit(p: Product) {
-    console.log("✏️ EDIT CLICKED", p);
-    editingIdRef.current = p.id;
-    setEditing(p);
-    setForm({
-      slug: p.slug,
-      image: p.image,
-      price: p.price,
-      titleEn: p.titleEn,
-      titleAr: p.titleAr,
-      subtitleEn: p.subtitleEn,
-      subtitleAr: p.subtitleAr,
-      shortDescriptionEn: p.shortDescriptionEn,
-      shortDescriptionAr: p.shortDescriptionAr,
-      fullDescriptionEn: p.fullDescriptionEn,
-      fullDescriptionAr: p.fullDescriptionAr,
-      warrantyEn: p.warrantyEn,
-      warrantyAr: p.warrantyAr,
-      featuresEn: p.featuresEn,
-      featuresAr: p.featuresAr,
-      specsEn: p.specsEn ?? "",
-      specsAr: p.specsAr ?? "",
-      category: p.category,
-      badgeEn: p.badgeEn ?? "",
-      badgeAr: p.badgeAr ?? "",
-      isActive: p.isActive,
-      isFeatured: (p as Product).isFeatured ?? false,
-      sortOrder: p.sortOrder,
-    });
-    setCreating(false);
-  }
-
   function startCreate() {
     resetForm();
     setCreating(true);
