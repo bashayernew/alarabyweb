@@ -129,9 +129,8 @@ export function ProductsManager() {
     }
   }
 
-  async function handleSave(e?: React.FormEvent) {
-    e?.preventDefault?.();
-    console.log("[admin/products/ui] save clicked, editing:", editing?.id);
+  const handleSave = async () => {
+    console.log("HANDLE SAVE RUNNING", "editing:", editing?.id);
     if (!form.slug.trim() || !form.image || !form.titleEn.trim() || !form.titleAr.trim()) {
       alert("الرجاء إدخال الرابط والصور والعنوان");
       return;
@@ -150,8 +149,9 @@ export function ProductsManager() {
         isFeatured: form.isFeatured ?? false,
       };
       if (editing) {
-        console.log("[admin/products/ui] submit payload id:", editing.id);
-        const res = await fetch(`/api/admin/products/${editing.id}`, {
+        const url = `/api/admin/products/${editing.id}`;
+        console.log("HANDLE SAVE: sending PUT to", url);
+        const res = await fetch(url, {
           method: "PUT",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -182,7 +182,7 @@ export function ProductsManager() {
     } finally {
       setSaving(false);
     }
-  }
+  };
 
   async function handleReorder(id: string, direction: "up" | "down") {
     setReordering(id);
@@ -298,8 +298,9 @@ export function ProductsManager() {
 
       {canWrite && (creating || editing) && (
         <form
-          onSubmit={(ev) => {
-            ev.preventDefault();
+          onSubmit={(e) => {
+            e.preventDefault();
+            console.log("SUBMIT TRIGGERED");
             handleSave();
           }}
           className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
