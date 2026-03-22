@@ -305,18 +305,9 @@ export function ProductsManager() {
     <div className="space-y-6" dir={isRTL ? "rtl" : "ltr"}>
 
       {canWrite && (creating || editing) && (
-        <form
-          onSubmit={(e) => {
-            console.log("🔥 SUBMIT TRIGGERED");
-            e.preventDefault();
-
-            if (typeof handleSave !== "function") {
-              console.error("❌ handleSave is NOT a function");
-              return;
-            }
-
-            handleSave();
-          }}
+        <>
+          {console.log("🧩 EDIT MODE RENDER", editing)}
+        <div
           className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
         >
           <h2 className="mb-5 text-base font-semibold text-slate-800">
@@ -498,7 +489,11 @@ export function ProductsManager() {
           </div>
           <div className="mt-6 flex gap-3">
             <button
-              type="submit"
+              type="button"
+              onClick={() => {
+                console.log("🔥 SAVE BUTTON CLICKED DIRECTLY");
+                handleSave();
+              }}
               disabled={saving}
               className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-colors hover:bg-primary-700 disabled:opacity-50"
             >
@@ -519,7 +514,8 @@ export function ProductsManager() {
               {t("common.cancel")}
             </button>
           </div>
-        </form>
+        </div>
+        </>
       )}
 
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
