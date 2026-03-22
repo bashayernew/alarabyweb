@@ -96,6 +96,7 @@ export function OffersManager() {
       fd.append("file", file);
       const res = await fetch("/api/admin/offers/upload", {
         method: "POST",
+        credentials: "include",
         body: fd,
       });
       if (!res.ok) {
@@ -136,19 +137,21 @@ export function OffersManager() {
       if (editing) {
         const res = await fetch(`/api/admin/offers/${editing.id}`, {
           method: "PUT",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || "Failed to update");
+        if (!res.ok) throw new Error(data?.error || (res.status === 401 ? "Session expired – please sign in again" : "Failed to update"));
       } else {
         const res = await fetch("/api/admin/offers", {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || "Failed to create");
+        if (!res.ok) throw new Error(data?.error || (res.status === 401 ? "Session expired – please sign in again" : "Failed to create"));
       }
       await fetchOffers();
       resetForm();
@@ -164,7 +167,7 @@ export function OffersManager() {
       return;
     setDeleting(id);
     try {
-      const res = await fetch(`/api/admin/offers/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/offers/${id}`, { method: "DELETE", credentials: "include" });
       if (!res.ok) throw new Error("Failed to delete");
       await fetchOffers();
       if (editing?.id === id) resetForm();

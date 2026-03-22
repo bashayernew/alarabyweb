@@ -114,7 +114,7 @@ export function ProductsManager() {
       const fd = new FormData();
       fd.append("file", file);
       fd.append("folder", "products");
-      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const res = await fetch("/api/admin/upload", { method: "POST", credentials: "include", body: fd });
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || "Upload failed");
@@ -150,22 +150,26 @@ export function ProductsManager() {
       if (editing) {
         const res = await fetch(`/api/admin/products/${editing.id}`, {
           method: "PUT",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
         if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || "Failed to update");
+          const err = await res.json().catch(() => ({}));
+          const msg = err?.error || (res.status === 401 ? "Session expired – please sign in again" : "Failed to update");
+          throw new Error(msg);
         }
       } else {
         const res = await fetch("/api/admin/products", {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
         if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || "Failed to create");
+          const err = await res.json().catch(() => ({}));
+          const msg = err?.error || (res.status === 401 ? "Session expired – please sign in again" : "Failed to create");
+          throw new Error(msg);
         }
       }
       await fetchProducts();
@@ -182,6 +186,7 @@ export function ProductsManager() {
     try {
       const res = await fetch("/api/admin/products/reorder", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, direction }),
       });
@@ -198,6 +203,7 @@ export function ProductsManager() {
     try {
       const res = await fetch(`/api/admin/products/${id}`, {
         method: "PUT",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isFeatured: true }),
       });
@@ -213,7 +219,7 @@ export function ProductsManager() {
     if (!confirm(t("products.confirmDelete"))) return;
     setDeleting(id);
     try {
-      const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/products/${id}`, { method: "DELETE", credentials: "include" });
       if (!res.ok) throw new Error("Failed to delete");
       await fetchProducts();
       if (editing?.id === id) resetForm();

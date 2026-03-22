@@ -107,22 +107,24 @@ export function ServicesManager() {
       if (editing) {
         const res = await fetch(`/api/admin/services/${editing.id}`, {
           method: "PUT",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
         if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || "Failed to update");
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err?.error || (res.status === 401 ? "Session expired – please sign in again" : "Failed to update"));
         }
       } else {
         const res = await fetch("/api/admin/services", {
           method: "POST",
+          credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
         if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || "Failed to create");
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err?.error || (res.status === 401 ? "Session expired – please sign in again" : "Failed to create"));
         }
       }
       await fetchServices();
@@ -138,7 +140,7 @@ export function ServicesManager() {
     if (!confirm(t("services.confirmDelete"))) return;
     setDeleting(id);
     try {
-      const res = await fetch(`/api/admin/services/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/services/${id}`, { method: "DELETE", credentials: "include" });
       if (!res.ok) throw new Error("Failed to delete");
       await fetchServices();
       if (editing?.id === id) resetForm();
