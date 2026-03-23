@@ -3,7 +3,7 @@ export const translations = {
     brand: {
       name: "شركة الرائد العربي",
       nameLong: "شركة الرائد العربي للسخانات المركزية وأنظمة المياه",
-      tagline: "حلول أنظمة المياه والسخانات المركزية",
+      tagline: "",
       logoAlt: "شعار شركة الرائد العربي",
     },
     nav: {
@@ -471,7 +471,7 @@ export const translations = {
     brand: {
       name: "Al Raed Al Araby",
       nameLong: "Al Raed Al Araby for Central Water Heaters & Water Systems",
-      tagline: "Water & central heating systems",
+      tagline: "",
       logoAlt: "Al Raed Al Araby company logo",
     },
     nav: {
