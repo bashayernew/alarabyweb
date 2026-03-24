@@ -5,6 +5,12 @@ import { useRouter } from "next/navigation";
 import { Filter, Download } from "lucide-react";
 import { AdminPageWrapper } from "@/components/admin/AdminPageWrapper";
 import { useAdminLanguage } from "@/hooks/useAdminLanguage";
+import {
+  formatActivityDetails,
+  translateAction,
+  translateEntity,
+  translateRole,
+} from "@/lib/activity-log-ui-i18n";
 
 type LogItem = {
   id: string;
@@ -21,7 +27,8 @@ type LogItem = {
 
 export default function AdminActivityLogsPage() {
   const router = useRouter();
-  const { t, isRTL, formatDate } = useAdminLanguage();
+  const { t, lang, isRTL, formatDate } = useAdminLanguage();
+  const isArabic = lang === "ar";
   const [logs, setLogs] = useState<LogItem[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -85,24 +92,26 @@ export default function AdminActivityLogsPage() {
       const data = await res.json();
 
       const headers = [
-        "Timestamp",
-        "User",
-        "Email",
-        "Role",
-        "Action",
-        "Module",
-        "Item",
-        "Details",
+        t("activityLogs.timestamp"),
+        t("activityLogs.user"),
+        t("common.email"),
+        t("activityLogs.role"),
+        t("activityLogs.action"),
+        t("activityLogs.module"),
+        t("activityLogs.item"),
+        t("common.details"),
       ];
       const rows = data.logs.map((l: LogItem) => [
         l.createdAt,
         l.userName || "",
         l.userEmail,
-        l.userRole,
-        l.action,
-        l.module,
+        translateRole(l.userRole, isArabic),
+        translateAction(l.action, isArabic),
+        translateEntity(l.module, isArabic),
         l.itemLabel || l.itemId || "",
-        l.details ? JSON.stringify(l.details) : "",
+        l.details
+          ? formatActivityDetails(l.details, isArabic) ?? JSON.stringify(l.details)
+          : "",
       ]);
       const csv = [headers.join(","), ...rows.map((r: string[]) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))].join("\n");
 
@@ -116,20 +125,6 @@ export default function AdminActivityLogsPage() {
     } catch {
       alert(t("activityLogs.exportFailed"));
     }
-  };
-
-  const formatDetails = (d: Record<string, unknown> | null) => {
-    if (!d) return null;
-    const parts: string[] = [];
-    for (const [k, v] of Object.entries(d)) {
-      const val = v as { old?: unknown; new?: unknown };
-      if (val && typeof val === "object" && "old" in val && "new" in val) {
-        parts.push(`${k}: ${JSON.stringify(val.old)} → ${JSON.stringify(val.new)}`);
-      } else {
-        parts.push(`${k}: ${JSON.stringify(v)}`);
-      }
-    }
-    return parts.join("; ");
   };
 
   return (
@@ -182,13 +177,13 @@ export default function AdminActivityLogsPage() {
                 className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
               >
                 <option value="">{t("common.all")}</option>
-                <option value="create">{t("users.create")}</option>
-                <option value="update">Update</option>
-                <option value="delete">Delete</option>
-                <option value="export">Export</option>
-                <option value="sign_in">Sign In</option>
-                <option value="activate">Activate</option>
-                <option value="deactivate">Deactivate</option>
+                <option value="create">{translateAction("create", isArabic)}</option>
+                <option value="update">{translateAction("update", isArabic)}</option>
+                <option value="delete">{translateAction("delete", isArabic)}</option>
+                <option value="export">{translateAction("export", isArabic)}</option>
+                <option value="sign_in">{translateAction("sign_in", isArabic)}</option>
+                <option value="activate">{translateAction("activate", isArabic)}</option>
+                <option value="deactivate">{translateAction("deactivate", isArabic)}</option>
               </select>
             </div>
             <div>
@@ -207,8 +202,8 @@ export default function AdminActivityLogsPage() {
                 <option value="maintenance_services">{t("nav.maintenance")}</option>
                 <option value="maintenance_orders">{t("nav.maintenanceOrders")}</option>
                 <option value="users">{t("nav.users")}</option>
-                <option value="export">Export</option>
-                <option value="auth">Auth</option>
+                <option value="export">{translateEntity("export", isArabic)}</option>
+                <option value="auth">{translateEntity("auth", isArabic)}</option>
               </select>
             </div>
             <div>
@@ -257,22 +252,22 @@ export default function AdminActivityLogsPage() {
               <table className="min-w-full divide-y divide-slate-200">
                 <thead className="sticky top-0 bg-slate-50">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-slate-500">
+                    <th className="px-4 py-3 text-start text-xs font-medium uppercase text-slate-500">
                       {t("activityLogs.timestamp")}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-slate-500">
+                    <th className="px-4 py-3 text-start text-xs font-medium uppercase text-slate-500">
                       {t("activityLogs.user")}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-slate-500">
+                    <th className="px-4 py-3 text-start text-xs font-medium uppercase text-slate-500">
                       {t("activityLogs.action")}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-slate-500">
+                    <th className="px-4 py-3 text-start text-xs font-medium uppercase text-slate-500">
                       {t("activityLogs.module")}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-slate-500">
+                    <th className="px-4 py-3 text-start text-xs font-medium uppercase text-slate-500">
                       {t("activityLogs.item")}
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium uppercase text-slate-500">
+                    <th className="px-4 py-3 text-start text-xs font-medium uppercase text-slate-500">
                       {t("common.details")}
                     </th>
                   </tr>
@@ -289,23 +284,23 @@ export default function AdminActivityLogsPage() {
                             {log.userName || log.userEmail}
                           </p>
                           <p className="text-xs text-slate-500">
-                            {log.userRole} • {log.userEmail}
+                            {translateRole(log.userRole, isArabic)} • {log.userEmail}
                           </p>
                         </div>
                       </td>
                       <td className="px-4 py-2">
                         <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
-                          {log.action}
+                          {translateAction(log.action, isArabic)}
                         </span>
                       </td>
                       <td className="px-4 py-2 text-sm text-slate-600">
-                        {log.module}
+                        {translateEntity(log.module, isArabic)}
                       </td>
                       <td className="max-w-[200px] truncate px-4 py-2 text-sm text-slate-600">
                         {log.itemLabel || log.itemId || "—"}
                       </td>
                       <td className="max-w-[300px] px-4 py-2 text-xs text-slate-500">
-                        {formatDetails(log.details) || "—"}
+                        {formatActivityDetails(log.details, isArabic) || "—"}
                       </td>
                     </tr>
                   ))}
